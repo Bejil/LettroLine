@@ -5,5 +5,60 @@
 //  Created by BLIN Michael on 12/02/2025.
 //
 
-//MARK: - Home
-"home.title" = "Accueil";
+//MARK: - Placeholder
+"placeholder.empty.title" = "Attention";
+"placeholder.empty.content" = "Il n'y a rien à afficher ici pour l'instant";
+"placeholder.error.title" = "Attention";
+"placeholder.error.button" = "Réessayer";
+"placeholder.loading.title" = "Chargement en cours...";
+"placeholder.loading.content.0" = "Veuillez patienter pendant le chargement";
+"placeholder.loading.content.1" = "Encore un peu de patience...";
+
+//MARK: - Alert
+"alert.cancel.button" = "Annuler";
+"alert.dismiss.button" = "Ok";
+"alert.error.title" = "Attention";
+"alert.error.button" = "Réessayer";
+"alert.loading.title" = "Chargement en cours...";
+"alert.loading.content" = "Veuillez patienter pendant le chargement";
+
+//MARK: - Onboarding
+"onboarding.title" = "Bienvenue !";
+"onboarding.content" = "Dans LettroLine, tu vas tracer des lignes pour révéler des mots cachés. Laisse libre cours à ton imagination et découvre le plaisir de connecter les lettres.";
+"onboarding.button" = "C’est parti !";
+
+//MARK: - Menu
+"menu.title" = "LettroLine";
+"menu.classic.button.start" = "Nouvelle partie";
+"menu.classic.button.continue" = "Continuer";
+"menu.timeTrial.button" = "Contre la montre";
+"menu.settings.button" = "Réglages";
+"menu.settings.alert.title" = "Réglages";
+"menu.settings.alert.audio.title" = "Audio";
+"menu.settings.alert.audio.music.button.title" = "Musique";
+"menu.settings.alert.audio.music.button.subtitle.on" = "Activée";
+"menu.settings.alert.audio.music.button.subtitle.off" = "Désactivée";
+"menu.settings.alert.audio.sounds.button.title" = "Sons";
+"menu.settings.alert.audio.sounds.button.subtitle.on" = "Activés";
+"menu.settings.alert.audio.sounds.button.subtitle.off" = "Désactivés";
+"menu.settings.alert.rules.title" = "Règles et contraintes de jeu";
+"menu.settings.alert.rules.showFirstLetter.content" = "La première lettre s'affiche pour te guider, active ce coup de pouce pour bien démarrer !";
+"menu.settings.alert.rules.showFirstLetter.button.title.on" = "Activé";
+"menu.settings.alert.rules.showFirstLetter.button.title.off" = "Désactivé";
+"menu.settings.alert.rules.allowFingerLift.content" = "Garde ton doigt sur l'écran : si tu le relèves avant la fin, tu recommences !";
+"menu.settings.alert.rules.allowFingerLift.button.title.on" = "Activé";
+"menu.settings.alert.rules.allowFingerLift.button.title.off" = "Désactivé";
+
+//MARK: - Game
+"game.title" = "Partie classique";
+"game.settings.sounds" = "Sons";
+"game.settings.sounds.on" = "Activés";
+"game.settings.sounds.off" = "Désactivés";
+"game.settings.music" = "Musique";
+"game.settings.music.on" = "Activée";
+"game.settings.music.off" = "Désactivée";
+"game.fail.alert.title" = "Raté !";
+"game.fail.reason.outOfBounds" = "Tu es sorti du terrain";
+"game.fail.reason.intersect" = "Tu as coupé ton chemin";
+"game.fail.reason.sameLetter" = "Tu es déjà passé par cette lettre";
+"game.fail.reason.fingerLift" = "Tu as levé ton doigt avant d'avoir fini";

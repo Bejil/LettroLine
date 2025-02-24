@@ -9,18 +9,34 @@ import UIKit
 
 public struct UI {
 	
+	static var MainController :UIViewController {
+		
+		return UIApplication.shared.topMostViewController()!
+	}
+	
 	public static let Margins:CGFloat = 15.0
-	public static let CornerRadius:CGFloat = 25.0
+	public static let CornerRadius:CGFloat = 15.0
 }
 
 public struct Colors {
 	
 	public static let Primary:UIColor = UIColor(named: "Primary")!
+	public static let Secondary:UIColor = UIColor(named: "Secondary")!
+	public static let Tertiary:UIColor = UIColor(named: "Tertiary")!
+	
+	public static let Badge:UIColor = UIColor(named: "Badge")!
 	
 	public struct Background {
 		
 		public static let Application:UIColor = UIColor(named: "ApplicationBackground")!
-		public static let View:UIColor = UIColor(named: "ViewBackground")!
+		
+		public struct View {
+			
+			public static let Primary:UIColor = UIColor(named: "ViewBackgroundPrimary")!
+			public static let Secondary:UIColor = UIColor(named: "ViewBackgroundSecondary")!
+		}
+		
+		public static let Grid:UIColor = UIColor(named: "GridBackground")!
 	}
 	
 	public struct Navigation {
@@ -33,6 +49,39 @@ public struct Colors {
 		
 		public static let Title:UIColor = UIColor(named: "ContentTitle")!
 		public static let Text:UIColor = UIColor(named: "ContentText")!
+	}
+	
+	public struct Button {
+		
+		public struct Primary {
+			
+			public static let Background:UIColor = UIColor(named: "ButtonPrimaryBackground")!
+			public static let Content:UIColor = UIColor(named: "ButtonPrimaryContent")!
+		}
+		
+		public struct Secondary {
+			
+			public static let Background:UIColor = UIColor(named: "ButtonSecondaryBackground")!
+			public static let Content:UIColor = UIColor(named: "ButtonSecondaryContent")!
+		}
+		
+		public struct Delete {
+			
+			public static let Background:UIColor = UIColor(named: "ButtonDeleteBackground")!
+			public static let Content:UIColor = UIColor(named: "ButtonDeleteContent")!
+		}
+		
+		public struct Text {
+			
+			public static let Background:UIColor = UIColor(named: "ButtonTextBackground")!
+			public static let Content:UIColor = Colors.Button.Primary.Background
+		}
+	}
+	
+	public struct Letter {
+			
+		public static let Selected:UIColor = UIColor(named: "LetterSelected")!
+		public static let Unselected:UIColor = UIColor(named: "LetterUnselected")!
 	}
 }
 
@@ -55,7 +104,7 @@ public struct Fonts {
 			public static let Small:UIFont = UIFont(name: Name.Black, size: Fonts.Size+12)!
 		}
 		
-		public static let Button:UIFont = UIFont(name: Name.Regular, size: Fonts.Size-2)!
+		public static let Button:UIFont = UIFont(name: Name.Regular, size: Fonts.Size+2)!
 	}
 	
 	public struct Content {

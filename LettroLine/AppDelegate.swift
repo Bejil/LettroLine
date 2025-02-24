@@ -16,8 +16,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.backgroundColor = Colors.Background.Application
-		window?.rootViewController = LL_NavigationController(rootViewController: LL_Home_ViewController())
+		window?.rootViewController = LL_Menu_ViewController()
 		window?.makeKeyAndVisible()
+		
+		LL_Audio.shared.playMusic()
+		
+		if UserDefaults.get(.onboarding) == nil {
+		
+			UserDefaults.set(true, .onboarding)
+			
+			UI.MainController.present(LL_Onboarding_ViewController(), animated: false)
+		}
 		
 		return true
 	}

@@ -10,7 +10,7 @@ import SnapKit
 
 extension UIView {
 	
-	static func animate(_ duration:TimeInterval? = 0.3, _ animations:@escaping (()->Void), _ completion: (()->Void)? = nil) {
+	static func animation(_ duration:TimeInterval? = 0.3, _ animations:@escaping (()->Void), _ completion: (()->Void)? = nil) {
 		
 		UIView.animate(withDuration: duration ?? 0.3, delay: 0.0, options: [.allowUserInteraction,.curveEaseInOut], animations: animations) { state in
 			
@@ -89,5 +89,33 @@ extension UIView {
 				completion?()
 			}
 		}
+	}
+	
+	@discardableResult func showPlaceholder(_ style:LL_Placeholder_View.Style? = nil, _ error:Error? = nil, _ handler:LL_Button.Handler = nil) -> LL_Placeholder_View {
+		
+		dismissPlaceholder()
+		
+		let view:UIView = (self as? UIVisualEffectView)?.contentView ?? self
+		
+		view.subviews.forEach({ $0.isHidden = true })
+		
+		let placeholderView:LL_Placeholder_View = .init(style,error,handler)
+		placeholderView.accessibilityLabel = "placeholderView"
+		view.addSubview(placeholderView)
+		
+		placeholderView.snp.makeConstraints { make in
+			
+			make.top.right.left.equalTo(view.safeAreaLayoutGuide)
+			make.bottom.equalTo(view.keyboardLayoutGuide.snp.top)
+		}
+		
+		return placeholderView
+	}
+	
+	func dismissPlaceholder() {
+		
+		let view:UIView = (self as? UIVisualEffectView)?.contentView ?? self
+		view.subviews.first(where: {$0.accessibilityLabel == "placeholderView"})?.removeFromSuperview()
+		view.subviews.forEach({ $0.isHidden = false })
 	}
 }
