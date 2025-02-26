@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D43333CC2D5F51DF002D8A89 /* SPConfetti in Frameworks */ = {isa = PBXBuildFile; productRef = D43333CB2D5F51DF002D8A89 /* SPConfetti */; };
+		D43334392D64A1C8002D8A89 /* SwiftySound in Frameworks */ = {isa = PBXBuildFile; productRef = D43334382D64A1C8002D8A89 /* SwiftySound */; };
 		D4CE19192D5CA4680083A5AA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = D4CE19182D5CA4680083A5AA /* SnapKit */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +43,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4CE19192D5CA4680083A5AA /* SnapKit in Frameworks */,
+				D43334392D64A1C8002D8A89 /* SwiftySound in Frameworks */,
+				D43333CC2D5F51DF002D8A89 /* SPConfetti in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +88,8 @@
 			name = LettroLine;
 			packageProductDependencies = (
 				D4CE19182D5CA4680083A5AA /* SnapKit */,
+				D43333CB2D5F51DF002D8A89 /* SPConfetti */,
+				D43334382D64A1C8002D8A89 /* SwiftySound */,
 			);
 			productName = LettroLine;
 			productReference = D4CE18C42D5B611D0083A5AA /* LettroLine.app */;
@@ -115,6 +121,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				D4CE19172D5CA4680083A5AA /* XCRemoteSwiftPackageReference "SnapKit" */,
+				D43333CA2D5F51DF002D8A89 /* XCRemoteSwiftPackageReference "SPConfetti" */,
+				D43334372D64A1C8002D8A89 /* XCRemoteSwiftPackageReference "SwiftySound" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D4CE18C52D5B611D0083A5AA /* Products */;
@@ -153,20 +161,21 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 1.0.0;
 				DEVELOPMENT_TEAM = K73XJ748R3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "LettroLine/Resources/Supporting Files/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = LettroLine;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.michaelblin.LettroLine;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -181,20 +190,21 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 1.0.0;
 				DEVELOPMENT_TEAM = K73XJ748R3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "LettroLine/Resources/Supporting Files/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = LettroLine;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.michaelblin.LettroLine;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -346,6 +356,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		D43333CA2D5F51DF002D8A89 /* XCRemoteSwiftPackageReference "SPConfetti" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ivanvorobei/SPConfetti";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.2;
+			};
+		};
+		D43334372D64A1C8002D8A89 /* XCRemoteSwiftPackageReference "SwiftySound" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/adamcichy/SwiftySound.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.0;
+			};
+		};
 		D4CE19172D5CA4680083A5AA /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -357,6 +383,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		D43333CB2D5F51DF002D8A89 /* SPConfetti */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D43333CA2D5F51DF002D8A89 /* XCRemoteSwiftPackageReference "SPConfetti" */;
+			productName = SPConfetti;
+		};
+		D43334382D64A1C8002D8A89 /* SwiftySound */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D43334372D64A1C8002D8A89 /* XCRemoteSwiftPackageReference "SwiftySound" */;
+			productName = SwiftySound;
+		};
 		D4CE19182D5CA4680083A5AA /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = D4CE19172D5CA4680083A5AA /* XCRemoteSwiftPackageReference "SnapKit" */;
