@@ -59,23 +59,10 @@ public class LL_Grid_CollectionView : LL_CollectionView {
 			
 			if let result = generateGrid() {
 				
-				gridData = result
-			}
-			else {
-				
-				let alertController:LL_Alert_ViewController = .init()
-				alertController.title = String(key: "Attention")
-				alertController.add(String(key: "Nous n'avons pas trouvé de chemin valide"))
-				alertController.addDismissButton()
-				alertController.present()
+				gridData = result.grid
 			}
 			
 			reloadData()
-			
-			UIApplication.wait(3.0) {
-				
-				self.showSolution()
-			}
 		}
 	}
 	private var currentSolutionIndex: Int = 0
@@ -140,6 +127,14 @@ public class LL_Grid_CollectionView : LL_CollectionView {
 					
 					if let indexPath = self.indexPathForItem(at: location), let cell = self.cellForItem(at: indexPath) as? LL_Grid_Letter_CollectionViewCell, let word = self.solutionWord?.lowercased(), self.currentSolutionIndex < word.count {
 						
+						let expectedLetter = word[word.index(word.startIndex, offsetBy: self.currentSolutionIndex)]
+						
+						if !cell.isSelected && cell.letter?.lowercased() != String(expectedLetter) && self.usedIndexPaths.last != indexPath {
+							
+							LL_Audio.shared.playButton()
+							UIApplication.feedBack(.Off)
+						}
+						
 						if self.usedIndexPaths.last != indexPath {
 							
 							let center = cell.superview?.convert(cell.center, to: self) ?? CGPoint.zero
@@ -176,18 +171,19 @@ public class LL_Grid_CollectionView : LL_CollectionView {
 							}
 						}
 						
-						let expectedLetter = word[word.index(word.startIndex, offsetBy: self.currentSolutionIndex)]
-						
-						if !cell.isSelected && cell.letter?.lowercased() == String(expectedLetter) {
+						if !cell.isSelected {
 							
-							cell.isSelected = true
-							self.selectionHanlder?(expectedLetter)
-							self.lastSelectedIndexPath = indexPath
-							self.currentSolutionIndex += 1
-							
-							if self.currentSolutionIndex == word.count {
+							if cell.letter?.lowercased() == String(expectedLetter) {
 								
-								self.successHanlder?()
+								cell.isSelected = true
+								self.selectionHanlder?(expectedLetter)
+								self.lastSelectedIndexPath = indexPath
+								self.currentSolutionIndex += 1
+								
+								if self.currentSolutionIndex == word.count {
+									
+									self.successHanlder?()
+								}
 							}
 						}
 					}
@@ -267,7 +263,7 @@ public class LL_Grid_CollectionView : LL_CollectionView {
 		usedIndexPaths.removeAll()
 		userPathLayer.path = nil
 		
-		gridData = generateGrid()
+		gridData = generateGrid()?.grid
 		
 		reloadData()
 	}
@@ -286,238 +282,47 @@ public class LL_Grid_CollectionView : LL_CollectionView {
 		}
 	}
 	
-		// MARK: - Fonctions utilitaires pour le chemin
-	
-	private func neighbors8(key: String, rows: Int, cols: Int) -> [String] {
-		let parts = key.split(separator: "-")
-		let row = Int(parts[0]) ?? 0
-		let col = Int(parts[1]) ?? 0
-		var result: [String] = []
-		for dr in -1...1 {
-			for dc in -1...1 {
-				if dr == 0 && dc == 0 { continue }
-				let nr = row + dr
-				let nc = col + dc
-				if nr >= 0 && nr < rows && nc >= 0 && nc < cols {
-					result.append("\(nr)-\(nc)")
-				}
-			}
-		}
-		return result
-	}
-	
-	private func convertStringPathToBezier(_ keys: [String]) -> UIBezierPath {
-		let path = UIBezierPath()
-		for (i, key) in keys.enumerated() {
-			let parts = key.split(separator: "-")
-			let row = Int(parts[0]) ?? 0
-			let col = Int(parts[1]) ?? 0
-			let pt = CGPoint(x: CGFloat(col) + 0.5, y: CGFloat(row) + 0.5)
-			if i == 0 {
-				path.move(to: pt)
-			} else {
-				path.addLine(to: pt)
-			}
-		}
-		return path
-	}
-	
-		// MARK: - Backtracking pour générer un chemin non-intersectant
-	
-	private func generateNonIntersectingPath(length: Int, rows: Int, columns: Int) -> [String]? {
-		var allKeys: [String] = []
-		for r in 0..<rows {
-			for c in 0..<columns {
-				allKeys.append("\(r)-\(c)")
-			}
-		}
-		allKeys.shuffle()
+	private func generateGrid() -> (grid: [[Character]], positions: [CGPoint])? {
 		
-		func backtrack(currentPath: [String], used: Set<String>) -> [String]? {
-			if currentPath.count == length {
-				let bezier = convertStringPathToBezier(currentPath)
-				return isSelfIntersecting(path: bezier) ? nil : currentPath
-			}
-			guard let lastKey = currentPath.last else { return nil }
-			let neighbors = neighbors8(key: lastKey, rows: rows, cols: columns)
-			for neighbor in neighbors {
-				if used.contains(neighbor) { continue }
-				var newPath = currentPath
-				newPath.append(neighbor)
-				var newUsed = used
-				newUsed.insert(neighbor)
-				if let result = backtrack(currentPath: newPath, used: newUsed) {
-					return result
-				}
-			}
-			return nil
-		}
-		
-		for startKey in allKeys {
-			let used = Set([startKey])
-			if let path = backtrack(currentPath: [startKey], used: used) {
-				return path
-			}
-		}
-		return nil
-	}
-	
-		// MARK: - Génération de la grille
-	
-	private var solutionPositions: [CGPoint] = []
-	private var solutionCellsString: [String] = []
-	
-	private func generateGrid() -> [[Character]]? {
 		let alphabet = Array("abcdefghijklmnopqrstuvwxyz")
 		var grid = Array(repeating: Array(repeating: Character(" "), count: columns), count: rows)
+		var allCells = [(row: Int, col: Int)]()
 		
-		guard let solution = solutionWord?.lowercased(), !solution.isEmpty else { return nil }
-		let length = solution.count
-		
-		guard let pathKeys = generateNonIntersectingPath(length: length, rows: rows, columns: columns) else {
-			return nil
-		}
-		self.solutionCellsString = pathKeys
-		
-		let cellWidth = self.bounds.width / CGFloat(columns)
-		var usedKeys = Set<String>()
-		var positions: [CGPoint] = []
-		
-			// Placement des lettres du mot solution sur le chemin trouvé
-		for (i, key) in pathKeys.enumerated() {
-			let letterIndex = solution.index(solution.startIndex, offsetBy: i)
-			let letter = solution[letterIndex]
-			let parts = key.split(separator: "-")
-			let row = Int(parts[0]) ?? 0
-			let col = Int(parts[1]) ?? 0
-			grid[row][col] = letter
-			usedKeys.insert(key)
-			let realPoint = CGPoint(x: (CGFloat(col) + 0.5) * cellWidth,
-									y: (CGFloat(row) + 0.5) * cellWidth)
-			positions.append(realPoint)
-		}
-		
-		self.solutionPositions = positions
-		
-			// Remplissage des autres cellules
-		for r in 0..<rows {
-			for c in 0..<columns {
-				let key = "\(r)-\(c)"
-				if usedKeys.contains(key) { continue }
-				grid[r][c] = alphabet.randomElement()!
+		for row in 0..<rows {
+			
+			for col in 0..<columns {
+				
+				allCells.append((row: row, col: col))
 			}
 		}
 		
-		return grid
-	}
-	
-		// MARK: - Affichage de la solution
-	
-	public func showSolution() {
-		guard !solutionPositions.isEmpty else { return }
-		let path = UIBezierPath()
-		path.move(to: solutionPositions[0])
-		for pos in solutionPositions.dropFirst() {
-			path.addLine(to: pos)
-		}
-		userPathLayer.strokeEnd = 1.0
-		userPathLayer.opacity = 1.0
-		UIView.animate(withDuration: 0.5) {
-			self.userPathLayer.path = path.cgPath
-		}
-	}
-
-	
-	
-	private func findPathForSolution(
-		solution: String,
-		rows: Int,
-		columns: Int
-	) -> [String]? {
-		var allKeys: [String] = []
-		for r in 0..<rows {
-			for c in 0..<columns {
-				allKeys.append("\(r)-\(c)")
+		var letterPositions = [CGPoint]()
+		
+		for letter in solutionWord?.lowercased() ?? "" {
+			
+			if allCells.isEmpty {
+				
+				return nil
 			}
-		}
-		allKeys.shuffle()
-		
-			// On tente chaque cellule comme départ
-		for startKey in allKeys {
-			let used = Set([startKey])
-			let currentPath = [startKey]
 			
-				// On place la première lettre
-				// On appelle backtrack pour les lettres suivantes
-			if let path = backtrackPlaceLetters(
-				solution: solution,
-				index: 1,
-				currentPath: currentPath,
-				used: used,
-				rows: rows,
-				columns: columns
-			) {
-				return path
-			}
+			let index = Int(arc4random_uniform(UInt32(allCells.count)))
+			let cell = allCells.remove(at: index)
+			
+			grid[cell.row][cell.col] = letter
+			letterPositions.append(CGPoint(x: CGFloat(cell.col) + 0.5, y: CGFloat(cell.row) + 0.5))
 		}
-		return nil
+		
+		for cell in allCells {
+			
+			let randomLetter = alphabet[Int(arc4random_uniform(UInt32(alphabet.count)))]
+			grid[cell.row][cell.col] = randomLetter
+		}
+		
+		return (grid: grid, positions: letterPositions)
 	}
-	
-	private func backtrackPlaceLetters(
-		solution: String,
-		index: Int,
-		currentPath: [String],
-		used: Set<String>,
-		rows: Int,
-		columns: Int
-	) -> [String]? {
-			// Si on a déjà placé toutes les lettres, on vérifie que le tracé final ne s'auto-intersecte pas.
-		if index == solution.count {
-			let path = convertStringPathToBezier(currentPath)
-			return isSelfIntersecting(path: path) ? nil : currentPath
-		}
-		
-			// Dernière cellule du chemin
-		guard let currentKey = currentPath.last else {
-			return nil
-		}
-		
-			// On récupère les voisins 8 directions
-		let possibleNeighbors = neighbors8(key: currentKey, rows: rows, cols: columns)
-		
-		for neighborKey in possibleNeighbors {
-				// 1) Vérifier si la cellule voisine est déjà utilisée
-			if used.contains(neighborKey) { continue }
-			
-				// 2) Construit un nouveau chemin en y ajoutant la voisine
-			let newPath = currentPath + [neighborKey]
-			
-				// 3) Vérifie l'intersection du tracé
-			let pathBezier = convertStringPathToBezier(newPath)
-			if isSelfIntersecting(path: pathBezier) { continue }
-			
-			var newUsed = used
-			newUsed.insert(neighborKey)
-			
-				// 4) Récursion
-			if let result = backtrackPlaceLetters(
-				solution: solution,
-				index: index + 1,
-				currentPath: newPath,
-				used: newUsed,
-				rows: rows,
-				columns: columns
-			) {
-				return result
-			}
-		}
-		return nil
-	}
-	
-
-
 	
 	private func lineSegmentsIntersect(_ p1: CGPoint, _ p2: CGPoint, _ q1: CGPoint, _ q2: CGPoint) -> Bool {
+			// On réduit l'epsilon pour détecter même les intersections proches des extrémités
 		let epsilon: CGFloat = 0.001
 		let r = CGPoint(x: p2.x - p1.x, y: p2.y - p1.y)
 		let s = CGPoint(x: q2.x - q1.x, y: q2.y - q1.y)
@@ -529,12 +334,15 @@ public class LL_Grid_CollectionView : LL_CollectionView {
 		let tNumerator = (q1.x - p1.x) * s.y - (q1.y - p1.y) * s.x
 		let t = tNumerator / denominator
 		let u = uNumerator / denominator
+			// On considère l'intersection même si elle se trouve aux extrémités
 		return (t >= 0 && t <= 1) && (u >= 0 && u <= 1)
 	}
 	
 	private func isSelfIntersecting(path: UIBezierPath) -> Bool {
 		var pts = path.flattenedPoints
 		guard pts.count > 1 else { return false }
+		
+			// Simplification pour éviter les micro-segments
 		let minDistance: CGFloat = 5.0
 		var simplified = [CGPoint]()
 		simplified.append(pts.first ?? .zero)
@@ -546,10 +354,13 @@ public class LL_Grid_CollectionView : LL_CollectionView {
 		}
 		pts = simplified
 		guard pts.count >= 4 else { return false }
+		
+			// Parcours de tous les segments du tracé
 		for i in 0..<(pts.count - 2) {
 			let p1 = pts[i]
 			let p2 = pts[i + 1]
 			for j in (i + 2)..<(pts.count - 1) {
+					// On ne fait plus l'exclusion du premier et de l'avant-dernier segment
 				let q1 = pts[j]
 				let q2 = pts[j + 1]
 				if lineSegmentsIntersect(p1, p2, q1, q2) {

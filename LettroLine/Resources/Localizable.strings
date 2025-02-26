@@ -45,7 +45,7 @@
 "menu.settings.alert.rules.showFirstLetter.content" = "La première lettre s'affiche pour te guider, active ce coup de pouce pour bien démarrer !";
 "menu.settings.alert.rules.showFirstLetter.button.title.on" = "Activé";
 "menu.settings.alert.rules.showFirstLetter.button.title.off" = "Désactivé";
-"menu.settings.alert.rules.allowFingerLift.content" = "Garde ton doigt sur l'écran : si tu le relèves avant la fin, tu recommences !";
+"menu.settings.alert.rules.allowFingerLift.content" = "Tu as le droit de relever ton doigt, mais dès que tu le poses, ton tracé repart de zéro !";
 "menu.settings.alert.rules.allowFingerLift.button.title.on" = "Activé";
 "menu.settings.alert.rules.allowFingerLift.button.title.off" = "Désactivé";
 
