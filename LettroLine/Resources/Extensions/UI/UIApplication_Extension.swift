@@ -22,15 +22,23 @@ extension UIApplication {
 		case Off = "Off"
 	}
 	
+	public static var isVibrationsEnabled:Bool {
+		
+		return UserDefaults.get(.vibrationsEnabled) as? Bool ?? true
+	}
+	
 	public static func feedBack(_ type:FeedbackType) {
 		
-		if type == .On || type == .Off {
+		if UIApplication.isVibrationsEnabled {
 			
-			UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-		}
-		else {
-			
-			UINotificationFeedbackGenerator().notificationOccurred(type == .Success ? .success : .error)
+			if type == .On || type == .Off {
+				
+				UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+			}
+			else {
+				
+				UINotificationFeedbackGenerator().notificationOccurred(type == .Success ? .success : .error)
+			}
 		}
 	}
 	

@@ -55,9 +55,9 @@ public class LL_Menu_Settings_Alert_ViewController : LL_Alert_ViewController {
 			return button
 		}
 		
-		let audioTitleLabel = add(String(key: "menu.settings.alert.audio.title"))
-		audioTitleLabel.font = Fonts.Content.Title.H4
-		audioTitleLabel.textColor = .white
+		let mainTitleLabel = add(String(key: "menu.settings.alert.main.title"))
+		mainTitleLabel.font = Fonts.Content.Title.H4
+		mainTitleLabel.textColor = .white
 		
 		let musicButton = setupToggleButton(for: .musicEnabled,
 											title: "menu.settings.alert.audio.music.button.title",
@@ -81,6 +81,14 @@ public class LL_Menu_Settings_Alert_ViewController : LL_Alert_ViewController {
 		audioStackView.alignment = .center
 		audioStackView.spacing = UI.Margins
 		add(audioStackView)
+		
+		let vibrationsButton = setupToggleButton(for: .vibrationsEnabled,
+												 title: "menu.settings.alert.vibrations.button.title",
+												 subtitleOn: "menu.settings.alert.vibrations.button.subtitle.on",
+												 subtitleOff: "menu.settings.alert.vibrations.button.subtitle.off",
+												 imageOn: "water.waves",
+												 imageOff: "water.waves.slash")
+		add(vibrationsButton)
 		
 		let rulesTitleLabel = add(String(key: "menu.settings.alert.rules.title"))
 		rulesTitleLabel.font = Fonts.Content.Title.H4

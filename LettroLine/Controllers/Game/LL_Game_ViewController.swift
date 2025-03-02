@@ -41,6 +41,12 @@ public class LL_Game_ViewController: LL_ViewController {
 				LL_Audio.shared.isMusicEnabled ? LL_Audio.shared.playMusic() : LL_Audio.shared.stopMusic()
 				
 				self?.settingsButton.menu = self?.settingsMenu
+			}),
+			UIAction(title: String(key: "game.settings.vibrations"), subtitle: String(key: "game.settings.vibrations." + (UIApplication.isVibrationsEnabled ? "on" : "off")), image: UIImage(systemName: UIApplication.isVibrationsEnabled ? "water.waves" : "water.waves.slash"), handler: { [weak self] _ in
+				
+				UserDefaults.set(!UIApplication.isVibrationsEnabled, .vibrationsEnabled)
+				
+				self?.settingsButton.menu = self?.settingsMenu
 			})
 		])
 	}
@@ -48,6 +54,11 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		$0.font = Fonts.Content.Title.H4
 		$0.textColor = .white
+		$0.backgroundColor = Colors.Background.Grid
+		$0.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
+		$0.layer.cornerRadius = UI.CornerRadius
+		$0.textAlignment = .center
+		$0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
 		return $0
 		
 	}(LL_Label())
@@ -126,14 +137,19 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		navigationItem.rightBarButtonItem = settingsButton
 		
-		let scoreStackView:UIStackView = .init(arrangedSubviews: [scoreLabel])
-		scoreStackView.backgroundColor = Colors.Background.Grid
+		let solutionButton:LL_Button = .init(String(key: "game.help")) { [weak self] _ in
+			
+			self?.collectionView.showSolution()
+		}
+		solutionButton.image = UIImage(systemName: "lightbulb.min")
+		solutionButton.configuration?.background.cornerRadius = UI.CornerRadius
+		solutionButton.configuration?.imagePadding = UI.Margins/2
+		solutionButton.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
+		solutionButton.snp.removeConstraints()
+		
+		let scoreStackView:UIStackView = .init(arrangedSubviews: [scoreLabel,.init(),solutionButton])
 		scoreStackView.axis = .horizontal
-		scoreStackView.alignment = .center
-		scoreStackView.spacing = UI.Margins
-		scoreStackView.layer.cornerRadius = UI.CornerRadius
-		scoreStackView.isLayoutMarginsRelativeArrangement = true
-		scoreStackView.layoutMargins = .init(UI.Margins)
+		scoreStackView.alignment = .fill
 		
 		let gridBackgroundView:UIView = .init()
 		gridBackgroundView.backgroundColor = Colors.Background.Grid

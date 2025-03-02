@@ -14,6 +14,7 @@ extension UserDefaults {
 		case onboarding = "onboarding"
 		case soundsEnabled = "soundsEnabled"
 		case musicEnabled = "musicEnabled"
+		case vibrationsEnabled = "vibrationsEnabled"
 		case allowFingerLift = "allowFingerLift"
 		case showFirstLetter = "showFirstLetter"
 		case currentGameIndex = "currentGameIndex"
