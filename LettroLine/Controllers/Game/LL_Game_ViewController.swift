@@ -10,15 +10,69 @@ import SnapKit
 
 public class LL_Game_ViewController: LL_ViewController {
 	
-	public var currentGameIndex:Int = 0 {
+	private lazy var usedIndexPaths: Array<IndexPath> = []
+	private var lastSelectedIndexPath: IndexPath?
+	private lazy var allowFingerLift: Bool = UserDefaults.get(.allowFingerLift) as? Bool ?? false
+	private lazy var showFirst:Bool = UserDefaults.get(.showFirstLetter) as? Bool ?? false {
 		
 		didSet {
 			
-			scoreLabel.text = String(key: "Score: ") + "\(currentGameIndex)"
-			
-			UserDefaults.set(currentGameIndex, .currentGameIndex)
+			collectionView.indexPathsForVisibleItems.forEach({
+				
+				if let cell = collectionView.cellForItem(at: $0) as? LL_Grid_Letter_CollectionViewCell {
+					
+					let row = $0.item / columns
+					let col = $0.item % columns
+					
+					if let grid = grid?.grid, row < grid.count, col < grid[row].count {
+						
+						cell.isFirst = showFirst && grid[row][col].uppercased() == solutionWord?.first?.uppercased()
+					}
+				}
+			})
 		}
 	}
+	private lazy var isGameOver = false
+	private var grid: (grid: [[Character]], positions: [CGPoint])? {
+		
+		didSet {
+			
+			collectionView.reloadData()
+		}
+	}
+	private lazy var columns: Int = 5
+	private lazy var rows: Int = 5
+	private var solutionWord: String? {
+		
+		didSet {
+			
+			resetGame()
+			
+			grid = generateGrid()
+		}
+	}
+	private lazy var currentSolutionIndex: Int = 0
+	private lazy var userPathLayer:CAShapeLayer = {
+		
+		$0.strokeColor = UIColor.white.withAlphaComponent(0.5).cgColor
+		$0.lineWidth = 1.5*UI.Margins
+		$0.fillColor = UIColor.clear.cgColor
+		$0.lineCap = .round
+		$0.lineJoin = .round
+		return $0
+		
+	}(CAShapeLayer())
+	private lazy var userPath:UIBezierPath = .init()
+	private lazy var solutionPathLayer:CAShapeLayer = {
+		
+		$0.strokeColor = Colors.Primary.withAlphaComponent(0.5).cgColor
+		$0.lineWidth = 1.5*UI.Margins
+		$0.fillColor = UIColor.clear.cgColor
+		$0.lineCap = .round
+		$0.lineJoin = .round
+		return $0
+		
+	}(CAShapeLayer())
 	private lazy var settingsButton:UIBarButtonItem = .init(image: UIImage(systemName: "slider.vertical.3"), menu: settingsMenu)
 	private var settingsMenu:UIMenu {
 		
@@ -50,18 +104,28 @@ public class LL_Game_ViewController: LL_ViewController {
 			})
 		])
 	}
-	private lazy var scoreLabel:LL_Label = {
+	private lazy var scoreButton:LL_Button = {
 		
-		$0.font = Fonts.Content.Title.H4
-		$0.textColor = .white
-		$0.backgroundColor = Colors.Background.Grid
-		$0.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
-		$0.layer.cornerRadius = UI.CornerRadius
-		$0.textAlignment = .center
-		$0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
+		$0.snp.removeConstraints()
 		return $0
 		
-	}(LL_Label())
+	}(LL_Button() { _ in
+		
+		if LL_Game.current.score != 0 {
+				
+			let alertController:LL_Alert_ViewController = .init()
+			alertController.title = String(key: "game.words.alert.title")
+			
+			LL_Game.current.words.forEach {
+				
+				alertController.add($0.uppercased())
+			}
+			
+			alertController.addDismissButton(sticky: true)
+			alertController.present(as: .Sheet)
+		}
+	})
 	private lazy var wordStackView:LL_Word_StackView = .init()
 	private lazy var collectionViewFlowLayout: UICollectionViewFlowLayout = {
 		
@@ -72,69 +136,6 @@ public class LL_Game_ViewController: LL_ViewController {
 		return $0
 		
 	}(UICollectionViewFlowLayout())
-	private var usedIndexPaths: Array<IndexPath> = []
-	private var lastSelectedIndexPath: IndexPath?
-	private var allowFingerLift: Bool = UserDefaults.get(.allowFingerLift) as? Bool ?? false
-	private var showFirst:Bool = UserDefaults.get(.showFirstLetter) as? Bool ?? false {
-		
-		didSet {
-			
-			collectionView.indexPathsForVisibleItems.forEach({
-				
-				if let cell = collectionView.cellForItem(at: $0) as? LL_Grid_Letter_CollectionViewCell {
-					
-					let row = $0.item / columns
-					let col = $0.item % columns
-					
-					if let grid = grid?.grid, row < grid.count, col < grid[row].count {
-						
-						cell.isFirst = showFirst && grid[row][col].uppercased() == solutionWord?.first?.uppercased()
-					}
-				}
-			})
-		}
-	}
-	private var isGameOver = false
-	private var grid: (grid: [[Character]], positions: [CGPoint])? {
-		
-		didSet {
-			
-			collectionView.reloadData()
-		}
-	}
-	private var columns: Int = 5
-	private var rows: Int = 5
-	private var solutionWord: String? {
-		
-		didSet {
-			
-			resetGame()
-			
-			grid = generateGrid()
-		}
-	}
-	private var currentSolutionIndex: Int = 0
-	private lazy var userPathLayer:CAShapeLayer = {
-		
-		$0.strokeColor = UIColor.white.withAlphaComponent(0.5).cgColor
-		$0.lineWidth = 1.5*UI.Margins
-		$0.fillColor = UIColor.clear.cgColor
-		$0.lineCap = .round
-		$0.lineJoin = .round
-		return $0
-		
-	}(CAShapeLayer())
-	private var userPath = UIBezierPath()
-	private lazy var solutionPathLayer:CAShapeLayer = {
-		
-		$0.strokeColor = Colors.Primary.withAlphaComponent(0.5).cgColor
-		$0.lineWidth = 1.5*UI.Margins
-		$0.fillColor = UIColor.clear.cgColor
-		$0.lineCap = .round
-		$0.lineJoin = .round
-		return $0
-		
-	}(CAShapeLayer())
 	private lazy var collectionView: LL_CollectionView = {
 		
 		$0.register(LL_Grid_Letter_CollectionViewCell.self, forCellWithReuseIdentifier: LL_Grid_Letter_CollectionViewCell.identifier)
@@ -250,7 +251,12 @@ public class LL_Game_ViewController: LL_ViewController {
 
 									LL_Confettis.start()
 
-									self.currentGameIndex += 1
+									if let solutionWord = self.solutionWord {
+										
+										LL_Game.current.add(solutionWord)
+										
+										self.updateScore()
+									}
 
 									UIApplication.wait { [weak self] in
 
@@ -281,7 +287,6 @@ public class LL_Game_ViewController: LL_ViewController {
 								
 								self.userPath.removeAllPoints()
 								self.usedIndexPaths.removeAll()
-								self.currentSolutionIndex = 0
 								
 								for cell in self.collectionView.visibleCells {
 									
@@ -342,13 +347,13 @@ public class LL_Game_ViewController: LL_ViewController {
 			
 			self?.showSolution()
 		}
-		solutionButton.image = UIImage(systemName: "lightbulb.min")
-		solutionButton.configuration?.background.cornerRadius = UI.CornerRadius
+		solutionButton.isPrimary = false
+		solutionButton.image = UIImage(systemName: "lightbulb.min.fill")?.applyingSymbolConfiguration(.init(scale: .small))
 		solutionButton.configuration?.imagePadding = UI.Margins/2
 		solutionButton.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
 		solutionButton.snp.removeConstraints()
 		
-		let scoreStackView:UIStackView = .init(arrangedSubviews: [scoreLabel,.init(),solutionButton])
+		let scoreStackView:UIStackView = .init(arrangedSubviews: [scoreButton,.init(),solutionButton])
 		scoreStackView.axis = .horizontal
 		scoreStackView.alignment = .fill
 		
@@ -368,18 +373,13 @@ public class LL_Game_ViewController: LL_ViewController {
 		contentStackView.snp.makeConstraints { make in
 			make.edges.equalTo(view.safeAreaLayoutGuide).inset(2*UI.Margins)
 		}
-		contentStackView.setCustomSpacing(3*UI.Margins, after: scoreLabel)
+		contentStackView.setCustomSpacing(3*UI.Margins, after: scoreStackView)
 		
 		newWord()
 		
 		contentStackView.animate()
-	}
-	
-	public override func viewDidAppear(_ animated: Bool) {
 		
-		super.viewDidAppear(animated)
-		
-		currentGameIndex = { currentGameIndex }()
+		updateScore()
 	}
 	
 	private func newWord() {
@@ -416,8 +416,9 @@ public class LL_Game_ViewController: LL_ViewController {
 		alertViewController.addDismissButton()
 		alertViewController.dismissHandler = { [weak self] in
 			
-			self?.currentGameIndex = 0
-			UserDefaults.delete(.currentGameIndex)
+			LL_Game.current.reset()
+			
+			self?.updateScore()
 			
 			self?.newWord()
 		}
@@ -433,37 +434,37 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		let alphabet = Array("abcdefghijklmnopqrstuvwxyz")
 		
+			// Initialisation de la grille avec des espaces
 		var grid = Array(repeating: Array(repeating: Character(" "), count: columns), count: rows)
 		
+			// Vérification et récupération du mot solution
 		guard let solution = solutionWord?.lowercased(), !solution.isEmpty else { return nil }
-		
 		let letters = Array(solution)
 		
+			// Définition des 8 directions autorisées
 		let directions: [(dx: Int, dy: Int)] = [
 			(-1, -1), (-1,  0), (-1,  1),
 			( 0, -1),          ( 0,  1),
 			( 1, -1), ( 1,  0), ( 1,  1)
 		]
 		
+			// Fonction utilitaire : retourne le centre d'une cellule en fonction de sa ligne et colonne
 		func centerPoint(for row: Int, col: Int) -> CGPoint {
-			
 			return CGPoint(x: CGFloat(col) + 0.5, y: CGFloat(row) + 0.5)
 		}
 		
+			// Vérifie que l'ajout d'un candidat au chemin ne crée pas d'intersection avec un segment déjà tracé
 		func causesIntersection(path: [(row: Int, col: Int)], candidate: (row: Int, col: Int)) -> Bool {
-			
 			let newStart = centerPoint(for: path.last!.row, col: path.last!.col)
 			let newEnd = centerPoint(for: candidate.row, col: candidate.col)
 			
+				// S'il y a moins de 3 points, il ne peut pas y avoir d'intersection
 			if path.count < 3 { return false }
 			
 			for i in 0..<(path.count - 2) {
-				
 				let p1 = centerPoint(for: path[i].row, col: path[i].col)
 				let p2 = centerPoint(for: path[i+1].row, col: path[i+1].col)
-				
 				if lineSegmentsIntersect(p1, p2, newStart, newEnd) {
-					
 					return true
 				}
 			}
@@ -471,33 +472,30 @@ public class LL_Game_ViewController: LL_ViewController {
 			return false
 		}
 		
+			// Backtracking récursif pour trouver un chemin valide pour le mot solution
 		func backtrack(index: Int, currentPos: (row: Int, col: Int), path: [(row: Int, col: Int)]) -> [(row: Int, col: Int)]? {
-			
+				// Si toutes les lettres ont été placées, le chemin est complet
 			if index == letters.count {
-				
 				return path
 			}
 			
 			var candidates = [(row: Int, col: Int)]()
 			
+				// Pour chaque direction, on tente tous les pas possibles tant qu'on reste dans la grille
 			for direction in directions {
-				
 				var step = 1
-				
 				while true {
-					
 					let newRow = currentPos.row + direction.dy * step
 					let newCol = currentPos.col + direction.dx * step
 					
+						// Sortir si la nouvelle position est hors grille
 					if newRow < 0 || newRow >= rows || newCol < 0 || newCol >= columns {
-						
 						break
 					}
 					
+						// On évite de réutiliser une cellule déjà présente dans le chemin
 					if path.contains(where: { $0.row == newRow && $0.col == newCol }) {
-						
 						step += 1
-						
 						continue
 					}
 					
@@ -506,12 +504,24 @@ public class LL_Game_ViewController: LL_ViewController {
 				}
 			}
 			
+				// Mélange aléatoire des candidats pour varier les solutions
 			candidates.shuffle()
 			
 			for candidate in candidates {
+					// Vérification pour empêcher de revenir sur le chemin (retour immédiat)
+				if path.count >= 2 {
+					let last = path.last!
+					let previous = path[path.count - 2]
+					let previousMove = (row: last.row - previous.row, col: last.col - previous.col)
+					let candidateMove = (row: candidate.row - last.row, col: candidate.col - last.col)
+						// Si le mouvement candidat est exactement l'inverse du dernier mouvement, on l'ignore
+					if candidateMove.row == -previousMove.row && candidateMove.col == -previousMove.col {
+						continue
+					}
+				}
 				
+					// Vérifier si l'ajout du candidat crée une intersection avec le chemin existant
 				if causesIntersection(path: path, candidate: candidate) {
-					
 					continue
 				}
 				
@@ -519,7 +529,6 @@ public class LL_Game_ViewController: LL_ViewController {
 				newPath.append(candidate)
 				
 				if let result = backtrack(index: index + 1, currentPos: candidate, path: newPath) {
-					
 					return result
 				}
 			}
@@ -527,56 +536,48 @@ public class LL_Game_ViewController: LL_ViewController {
 			return nil
 		}
 		
+			// Sélection d'une cellule de départ aléatoire
 		var solutionPath: [(row: Int, col: Int)]? = nil
 		var startingCells = [(row: Int, col: Int)]()
-		
 		for row in 0..<rows {
-			
 			for col in 0..<columns {
-				
 				startingCells.append((row: row, col: col))
 			}
 		}
-		
 		startingCells.shuffle()
 		
 		for start in startingCells {
-			
 			if let path = backtrack(index: 1, currentPos: start, path: [start]) {
-				
 				solutionPath = path
-				
 				break
 			}
 		}
 		
 		guard let validPath = solutionPath else {
-			
 			print("Aucune configuration valide trouvée pour le mot solution")
-			
 			return nil
 		}
 		
+			// Placement des lettres du mot solution dans la grille suivant le chemin trouvé
 		for (i, pos) in validPath.enumerated() {
-			
 			grid[pos.row][pos.col] = letters[i]
 		}
 		
+			// Remplissage des autres cellules avec des lettres aléatoires
 		for row in 0..<rows {
-			
 			for col in 0..<columns {
-				
 				if grid[row][col] == " " {
-					
 					grid[row][col] = alphabet.randomElement()!
 				}
 			}
 		}
 		
+			// Calcul des positions (centres) pour l'affichage du tracé
 		let letterPositions = validPath.map { CGPoint(x: CGFloat($0.col) + 0.5, y: CGFloat($0.row) + 0.5) }
 		
 		return (grid: grid, positions: letterPositions)
 	}
+
 	
 	private func lineSegmentsIntersect(_ p1: CGPoint, _ p2: CGPoint, _ q1: CGPoint, _ q2: CGPoint) -> Bool {
 		
@@ -735,6 +736,11 @@ public class LL_Game_ViewController: LL_ViewController {
 			solutionPathLayer.add(animation, forKey: "strokeEndReverse")
 			CATransaction.commit()
 		}
+	}
+	
+	private func updateScore() {
+		
+		scoreButton.title = String(key: "game.score") + "\(LL_Game.current.score)"
 	}
 }
 
