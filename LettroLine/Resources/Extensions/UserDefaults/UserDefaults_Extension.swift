@@ -17,7 +17,7 @@ extension UserDefaults {
 		case vibrationsEnabled = "vibrationsEnabled"
 		case allowFingerLift = "allowFingerLift"
 		case showFirstLetter = "showFirstLetter"
-		case currentGameIndex = "currentGameIndex"
+		case currentGame = "currentGame"
 	}
 	
 	public static func set(_ value:Any?, _ key:UserDefaults.Keys) {

@@ -17,9 +17,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 	}(LL_Button(String(key: "menu.classic.button.continue")) { _ in
 		
-		let viewController:LL_Game_ViewController = .init()
-		viewController.currentGameIndex = UserDefaults.get(.currentGameIndex) as? Int ?? 0
-		UI.MainController.present(LL_NavigationController(rootViewController: viewController), animated: true)
+		UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_ViewController()), animated: true)
 	})
 	private lazy var stackView:UIStackView = {
 		
@@ -43,14 +41,14 @@ public class LL_Menu_ViewController: LL_ViewController {
 				UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_ViewController()), animated: true)
 			}
 			
-			if UserDefaults.get(.currentGameIndex) != nil {
+			if LL_Game.current.score != 0 {
 				
 				let alertController:LL_Alert_ViewController = .init()
 				alertController.title = String(key: "Attention")
 				alertController.add(String(key: "Si tu recommences une nouvelle pertie du perdra tes progrès précédents."))
 				alertController.addDismissButton() { _ in
 					
-					UserDefaults.delete(.currentGameIndex)
+					LL_Game.current.reset()
 					
 					startClosure()
 				}
@@ -102,7 +100,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		super.viewWillAppear(animated)
 		
-		classicGameContinueButton.isHidden = UserDefaults.get(.currentGameIndex) == nil
+		classicGameContinueButton.isHidden = LL_Game.current.score == 0
 		
 		stackView.animate()
 	}

@@ -55,6 +55,7 @@
 //MARK: - Game
 "game.title" = "Partie classique";
 "game.score" = "Score: ";
+"game.words.alert.title" = "Mots découverts";
 "game.help" = "Aide";
 "game.settings.sounds" = "Sons";
 "game.settings.sounds.on" = "Activés";
