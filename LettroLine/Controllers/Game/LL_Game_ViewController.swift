@@ -10,15 +10,79 @@ import SnapKit
 
 public class LL_Game_ViewController: LL_ViewController {
 	
-	public var currentGameIndex:Int = 0 {
+	public lazy var currentGameIndex:Int = 0 {
 		
 		didSet {
 			
-			scoreLabel.text = String(key: "Score: ") + "\(currentGameIndex)"
+			scoreLabel.text = String(key: "game.score") + "\(currentGameIndex)"
 			
 			UserDefaults.set(currentGameIndex, .currentGameIndex)
 		}
 	}
+	private lazy var usedIndexPaths: Array<IndexPath> = []
+	private var lastSelectedIndexPath: IndexPath?
+	private lazy var allowFingerLift: Bool = UserDefaults.get(.allowFingerLift) as? Bool ?? false
+	private lazy var showFirst:Bool = UserDefaults.get(.showFirstLetter) as? Bool ?? false {
+		
+		didSet {
+			
+			collectionView.indexPathsForVisibleItems.forEach({
+				
+				if let cell = collectionView.cellForItem(at: $0) as? LL_Grid_Letter_CollectionViewCell {
+					
+					let row = $0.item / columns
+					let col = $0.item % columns
+					
+					if let grid = grid?.grid, row < grid.count, col < grid[row].count {
+						
+						cell.isFirst = showFirst && grid[row][col].uppercased() == solutionWord?.first?.uppercased()
+					}
+				}
+			})
+		}
+	}
+	private lazy var isGameOver = false
+	private var grid: (grid: [[Character]], positions: [CGPoint])? {
+		
+		didSet {
+			
+			collectionView.reloadData()
+		}
+	}
+	private lazy var columns: Int = 5
+	private lazy var rows: Int = 5
+	private var solutionWord: String? {
+		
+		didSet {
+			
+			resetGame()
+			
+			grid = generateGrid()
+		}
+	}
+	private lazy var currentSolutionIndex: Int = 0
+	private lazy var userPathLayer:CAShapeLayer = {
+		
+		$0.strokeColor = UIColor.white.withAlphaComponent(0.5).cgColor
+		$0.lineWidth = 1.5*UI.Margins
+		$0.fillColor = UIColor.clear.cgColor
+		$0.lineCap = .round
+		$0.lineJoin = .round
+		return $0
+		
+	}(CAShapeLayer())
+	private lazy var userPath:UIBezierPath = .init()
+	private lazy var solutionPathLayer:CAShapeLayer = {
+		
+		$0.strokeColor = Colors.Primary.withAlphaComponent(0.5).cgColor
+		$0.lineWidth = 1.5*UI.Margins
+		$0.fillColor = UIColor.clear.cgColor
+		$0.lineCap = .round
+		$0.lineJoin = .round
+		return $0
+		
+	}(CAShapeLayer())
+	
 	private lazy var settingsButton:UIBarButtonItem = .init(image: UIImage(systemName: "slider.vertical.3"), menu: settingsMenu)
 	private var settingsMenu:UIMenu {
 		
@@ -72,69 +136,6 @@ public class LL_Game_ViewController: LL_ViewController {
 		return $0
 		
 	}(UICollectionViewFlowLayout())
-	private var usedIndexPaths: Array<IndexPath> = []
-	private var lastSelectedIndexPath: IndexPath?
-	private var allowFingerLift: Bool = UserDefaults.get(.allowFingerLift) as? Bool ?? false
-	private var showFirst:Bool = UserDefaults.get(.showFirstLetter) as? Bool ?? false {
-		
-		didSet {
-			
-			collectionView.indexPathsForVisibleItems.forEach({
-				
-				if let cell = collectionView.cellForItem(at: $0) as? LL_Grid_Letter_CollectionViewCell {
-					
-					let row = $0.item / columns
-					let col = $0.item % columns
-					
-					if let grid = grid?.grid, row < grid.count, col < grid[row].count {
-						
-						cell.isFirst = showFirst && grid[row][col].uppercased() == solutionWord?.first?.uppercased()
-					}
-				}
-			})
-		}
-	}
-	private var isGameOver = false
-	private var grid: (grid: [[Character]], positions: [CGPoint])? {
-		
-		didSet {
-			
-			collectionView.reloadData()
-		}
-	}
-	private var columns: Int = 5
-	private var rows: Int = 5
-	private var solutionWord: String? {
-		
-		didSet {
-			
-			resetGame()
-			
-			grid = generateGrid()
-		}
-	}
-	private var currentSolutionIndex: Int = 0
-	private lazy var userPathLayer:CAShapeLayer = {
-		
-		$0.strokeColor = UIColor.white.withAlphaComponent(0.5).cgColor
-		$0.lineWidth = 1.5*UI.Margins
-		$0.fillColor = UIColor.clear.cgColor
-		$0.lineCap = .round
-		$0.lineJoin = .round
-		return $0
-		
-	}(CAShapeLayer())
-	private var userPath = UIBezierPath()
-	private lazy var solutionPathLayer:CAShapeLayer = {
-		
-		$0.strokeColor = Colors.Primary.withAlphaComponent(0.5).cgColor
-		$0.lineWidth = 1.5*UI.Margins
-		$0.fillColor = UIColor.clear.cgColor
-		$0.lineCap = .round
-		$0.lineJoin = .round
-		return $0
-		
-	}(CAShapeLayer())
 	private lazy var collectionView: LL_CollectionView = {
 		
 		$0.register(LL_Grid_Letter_CollectionViewCell.self, forCellWithReuseIdentifier: LL_Grid_Letter_CollectionViewCell.identifier)
@@ -342,7 +343,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			
 			self?.showSolution()
 		}
-		solutionButton.image = UIImage(systemName: "lightbulb.min")
+		solutionButton.image = UIImage(systemName: "lightbulb.min.fill")?.applyingSymbolConfiguration(.init(scale: .small))
 		solutionButton.configuration?.background.cornerRadius = UI.CornerRadius
 		solutionButton.configuration?.imagePadding = UI.Margins/2
 		solutionButton.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
