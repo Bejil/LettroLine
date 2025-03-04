@@ -319,12 +319,33 @@ public class LL_Game_ViewController: LL_ViewController {
 		updateScore()
 	}
 	
-	private func newWord() {
+	public func newWord() {
 		
-		let word = String.randomWord(withLetters: Int.random(in: 3...7), excludingWords: LL_Game.current.words)
-		wordStackView.word = word
-		solutionWord = word
+		var wordLength = 3
+		let baseThreshold = 15.0
+		let factor = 1.5
+		
+		while wordLength < 8 {
+			
+			let threshold = baseThreshold * pow(factor, Double(wordLength - 3))
+			
+			if Double(LL_Game.current.score) >= threshold {
+				
+				wordLength += 1
+			}
+			else {
+				
+				break
+			}
+		}
+		
+		if let word = String.randomWord(withLetters: wordLength, excludingWords: LL_Game.current.words) {
+			
+			wordStackView.word = word
+			solutionWord = word
+		}
 	}
+
 	
 	private func resetGame() {
 		

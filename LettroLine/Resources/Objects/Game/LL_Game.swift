@@ -39,21 +39,8 @@ public class LL_Game : Codable {
 	
 	public func reset() {
 		
-		if let encoded = try? JSONEncoder().encode(LL_Game()) {
-			
-			UserDefaults.set(encoded, .currentGame)
-		}
+		LL_Game().save()
 	}
-	
-//	public func add(_ word:String?) {
-//		
-//		if let word {
-//			
-//			let game = self
-//			game.words.append(word)
-//			game.save()
-//		}
-//	}
 	
 	private func save() {
 		

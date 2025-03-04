@@ -11,7 +11,7 @@
 "placeholder.error.title" = "Attention";
 "placeholder.error.button" = "Réessayer";
 "placeholder.loading.title" = "Chargement en cours...";
-"placeholder.loading.content.0" = "Veuillez patienter pendant le chargement";
+"placeholder.loading.content.0" = "Chargement en cours...";
 "placeholder.loading.content.1" = "Encore un peu de patience...";
 
 //MARK: - Alert
@@ -20,7 +20,7 @@
 "alert.error.title" = "Attention";
 "alert.error.button" = "Réessayer";
 "alert.loading.title" = "Chargement en cours...";
-"alert.loading.content" = "Veuillez patienter pendant le chargement";
+"alert.loading.content" = "Merci de patienter pendant le chargement";
 
 //MARK: - Onboarding
 "onboarding.title" = "Bienvenue !";
@@ -29,9 +29,12 @@
 
 //MARK: - Menu
 "menu.title" = "LettroLine";
-"menu.classic.button.start" = "Nouvelle partie";
-"menu.classic.button.continue" = "Continuer";
+"menu.subtitle" = "Suis les tracés, relie les lettres et regarde les mots se recréer, trait après trait !";
+"menu.classic.button.start" = "Classique";
+"menu.classic.new.alert.title" = "Attention";
+"menu.classic.new.alert.content" = "Si tu recommences une nouvelle partie du perdra tes progrès précédents.";
 "menu.timeTrial.button" = "Contre la montre";
+"menu.challenges.button" = "Challenges";
 "menu.settings.button" = "Réglages";
 "menu.settings.alert.title" = "Réglages";
 "menu.settings.alert.main.title" = "Général";
@@ -59,8 +62,8 @@
 "game.bonus" = "♦️";
 "game.help" = "Aide";
 "game.help.alert.title" = "Un peu d'aide ?";
-"game.help.alert.text" = "Voulez-vous utiliser un %@ pour afficher la solution ?";
-"game.help.alert.error" = "Vous n'avez pas assez de %@ pour afficher la solution";
+"game.help.alert.text" = "Veux-tu utiliser un %@ pour afficher la solution ?";
+"game.help.alert.error" = "Tu n'as pas assez de %@ pour afficher la solution";
 "game.settings.sounds" = "Sons";
 "game.settings.sounds.on" = "Activés";
 "game.settings.sounds.off" = "Désactivés";

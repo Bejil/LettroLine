@@ -49,6 +49,24 @@ public class LL_Button : UIButton {
 			update()
 		}
 	}
+	public var isSecondary:Bool = false {
+		
+		didSet {
+			
+			isPrimary = false
+			
+			update()
+		}
+	}
+	public var isTertiary:Bool = false {
+		
+		didSet {
+			
+			isPrimary = false
+			
+			update()
+		}
+	}
 	public var isDelete:Bool = false {
 		
 		didSet {
@@ -104,23 +122,8 @@ public class LL_Button : UIButton {
 		
 		didSet {
 			
-			if let badgeText = badge, !badgeText.isEmpty {
-				
-				badgeView.text = badgeText
-				badgeView.isHidden = false
-				
-				badgeTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [weak self] _ in
-					
-					self?.badgeView.pulse()
-				})
-			}
-			else {
-				
-				badgeView.isHidden = true
-				
-				badgeTimer?.invalidate()
-				badgeTimer = nil
-			}
+			badgeView.text = badge
+			badgeView.isHidden = badge?.isEmpty ?? true
 		}
 	}
 	private lazy var badgeView:LL_Label = {
@@ -140,13 +143,6 @@ public class LL_Button : UIButton {
 		return $0
 		
 	}(LL_Label())
-	private var badgeTimer:Timer?
-	
-	deinit {
-		
-		badgeTimer?.invalidate()
-		badgeTimer = nil
-	}
 	
 	convenience init(_ title:String? = nil, _ handler:Handler = nil) {
 		
@@ -268,17 +264,17 @@ public class LL_Button : UIButton {
 			
 			if style == .bordered {
 				
-				configuration?.background.strokeColor = isText ? Colors.Button.Text.Background : isDelete ? Colors.Button.Delete.Background : isPrimary ? Colors.Button.Primary.Background : Colors.Button.Secondary.Background
+				configuration?.background.strokeColor = isText ? Colors.Button.Text.Background : isDelete ? Colors.Button.Delete.Background : isPrimary ? Colors.Button.Primary.Background : isSecondary ? Colors.Button.Secondary.Background : Colors.Button.Tertiary.Background
 				configuration?.background.strokeWidth = 1
 			}
 		}
 		
-		configuration?.baseBackgroundColor = isText ? Colors.Button.Text.Background : isDelete ? Colors.Button.Delete.Background : isPrimary ? Colors.Button.Primary.Background : Colors.Button.Secondary.Background
-		configuration?.baseForegroundColor = style == .tinted ? configuration?.baseBackgroundColor : isText ? Colors.Button.Text.Content : isDelete ? Colors.Button.Delete.Content : isPrimary ? Colors.Button.Primary.Content : Colors.Button.Secondary.Content
+		configuration?.baseBackgroundColor = isText ? Colors.Button.Text.Background : isDelete ? Colors.Button.Delete.Background : isPrimary ? Colors.Button.Primary.Background : isSecondary ? Colors.Button.Secondary.Background : Colors.Button.Tertiary.Background
+		configuration?.baseForegroundColor = style == .tinted ? configuration?.baseBackgroundColor : isText ? Colors.Button.Text.Content : isDelete ? Colors.Button.Delete.Content : isPrimary ? Colors.Button.Primary.Content : isSecondary ? Colors.Button.Secondary.Content : Colors.Button.Tertiary.Content
 		
 		if style == .bordered || style == .transparent {
 			
-			configuration?.baseForegroundColor = isText ? Colors.Button.Text.Background : isDelete ? Colors.Button.Delete.Background : isPrimary ? Colors.Button.Primary.Background : Colors.Button.Secondary.Background
+			configuration?.baseForegroundColor = isText ? Colors.Button.Text.Background : isDelete ? Colors.Button.Delete.Background : isPrimary ? Colors.Button.Primary.Background : isSecondary ? Colors.Button.Secondary.Background : Colors.Button.Tertiary.Background
 		}
 		
 		configuration?.cornerStyle = .fixed
@@ -293,7 +289,7 @@ public class LL_Button : UIButton {
 		let inset = UI.Margins
 		configuration?.contentInsets = .init(inset)
 		
-		let textColor = style == .tinted ? configuration?.baseBackgroundColor : (style == .bordered || style == .transparent ? (isText ? Colors.Button.Text.Background : isDelete ? Colors.Button.Delete.Background : isPrimary ? Colors.Button.Primary.Background : Colors.Button.Secondary.Background) : (isText ? Colors.Button.Text.Content : isDelete ? Colors.Button.Delete.Content : isPrimary ? Colors.Button.Primary.Content : Colors.Button.Secondary.Content))
+		let textColor = style == .tinted ? configuration?.baseBackgroundColor : (style == .bordered || style == .transparent ? (isText ? Colors.Button.Text.Background : isDelete ? Colors.Button.Delete.Background : isPrimary ? Colors.Button.Primary.Background : isSecondary ? Colors.Button.Secondary.Background : Colors.Button.Tertiary.Background) : (isText ? Colors.Button.Text.Content : isDelete ? Colors.Button.Delete.Content : isPrimary ? Colors.Button.Primary.Content : isSecondary ? Colors.Button.Secondary.Content : Colors.Button.Tertiary.Content))
 		
 		var titleAttributedString:AttributedString? = nil
 		
