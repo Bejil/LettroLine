@@ -54,9 +54,13 @@
 
 //MARK: - Game
 "game.title" = "Partie classique";
-"game.score" = "Score: ";
-"game.words.alert.title" = "Mots découverts";
+"game.score" = "🏆 ";
+"game.words.alert.title" = "Historique";
+"game.bonus" = "♦️";
 "game.help" = "Aide";
+"game.help.alert.title" = "Un peu d'aide ?";
+"game.help.alert.text" = "Voulez-vous utiliser un %@ pour afficher la solution ?";
+"game.help.alert.error" = "Vous n'avez pas assez de %@ pour afficher la solution";
 "game.settings.sounds" = "Sons";
 "game.settings.sounds.on" = "Activés";
 "game.settings.sounds.off" = "Désactivés";

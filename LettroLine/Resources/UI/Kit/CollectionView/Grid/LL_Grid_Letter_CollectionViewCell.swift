@@ -40,7 +40,23 @@ public class LL_Grid_Letter_CollectionViewCell : LL_CollectionViewCell {
 		didSet {
 			
 			label.isFirst = isFirst
+			
+			startTimers()
 		}
+	}
+	public var isBonus:Bool = false {
+		
+		didSet {
+			
+			startTimers()
+		}
+	}
+	private var firstTimer: Timer?
+	private var bonusTimer: Timer?
+	
+	deinit {
+		
+		resetTimers()
 	}
 	
 	public override init(frame: CGRect) {
@@ -56,5 +72,42 @@ public class LL_Grid_Letter_CollectionViewCell : LL_CollectionViewCell {
 	required init?(coder: NSCoder) {
 		
 		fatalError("init(coder:) has not been implemented")
+	}
+	
+	public override func prepareForReuse() {
+		
+		super.prepareForReuse()
+		
+		resetTimers()
+	}
+	
+	public func resetTimers() {
+		
+		firstTimer?.invalidate()
+		firstTimer = nil
+		
+		bonusTimer?.invalidate()
+		bonusTimer = nil
+	}
+	
+	public func startTimers() {
+		
+		resetTimers()
+		
+		if isFirst {
+			
+			firstTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true, block: { [weak self] _ in
+				
+				self?.pulse(Colors.Tertiary)
+			})
+		}
+		
+		if isBonus {
+			
+			bonusTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true, block: { [weak self] _ in
+				
+				self?.pulse()
+			})
+		}
 	}
 }

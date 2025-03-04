@@ -24,8 +24,6 @@ public struct Colors {
 	public static let Secondary:UIColor = UIColor(named: "Secondary")!
 	public static let Tertiary:UIColor = UIColor(named: "Tertiary")!
 	
-	public static let Badge:UIColor = UIColor(named: "Badge")!
-	
 	public struct Background {
 		
 		public static let Application:UIColor = UIColor(named: "ApplicationBackground")!

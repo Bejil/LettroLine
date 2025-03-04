@@ -33,7 +33,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		}
 	}
 	private lazy var isGameOver = false
-	private var grid: (grid: [[Character]], positions: [CGPoint])? {
+	private var grid: (grid: [[Character]], positions: [CGPoint], bonus: IndexPath?)? {
 		
 		didSet {
 			
@@ -126,6 +126,37 @@ public class LL_Game_ViewController: LL_ViewController {
 			alertController.present(as: .Sheet)
 		}
 	})
+	private lazy var helpButton:LL_Button = {
+		
+		$0.title = [String(key: "game.bonus"),String(key: "game.help")].joined(separator: " ")
+		$0.style = .tinted
+		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
+		$0.snp.removeConstraints()
+		return $0
+		
+	}(LL_Button() { [weak self] _ in
+		
+		if LL_Game.current.bonus != 0 {
+			
+			let alertController:LL_Alert_ViewController = .init()
+			alertController.title = String(key: "game.help.alert.title")
+			alertController.add(String(format: String(key: "game.help.alert.text"), String(key: "game.bonus")))
+			let button = alertController.addDismissButton { [weak self] _ in
+				
+				LL_Game.current.bonus -= 1
+				
+				self?.showSolution()
+			}
+			button.isPrimary = true
+			button.style = .solid
+			alertController.addCancelButton()
+			alertController.present()
+		}
+		else {
+			
+			LL_Alert_ViewController.present(LL_Error(String(format: String(key: "game.help.alert.error"), String(key: "game.bonus"))))
+		}
+	})
 	private lazy var wordStackView:LL_Word_StackView = .init()
 	private lazy var collectionViewFlowLayout: UICollectionViewFlowLayout = {
 		
@@ -146,183 +177,99 @@ public class LL_Game_ViewController: LL_ViewController {
 		$0.isHeightDynamic = true
 		
 		let panGestureRecognizer = UIPanGestureRecognizer { [weak self] gestureRecognizer in
+			guard let self = self, let gesture = gestureRecognizer as? UIPanGestureRecognizer else { return }
 			
-			if let self, let gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+			let location = gesture.location(in: self.collectionView)
+			
+			switch gesture.state {
+			case .began:
 				
-				let location = gestureRecognizer.location(in: self.collectionView)
+				self.hideSolution()
+					// Réinitialisation du tracé et des index utilisés
+				self.userPath.removeAllPoints()
+				self.usedIndexPaths.removeAll()
+				self.currentSolutionIndex = 0
 				
-				switch gestureRecognizer.state {
+					// Dérélection des cellules visibles
+				if let cells = self.collectionView.visibleCells as? [LL_Grid_Letter_CollectionViewCell] {
 					
-				case .began:
-					
-					self.userPath.removeAllPoints()
-					self.usedIndexPaths.removeAll()
-					self.currentSolutionIndex = 0
-					
-					for cell in self.collectionView.visibleCells {
+					cells.forEach {
 						
-						cell.isSelected = false
+						$0.isSelected = false
+						$0.isFirst = false
+						$0.resetTimers()
 					}
-					
-					self.userPathLayer.removeAllAnimations()
-					self.userPathLayer.strokeEnd = 1.0
-					
-					UIView.animation {
-						
-						self.userPathLayer.opacity = 1.0
-					}
-					
-				case .changed:
-					
-					if isGameOver {
-						
-						return
-					}
-					
-					if !self.collectionView.bounds.contains(location) {
-						
-						if !isGameOver {
-							
-							self.fail(reason: String(key: "game.fail.reason.outOfBounds"))
-							
-							return
-						}
-					}
-					
-					if let indexPath = self.collectionView.indexPathForItem(at: location), let cell = self.collectionView.cellForItem(at: indexPath) as? LL_Grid_Letter_CollectionViewCell, let word = self.solutionWord?.lowercased(), self.currentSolutionIndex < word.count {
-						
-						let expectedLetter = word[word.index(word.startIndex, offsetBy: self.currentSolutionIndex)]
-						
-						if !cell.isSelected && cell.letter?.lowercased() != String(expectedLetter) && self.usedIndexPaths.last != indexPath {
-							
-							LL_Audio.shared.playButton()
-							UIApplication.feedBack(.Off)
-						}
-						
-						if self.usedIndexPaths.last != indexPath {
-							
-							let center = cell.superview?.convert(cell.center, to: self.collectionView) ?? CGPoint.zero
-							
-							if self.usedIndexPaths.isEmpty {
-								
-								self.userPath.move(to: center)
-							}
-							else {
-								
-								self.userPath.addLine(to: center)
-							}
-							self.userPathLayer.path = self.userPath.cgPath
-							
-							self.usedIndexPaths.append(indexPath)
-						}
-						
-						if self.isSelfIntersecting(path: self.userPath) && !isGameOver {
-							
-							self.fail(reason: String(key: "game.fail.reason.intersect"))
-							
-							return
-						}
-						
-						if cell.isSelected {
-							
-							if let lastSelected = self.lastSelectedIndexPath, lastSelected == indexPath {
-								
-							} else if !isGameOver {
-								
-								self.fail(reason: String(key: "game.fail.reason.sameLetter"))
-								
-								return
-							}
-						}
-						
-						if !cell.isSelected {
-							
-							if cell.letter?.lowercased() == String(expectedLetter) {
-								
-								cell.isSelected = true
-								self.wordStackView.select(expectedLetter)
-								self.lastSelectedIndexPath = indexPath
-								self.currentSolutionIndex += 1
-								
-								if self.currentSolutionIndex == word.count {
-									
-									LL_Audio.shared.playSuccess()
-									UIApplication.feedBack(.Success)
-
-									LL_Confettis.start()
-
-									if let solutionWord = self.solutionWord {
-										
-										LL_Game.current.add(solutionWord)
-										
-										self.updateScore()
-									}
-
-									UIApplication.wait { [weak self] in
-
-										self?.newWord()
-									}
-
-									UIApplication.wait(1.0) { [weak self] in
-
-										LL_Confettis.stop()
-									}
-								}
-							}
-						}
-					}
-					
-				case .ended, .cancelled:
-					
-					if self.allowFingerLift {
-						
-						UIApplication.feedBack(.Off)
-						
-						self.userPathLayer.removeAnimation(forKey: "strokeEndReverse")
-						
-						CATransaction.begin()
-						CATransaction.setCompletionBlock { [weak self] in
-							
-							if let self {
-								
-								self.userPath.removeAllPoints()
-								self.usedIndexPaths.removeAll()
-								
-								for cell in self.collectionView.visibleCells {
-									
-									cell.isSelected = false
-								}
-								
-								self.showFirst = self.showFirst
-								
-								self.userPathLayer.path = nil
-								self.wordStackView.deselectAll()
-							}
-						}
-						
-						let currentStrokeEnd = self.userPathLayer.presentation()?.strokeEnd ?? 1.0
-						let animation = CABasicAnimation(keyPath: "strokeEnd")
-						animation.fromValue = currentStrokeEnd
-						animation.toValue = 0.0
-						animation.duration = 0.1 * Double(usedIndexPaths.count)
-						animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-						self.userPathLayer.strokeEnd = 0.0
-						self.userPathLayer.add(animation, forKey: "strokeEndReverse")
-						CATransaction.commit()
-					}
-					else if !isGameOver, let word = self.solutionWord?.lowercased(), self.currentSolutionIndex < word.count {
-						
-						self.fail(reason: String(key: "game.fail.reason.fingerLift"))
-						
-						return
-					}
-					
-					break
-					
-				default:
-					
-					break
 				}
+				
+				self.userPathLayer.removeAllAnimations()
+				self.userPathLayer.strokeEnd = 1.0
+				
+				UIView.animation {
+					self.userPathLayer.opacity = 1.0
+				}
+				
+					// Traitement immédiat de la position de départ
+				self.processPanGesture(at: location)
+				
+			case .changed:
+				if isGameOver { return }
+				
+				if !self.collectionView.bounds.contains(location) {
+					if !isGameOver {
+						self.fail(reason: String(key: "game.fail.reason.outOfBounds"))
+						return
+					}
+				}
+					// Traitement de la position mise à jour
+				self.processPanGesture(at: location)
+				
+			case .ended, .cancelled:
+				if self.allowFingerLift {
+					UIApplication.feedBack(.Off)
+					self.userPathLayer.removeAnimation(forKey: "strokeEndReverse")
+					
+					CATransaction.begin()
+					CATransaction.setCompletionBlock { [weak self] in
+						guard let self = self else { return }
+						self.userPath.removeAllPoints()
+						self.usedIndexPaths.removeAll()
+						self.currentSolutionIndex = 0
+						
+						if let cells = self.collectionView.visibleCells as? [LL_Grid_Letter_CollectionViewCell] {
+							
+							cells.forEach {
+								
+								$0.isSelected = false
+								$0.isFirst = self.showFirst && $0.letter == self.solutionWord?.first?.uppercased()
+								$0.startTimers()
+							}
+						}
+						
+						for cell in self.collectionView.visibleCells {
+							cell.isSelected = false
+							(cell as? LL_Grid_Letter_CollectionViewCell)?.startTimers()
+						}
+						self.showFirst = self.showFirst
+						self.userPathLayer.path = nil
+						self.wordStackView.deselectAll()
+					}
+					
+					let currentStrokeEnd = self.userPathLayer.presentation()?.strokeEnd ?? 1.0
+					let animation = CABasicAnimation(keyPath: "strokeEnd")
+					animation.fromValue = currentStrokeEnd
+					animation.toValue = 0.0
+					animation.duration = 0.1 * Double(self.usedIndexPaths.count)
+					animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+					self.userPathLayer.strokeEnd = 0.0
+					self.userPathLayer.add(animation, forKey: "strokeEndReverse")
+					CATransaction.commit()
+				} else if !isGameOver, let word = self.solutionWord?.lowercased(), self.currentSolutionIndex < word.count {
+					self.fail(reason: String(key: "game.fail.reason.fingerLift"))
+					return
+				}
+				
+			default:
+				break
 			}
 		}
 		$0.addGestureRecognizer(panGestureRecognizer)
@@ -343,17 +290,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		navigationItem.rightBarButtonItem = settingsButton
 		
-		let solutionButton:LL_Button = .init(String(key: "game.help")) { [weak self] _ in
-			
-			self?.showSolution()
-		}
-		solutionButton.isPrimary = false
-		solutionButton.image = UIImage(systemName: "lightbulb.min.fill")?.applyingSymbolConfiguration(.init(scale: .small))
-		solutionButton.configuration?.imagePadding = UI.Margins/2
-		solutionButton.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
-		solutionButton.snp.removeConstraints()
-		
-		let scoreStackView:UIStackView = .init(arrangedSubviews: [scoreButton,.init(),solutionButton])
+		let scoreStackView:UIStackView = .init(arrangedSubviews: [scoreButton,.init(),helpButton])
 		scoreStackView.axis = .horizontal
 		scoreStackView.alignment = .fill
 		
@@ -384,7 +321,7 @@ public class LL_Game_ViewController: LL_ViewController {
 	
 	private func newWord() {
 		
-		let word = String.randomWord(withLetters: Int.random(in: 3...7))
+		let word = String.randomWord(withLetters: Int.random(in: 3...7), excludingWords: LL_Game.current.words)
 		wordStackView.word = word
 		solutionWord = word
 	}
@@ -430,7 +367,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		}
 	}
 	
-	private func generateGrid() -> (grid: [[Character]], positions: [CGPoint])? {
+	private func generateGrid() -> (grid: [[Character]], positions: [CGPoint], bonus: IndexPath?)? {
 		
 		let alphabet = Array("abcdefghijklmnopqrstuvwxyz")
 		
@@ -572,12 +509,29 @@ public class LL_Game_ViewController: LL_ViewController {
 			}
 		}
 		
+		var bonus:IndexPath? = nil
+		
+		if Double.random(in: 0...1) < 1.3 {
+			var candidateCells = [(row: Int, col: Int)]()
+			for row in 0..<rows {
+				for col in 0..<columns {
+					if !validPath.contains(where: { $0.row == row && $0.col == col }) {
+						candidateCells.append((row: row, col: col))
+					}
+				}
+			}
+			if let bonusCell = candidateCells.randomElement() {
+				
+				bonus = .init(row: bonusCell.row, section: bonusCell.col)
+				grid[bonusCell.row][bonusCell.col] = " "
+			}
+		}
+		
 			// Calcul des positions (centres) pour l'affichage du tracé
 		let letterPositions = validPath.map { CGPoint(x: CGFloat($0.col) + 0.5, y: CGFloat($0.row) + 0.5) }
 		
-		return (grid: grid, positions: letterPositions)
+		return (grid: grid, positions: letterPositions, bonus: bonus)
 	}
-
 	
 	private func lineSegmentsIntersect(_ p1: CGPoint, _ p2: CGPoint, _ q1: CGPoint, _ q2: CGPoint) -> Bool {
 		
@@ -741,6 +695,98 @@ public class LL_Game_ViewController: LL_ViewController {
 	private func updateScore() {
 		
 		scoreButton.title = String(key: "game.score") + "\(LL_Game.current.score)"
+		helpButton.badge = "\(LL_Game.current.bonus)"
+	}
+	
+	private func processPanGesture(at location: CGPoint) {
+		guard
+			let indexPath = self.collectionView.indexPathForItem(at: location),
+			let cell = self.collectionView.cellForItem(at: indexPath) as? LL_Grid_Letter_CollectionViewCell,
+			let word = self.solutionWord?.lowercased(),
+			self.currentSolutionIndex < word.count
+		else { return }
+		
+		let expectedLetter = word[word.index(word.startIndex, offsetBy: self.currentSolutionIndex)]
+		
+			// Si la cellule n'est pas encore sélectionnée et que la lettre ne correspond pas, jouer un son
+		if !cell.isSelected && cell.letter?.lowercased() != String(expectedLetter) && self.usedIndexPaths.last != indexPath {
+			LL_Audio.shared.playButton()
+			UIApplication.feedBack(.Off)
+		}
+		
+			// Si la cellule n'a pas encore été ajoutée au chemin, on l'ajoute
+		if self.usedIndexPaths.last != indexPath {
+			let center = cell.superview?.convert(cell.center, to: self.collectionView) ?? CGPoint.zero
+			if self.usedIndexPaths.isEmpty {
+				self.userPath.move(to: center)
+			} else {
+				self.userPath.addLine(to: center)
+			}
+			self.userPathLayer.path = self.userPath.cgPath
+			self.usedIndexPaths.append(indexPath)
+		}
+		
+			// Vérifier si le chemin s'auto-intersecte
+		if self.isSelfIntersecting(path: self.userPath) && !isGameOver {
+			self.fail(reason: String(key: "game.fail.reason.intersect"))
+			return
+		}
+		
+			// Si la cellule est déjà sélectionnée et que ce n'est pas la même que la dernière, c'est une erreur
+		if cell.isSelected {
+			if let lastSelected = self.lastSelectedIndexPath, lastSelected == indexPath {
+					// Même cellule, rien à faire
+			} else if !isGameOver {
+				self.fail(reason: String(key: "game.fail.reason.sameLetter"))
+				return
+			}
+		}
+		
+			// Si la cellule n'est pas encore sélectionnée et que la lettre correspond, on la sélectionne
+		if !cell.isSelected, cell.letter?.lowercased() == String(expectedLetter) {
+			cell.isSelected = true
+			self.wordStackView.select(expectedLetter)
+			self.lastSelectedIndexPath = indexPath
+			self.currentSolutionIndex += 1
+			
+			if self.currentSolutionIndex == word.count {
+				
+				LL_Audio.shared.playSuccess()
+				UIApplication.feedBack(.Success)
+				
+				LL_Confettis.start()
+				
+				if let solutionWord = self.solutionWord {
+					
+					LL_Game.current.words.append(solutionWord)
+					
+					if let bonus = self.grid?.bonus, self.usedIndexPaths.compactMap({
+						
+						let row = $0.item / columns
+						let col = $0.item % columns
+						let indexPath = IndexPath(row: row, section: col)
+						
+						return indexPath
+						
+					}).contains(bonus) {
+						
+						LL_Game.current.bonus += 1
+					}
+					
+					self.updateScore()
+				}
+				
+				UIApplication.wait { [weak self] in
+					
+					self?.newWord()
+				}
+				
+				UIApplication.wait(1.0) {
+					
+					LL_Confettis.stop()
+				}
+			}
+		}
 	}
 }
 
@@ -763,8 +809,10 @@ extension LL_Game_ViewController : UICollectionViewDelegate, UICollectionViewDat
 			
 			UIApplication.wait(Double(indexPath.row)*0.1) { [weak self] in
 				
-				cell.letter = String(grid[row][col])
+				let state = IndexPath(row: row, section: col) == self?.grid?.bonus
+				cell.letter = state ? String(key: "game.bonus") : String(grid[row][col])
 				cell.isFirst = self?.showFirst ?? false && grid[row][col].uppercased() == self?.solutionWord?.first?.uppercased()
+				cell.isBonus = state
 			}
 		}
 		

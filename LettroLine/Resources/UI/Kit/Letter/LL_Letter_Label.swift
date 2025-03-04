@@ -13,7 +13,7 @@ public class LL_Letter_Label : LL_Label {
 		
 		didSet {
 			
-			backgroundColor = isSelected ?? false ? Colors.Letter.Selected : Colors.Letter.Unselected
+			updateColor()
 			
 			if isSelected ?? false {
 				
@@ -39,6 +39,7 @@ public class LL_Letter_Label : LL_Label {
 		set {
 			
 			animationTimer?.invalidate()
+			animationTimer = nil
 			
 			if let finalText = newValue?.uppercased() {
 				
@@ -89,7 +90,7 @@ public class LL_Letter_Label : LL_Label {
 		
 		super.text = newText
 		
-		backgroundColor = isFirst ? Colors.Tertiary : Colors.Letter.Unselected
+		updateColor()
 	}
 	
 	public override init(frame: CGRect) {
@@ -110,7 +111,7 @@ public class LL_Letter_Label : LL_Label {
 		}
 	}
 	
-	@MainActor required init?(coder: NSCoder) {
+	required init?(coder: NSCoder) {
 		
 		fatalError("init(coder:) has not been implemented")
 	}
@@ -120,5 +121,10 @@ public class LL_Letter_Label : LL_Label {
 		super.layoutSubviews()
 		
 		layer.cornerRadius = frame.size.width/3
+	}
+	
+	private func updateColor()	{
+		
+		backgroundColor = isSelected ?? false ? Colors.Letter.Selected :  isFirst ? Colors.Tertiary : Colors.Letter.Unselected
 	}
 }

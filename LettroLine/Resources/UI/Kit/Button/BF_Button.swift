@@ -125,7 +125,7 @@ public class LL_Button : UIButton {
 	}
 	private lazy var badgeView:LL_Label = {
 		
-		$0.backgroundColor = Colors.Badge
+		$0.backgroundColor = Colors.Primary
 		$0.textColor = .white
 		$0.textAlignment = .center
 		$0.font = Fonts.Content.Text.Bold.withSize(Fonts.Size-2)

@@ -18,7 +18,20 @@ public class LL_Game : Codable {
 		
 		return LL_Game()
 	}
-	public var words: [String] = []
+	public var words: [String] = [] {
+		
+		didSet {
+			
+			save()
+		}
+	}
+	public var bonus:Int = 0 {
+		
+		didSet {
+			
+			save()
+		}
+	}
 	public var score:Int {
 		
 		return words.count
@@ -32,17 +45,21 @@ public class LL_Game : Codable {
 		}
 	}
 	
-	public func add(_ word:String?) {
+//	public func add(_ word:String?) {
+//		
+//		if let word {
+//			
+//			let game = self
+//			game.words.append(word)
+//			game.save()
+//		}
+//	}
+	
+	private func save() {
 		
-		if let word {
+		if let encoded = try? JSONEncoder().encode(self) {
 			
-			let game = self
-			game.words.append(word)
-				
-			if let encoded = try? JSONEncoder().encode(game) {
-				
-				UserDefaults.set(encoded, .currentGame)
-			}
+			UserDefaults.set(encoded, .currentGame)
 		}
 	}
 }
