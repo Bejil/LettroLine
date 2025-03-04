@@ -145,9 +145,9 @@ public class LL_Game_ViewController: LL_ViewController {
 				
 				LL_Game.current.bonus -= 1
 				
+				self?.updateScore()
 				self?.showSolution()
 			}
-			button.isPrimary = true
 			button.style = .solid
 			alertController.addCancelButton()
 			alertController.present()
@@ -695,7 +695,8 @@ public class LL_Game_ViewController: LL_ViewController {
 	private func updateScore() {
 		
 		scoreButton.title = String(key: "game.score") + "\(LL_Game.current.score)"
-		helpButton.badge = "\(LL_Game.current.bonus)"
+		helpButton.badge = LL_Game.current.bonus > 0 ? "\(LL_Game.current.bonus)" : nil
+		
 	}
 	
 	private func processPanGesture(at location: CGPoint) {

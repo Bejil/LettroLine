@@ -18,17 +18,7 @@ public class LL_Alert_ViewController : UIViewController {
 		case Popover
 	}
 	
-	private var style:Style = .Alert {
-		
-		didSet {
-			
-			if style == .Sheet {
-				
-				contentStackView.isLayoutMarginsRelativeArrangement = true
-				contentStackView.layoutMargins.top = UI.Margins
-			}
-		}
-	}
+	private var style:Style = .Alert
 	public var dismissHandler:(()->Void)?
 	public lazy var backgroundView:UIView = {
 		
@@ -64,6 +54,8 @@ public class LL_Alert_ViewController : UIViewController {
 	}(UIView())
 	public lazy var contentStackView:UIStackView = {
 		
+		$0.isLayoutMarginsRelativeArrangement = true
+		$0.layoutMargins.top = UI.Margins
 		$0.axis = .vertical
 		$0.spacing = UI.Margins
 		return $0
@@ -327,7 +319,6 @@ public class LL_Alert_ViewController : UIViewController {
 		
 		let viewController:LL_Alert_ViewController = .init()
 		viewController.titleLabel.text = String(key: "alert.error.title")
-		viewController.add(UIImage(named: "placeholder_error"))
 		viewController.add(error.localizedDescription)
 		if let handler = handler {
 			
@@ -349,7 +340,6 @@ public class LL_Alert_ViewController : UIViewController {
 		let viewController:LL_Alert_ViewController = .init()
 		viewController.backgroundView.isUserInteractionEnabled = false
 		viewController.titleLabel.text = String(key: "alert.loading.title")
-		viewController.add(UIImage(named: "placeholder_loading"))
 		viewController.add(String(key: "alert.loading.content"))
 		viewController.present() {
 			
