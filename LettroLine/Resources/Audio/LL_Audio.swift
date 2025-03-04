@@ -10,6 +10,15 @@ import SwiftySound
 
 public class LL_Audio : NSObject {
 	
+	public enum Keys : String, CaseIterable {
+		
+		case success = "Success"
+		case error = "Error"
+		case button = "Button"
+		case tap = "Tap"
+		case bonus = "Bonus"
+	}
+	
 	private var currentMusic:Sound?
 	public static let shared:LL_Audio = .init()
 	
@@ -47,35 +56,11 @@ public class LL_Audio : NSObject {
 		}
 	}
 	
-	public func playSuccess() {
+	public func play(_ sound:Keys) {
 		
 		if isSoundsEnabled {
 			
-			Sound.play(file: "Success.mp3", numberOfLoops: 0)
-		}
-	}
-	
-	public func playError() {
-		
-		if isSoundsEnabled {
-			
-			Sound.play(file: "Error.mp3", numberOfLoops: 0)
-		}
-	}
-	
-	public func playButton() {
-		
-		if isSoundsEnabled {
-			
-			Sound.play(file: "Button.mp3", numberOfLoops: 0)
-		}
-	}
-	
-	public func playTap() {
-		
-		if isSoundsEnabled {
-			
-			Sound.play(file: "Tap.mp3", numberOfLoops: 0)
+			Sound.play(file: "\(sound.rawValue).mp3")
 		}
 	}
 }

@@ -182,7 +182,7 @@ public class LL_Button : UIButton {
 		addAction(.init(handler: { [weak self] _ in
 			
 			UIApplication.feedBack(.On)
-			LL_Audio.shared.playButton()
+			LL_Audio.shared.play(.button)
 			
 			self?.action?(self)
 			

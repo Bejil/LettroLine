@@ -80,7 +80,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			
 			UIAction(title: String(key: "game.settings.sounds"), subtitle: String(key: "game.settings.sounds." + (LL_Audio.shared.isSoundsEnabled ? "on" : "off")), image: UIImage(systemName: LL_Audio.shared.isSoundsEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill"), handler: { [weak self] _ in
 				
-				LL_Audio.shared.playButton()
+				LL_Audio.shared.play(.button)
 				
 				UserDefaults.set(!LL_Audio.shared.isSoundsEnabled, .soundsEnabled)
 				
@@ -88,7 +88,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			}),
 			UIAction(title: String(key: "game.settings.music"), subtitle: String(key: "game.settings.music." + (LL_Audio.shared.isMusicEnabled ? "on" : "off")), image: UIImage(systemName: LL_Audio.shared.isMusicEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill"), handler: { [weak self] _ in
 				
-				LL_Audio.shared.playButton()
+				LL_Audio.shared.play(.button)
 				
 				UserDefaults.set(!LL_Audio.shared.isMusicEnabled, .musicEnabled)
 				
@@ -344,7 +344,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		isGameOver = true
 		
-		LL_Audio.shared.playError()
+		LL_Audio.shared.play(.error)
 		UIApplication.feedBack(.Error)
 		
 		let alertViewController:LL_Alert_ViewController = .init()
@@ -511,7 +511,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		var bonus:IndexPath? = nil
 		
-		if Double.random(in: 0...1) < 1.3 {
+		if Double.random(in: 0...1) < 0.3 {
 			var candidateCells = [(row: Int, col: Int)]()
 			for row in 0..<rows {
 				for col in 0..<columns {
@@ -711,12 +711,13 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 			// Si la cellule n'est pas encore sélectionnée et que la lettre ne correspond pas, jouer un son
 		if !cell.isSelected && cell.letter?.lowercased() != String(expectedLetter) && self.usedIndexPaths.last != indexPath {
-			LL_Audio.shared.playButton()
+			LL_Audio.shared.play(.button)
 			UIApplication.feedBack(.Off)
 		}
 		
 			// Si la cellule n'a pas encore été ajoutée au chemin, on l'ajoute
 		if self.usedIndexPaths.last != indexPath {
+			
 			let center = cell.superview?.convert(cell.center, to: self.collectionView) ?? CGPoint.zero
 			if self.usedIndexPaths.isEmpty {
 				self.userPath.move(to: center)
@@ -724,6 +725,24 @@ public class LL_Game_ViewController: LL_ViewController {
 				self.userPath.addLine(to: center)
 			}
 			self.userPathLayer.path = self.userPath.cgPath
+			
+			let row = indexPath.item / columns
+			let col = indexPath.item % columns
+			let lc_indexPath = IndexPath(row: row, section: col)
+			
+			if let bonus = self.grid?.bonus, lc_indexPath == bonus, !self.usedIndexPaths.compactMap({
+				
+				let row = $0.item / columns
+				let col = $0.item % columns
+				let indexPath = IndexPath(row: row, section: col)
+				
+				return indexPath
+				
+			}).contains(bonus) {
+				
+				LL_Audio.shared.play(.bonus)
+			}
+			
 			self.usedIndexPaths.append(indexPath)
 		}
 		
@@ -744,47 +763,51 @@ public class LL_Game_ViewController: LL_ViewController {
 		}
 		
 			// Si la cellule n'est pas encore sélectionnée et que la lettre correspond, on la sélectionne
-		if !cell.isSelected, cell.letter?.lowercased() == String(expectedLetter) {
-			cell.isSelected = true
-			self.wordStackView.select(expectedLetter)
-			self.lastSelectedIndexPath = indexPath
-			self.currentSolutionIndex += 1
+		if !cell.isSelected {
 			
-			if self.currentSolutionIndex == word.count {
-				
-				LL_Audio.shared.playSuccess()
-				UIApplication.feedBack(.Success)
-				
-				LL_Confettis.start()
-				
-				if let solutionWord = self.solutionWord {
+			if cell.letter?.lowercased() == String(expectedLetter) {
 					
-					LL_Game.current.words.append(solutionWord)
+				cell.isSelected = true
+				self.wordStackView.select(expectedLetter)
+				self.lastSelectedIndexPath = indexPath
+				self.currentSolutionIndex += 1
+				
+				if self.currentSolutionIndex == word.count {
 					
-					if let bonus = self.grid?.bonus, self.usedIndexPaths.compactMap({
+					LL_Audio.shared.play(.success)
+					UIApplication.feedBack(.Success)
+					
+					LL_Confettis.start()
+					
+					if let solutionWord = self.solutionWord {
 						
-						let row = $0.item / columns
-						let col = $0.item % columns
-						let indexPath = IndexPath(row: row, section: col)
+						LL_Game.current.words.append(solutionWord)
 						
-						return indexPath
+						if let bonus = self.grid?.bonus, self.usedIndexPaths.compactMap({
+							
+							let row = $0.item / columns
+							let col = $0.item % columns
+							let indexPath = IndexPath(row: row, section: col)
+							
+							return indexPath
+							
+						}).contains(bonus) {
+							
+							LL_Game.current.bonus += 1
+						}
 						
-					}).contains(bonus) {
-						
-						LL_Game.current.bonus += 1
+						self.updateScore()
 					}
 					
-					self.updateScore()
-				}
-				
-				UIApplication.wait { [weak self] in
+					UIApplication.wait { [weak self] in
+						
+						self?.newWord()
+					}
 					
-					self?.newWord()
-				}
-				
-				UIApplication.wait(1.0) {
-					
-					LL_Confettis.stop()
+					UIApplication.wait(1.0) {
+						
+						LL_Confettis.stop()
+					}
 				}
 			}
 		}

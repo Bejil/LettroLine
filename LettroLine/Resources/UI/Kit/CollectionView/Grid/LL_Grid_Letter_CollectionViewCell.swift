@@ -28,7 +28,7 @@ public class LL_Grid_Letter_CollectionViewCell : LL_CollectionViewCell {
 			
 			if isSelected {
 				
-				LL_Audio.shared.playTap()
+				LL_Audio.shared.play(.tap)
 				UIApplication.feedBack(.On)
 			}
 			
