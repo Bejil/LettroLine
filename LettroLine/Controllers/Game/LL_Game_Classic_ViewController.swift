@@ -5,12 +5,36 @@
 //  Created by BLIN Michael on 04/03/2025.
 //
 
+import Foundation
+
 public class LL_Game_Classic_ViewController : LL_Game_ViewController {
 	
-	public override func newWord() {
+	public override var game: LL_Game {
 		
-		super.newWord()
+		return LL_Classic_Game.current
+	}
+	
+	public override func loadView() {
 		
+		super.loadView()
 		
+		title = String(key: "game.classic.title")
+	}
+	
+	public override func dismiss(_ completion: (() -> Void)? = nil) {
+		
+		super.dismiss(completion)
+		
+		if (UserDefaults.get(.classicBestScore) as? Int) ?? 0 < game.score {
+			
+			UserDefaults.set(game.score, .classicBestScore)
+		}
+	}
+	
+	public override func updateScore() {
+		
+		super.updateScore()
+		
+		isBestScore = (UserDefaults.get(.classicBestScore) as? Int) ?? 0 < game.score
 	}
 }

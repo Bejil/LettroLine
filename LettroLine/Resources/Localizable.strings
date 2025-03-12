@@ -22,6 +22,10 @@
 "alert.loading.title" = "Chargement en cours...";
 "alert.loading.content" = "Merci de patienter pendant le chargement";
 
+//MARK: - Splashscreen
+"splashscreen.0" = "Lettro";
+"splashscreen.1" = "Line";
+
 //MARK: - Onboarding
 "onboarding.title" = "Bienvenue !";
 "onboarding.content" = "Dans LettroLine, tu vas tracer des lignes pour révéler des mots cachés. Laisse libre cours à ton imagination et découvre le plaisir de connecter les lettres.";
@@ -33,7 +37,15 @@
 "menu.classic.button.start" = "Classique";
 "menu.classic.new.alert.title" = "Attention";
 "menu.classic.new.alert.content" = "Si tu recommences une nouvelle partie du perdra tes progrès précédents.";
-"menu.timeTrial.button" = "Contre la montre";
+"menu.challenges.new.alert.title" = "Attention";
+"menu.challenges.new.alert.content" = "Si tu recommences une nouvelle partie du perdra tes progrès précédents.";
+"menu.timetrial.ranking.alert.title" = "Classement";
+"menu.timetrial.ranking.alert.content.0" = "Vous êtes";
+"menu.timetrial.ranking.alert.content.1" = "er";
+"menu.timetrial.ranking.alert.content.2" = "ème";
+"menu.timetrial.ranking.alert.content.3" = "sur";
+"menu.timeTrial.button.title" = "Contre la montre";
+"menu.timeTrial.button.subtitle" = "Meilleur score: ";
 "menu.challenges.button" = "Challenges";
 "menu.settings.button" = "Réglages";
 "menu.settings.alert.title" = "Réglages";
@@ -47,6 +59,8 @@
 "menu.settings.alert.vibrations.button.title" = "Vibrations";
 "menu.settings.alert.vibrations.button.subtitle.on" = "Activées";
 "menu.settings.alert.vibrations.button.subtitle.off" = "Désactivées";
+"menu.settings.alert.ads.title" = "Publicités";
+"menu.settings.alert.ads.button" = "Marre des pubs ?";
 "menu.settings.alert.rules.title" = "Règles et contraintes de jeu";
 "menu.settings.alert.rules.showFirstLetter.content" = "La première lettre s'affiche pour te guider, active ce coup de pouce pour bien démarrer !";
 "menu.settings.alert.rules.showFirstLetter.button.title.on" = "Activé";
@@ -56,14 +70,56 @@
 "menu.settings.alert.rules.allowFingerLift.button.title.off" = "Désactivé";
 
 //MARK: - Game
-"game.title" = "Partie classique";
+"game.tutorial.0.title" = "Bienvenue dans LettroLine";
+"game.tutorial.0.content" = "Découvre comment relier les lettres pour recréer le mot caché et vivre une expérience unique.";
+"game.tutorial.0.button" = "Continuer";
+"game.tutorial.1.title" = "Ton Score";
+"game.tutorial.1.content" = "Chaque mot reconstitué augmente ton score. Suis ton évolution et défie-toi pour battre ton record.";
+"game.tutorial.1.button" = "OK";
+"game.tutorial.2.title" = "Besoin d'aide ?";
+"game.tutorial.2.content" = "Utilise un bonus et le bouton d'aide pour obtenir le tracé de la solution si tu es bloqué.";
+"game.tutorial.2.button" = "J'ai compris";
+"game.tutorial.3.title" = "Les Lettres";
+"game.tutorial.3.content" = "Relie chaque lettre dans l'ordre pour recréer le mot. Vérifie que la lettre sélectionnée correspond bien à celle attendue.";
+"game.tutorial.3.button" = "Suivant";
+"game.tutorial.4.title" = "Le Tracé";
+"game.tutorial.4.content" = "Glisse ton doigt de la lettre actuelle vers la suivante sans interrompre le tracé. Reste précis pour valider ta sélection.";
+"game.tutorial.4.button" = "C'est parti";
+"game.tutorial.bonus.title" = "Bonus";
+"game.tutorial.bonus.content" = "Les bonus permettent d'afficher la solution. Ils ne sont pas indispensables pour gagner, mais ils peuvent t'aider si tu bloques.";
+"game.tutorial.bonus.button" = "J'ai compris";
+"game.classic.title" = "Partie classique";
+"game.timeTrial.title" = "Contre la montre";
+"game.timeTrial.tutorial.0.title" = "Contre la montre";
+"game.timeTrial.tutorial.0.content" = "Dans ce mode de jeu le but est de remporter le plus de points pendant le temps imparti.";
+"game.timeTrial.tutorial.0.button" = "Suivant";
+"game.timeTrial.tutorial.1.title" = "Temps";
+"game.timeTrial.tutorial.1.content" = "Chaque mot recréé te fera gagner 3 secondes supplémentaires !";
+"game.timeTrial.tutorial.1.button" = "J'ai compris";
+"game.timeTrial.tutorial.start.0" = "Tu es prêt ?!";
+"game.timeTrial.tutorial.start.1" = "1";
+"game.timeTrial.tutorial.start.2" = "2";
+"game.timeTrial.tutorial.start.3" = "3";
+"game.timeTrial.tutorial.start.4" = "C'est parti !!";
+"game.timeTrial.tutorial.end.0" = "Terminé !!";
+"game.timeTrial.tutorial.end.1" = "Félicitations !";
+"game.timeTrial.tutorial.end.2" = "Tu as terminé avec un total de %i points !";
+"game.timeTrial.tutorial.end.newBestScore.on" = "Tu as battu ton record ! Continue sur cette lancée, le meilleur reste à venir...";
+"game.timeTrial.tutorial.end.newBestScore.off" = "Tu n'as pas battu ton record cette fois-ci. La prochaine fois peut être ?";
+"game.timeTrial.tutorial.end.button" = "Terminer";
+"game.timeTrial.close.alert.title" = "Attention";
+"game.timeTrial.close.alert.content" = "Si tu quittes le jeu maintenant, tu perdras ta progression";
 "game.score" = "🏆 ";
+"game.score.subtitle" = "Nouveau record";
 "game.words.alert.title" = "Historique";
 "game.bonus" = "♦️";
 "game.help" = "Aide";
 "game.help.alert.title" = "Un peu d'aide ?";
 "game.help.alert.text" = "Veux-tu utiliser un %@ pour afficher la solution ?";
-"game.help.alert.error" = "Tu n'as pas assez de %@ pour afficher la solution";
+"game.help.alert.content.0" = "Tu n'as pas assez de %@ pour afficher la solution";
+"game.help.alert.content.1" = "Mais tu peux regarder une publicité pour en obtenir un et la voir";
+"game.help.alert.button.title" = "Voir une publicité";
+"game.help.alert.button.subtitle" = "et afficher la solution";
 "game.settings.sounds" = "Sons";
 "game.settings.sounds.on" = "Activés";
 "game.settings.sounds.off" = "Désactivés";
@@ -74,7 +130,34 @@
 "game.settings.vibrations.on" = "Activées";
 "game.settings.vibrations.off" = "Désactivées";
 "game.fail.alert.title" = "Raté !";
+"game.fail.alert.content" = "Tu peux continue à jouer après une publicité !";
+"game.fail.alert.button" = "Regarder";
 "game.fail.reason.outOfBounds" = "Tu es sorti du terrain";
 "game.fail.reason.intersect" = "Tu as coupé ton chemin";
 "game.fail.reason.sameLetter" = "Tu es déjà passé par cette lettre";
 "game.fail.reason.fingerLift" = "Tu as levé ton doigt avant d'avoir fini";
+"game.challenges.title" = "Challenges";
+"game.challenges.remaining" = " coups";
+"game.challenges.fail.alert.content" = "Tu as utilisé tout tes coups...";
+
+//MARK: - InAppPurchase
+"inAppPurchase.purchase.alert.buy.button" = "Premium";
+"inAppPurchase.purchase.success.alert.title" = "Félicitations !";
+"inAppPurchase.purchase.success.alert.content" = "Tu ne seras plus ennuyé par les pubs !";
+"inAppPurchase.purchase.error.alert.content" = "L'achat a échoué ou a été annulé";
+"inAppPurchase.purchase.alert.restore.button.title" = "Restaurer";
+"inAppPurchase.purchase.alert.restore.button.subtitle" = "un précédent achat";
+"inAppPurchase.restore.success.alert.title" = "Félicitations !";
+"inAppPurchase.restore.success.alert.content" = "Ton achat a bien été restauré";
+"inAppPurchase.restore.error.content" = "Aucun achat restauré";
+
+//MARK: - Ads
+"ads.error" = "Une erreur est survenue pendant le chargement de la publicité";
+
+//MARK: - Authorizations
+"authorizations.ask.alert.button" = "Je comprends";
+"authorizations.ask.alert.title" = "Demande d'autorisation";
+"authorizations.ask.alert.notifications" = "Les notifications sont utilisées pour t'alerter sur des événements importants";
+"authorizations.denied.alert.button" = "Réglages";
+"authorizations.denied.alert.content" = "Rends-toi dans les réglages pour activer l'autorisation";
+"authorizations.denied.alert.title" = "Autorisation demandée";

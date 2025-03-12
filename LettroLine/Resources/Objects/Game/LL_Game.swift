@@ -6,18 +6,10 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
-public class LL_Game : Codable {
+public class LL_Game: Codable {
 	
-	public static var current: LL_Game {
-		
-		if let savedData = UserDefaults.get(.currentGame) as? Data, let decodedGame = try? JSONDecoder().decode(LL_Game.self, from: savedData) {
-			
-			return decodedGame
-		}
-		
-		return LL_Game()
-	}
 	public var words: [String] = [] {
 		
 		didSet {
@@ -25,28 +17,54 @@ public class LL_Game : Codable {
 			save()
 		}
 	}
-	public var bonus:Int = 0 {
+	
+	public var bonus: Int = 0 {
 		
 		didSet {
 			
 			save()
 		}
 	}
-	public var score:Int {
+	
+	public var score: Int {
 		
 		return words.count
 	}
 	
-	public func reset() {
+	public class var currentUserDefaultsKey: UserDefaults.Keys? {
 		
-		LL_Game().save()
+		return nil
 	}
 	
-	private func save() {
+	public static var current: Self {
 		
-		if let encoded = try? JSONEncoder().encode(self) {
+		if let currentUserDefaultsKey, let savedData = UserDefaults.get(currentUserDefaultsKey) as? Data, let decodedGame = try? JSONDecoder().decode(Self.self, from: savedData) {
 			
-			UserDefaults.set(encoded, .currentGame)
+			return decodedGame
 		}
+		
+		return Self.init()
+	}
+	
+	public required init() {}
+	
+	public func reset() {
+		
+		self.words = []
+		self.bonus = 0
+		save()
+	}
+	
+	public func save() {
+		
+		if let currentUserDefaultsKey = type(of: self).currentUserDefaultsKey, let encoded = try? JSONEncoder().encode(self) {
+			
+			UserDefaults.set(encoded, currentUserDefaultsKey)
+		}
+	}
+	
+	public func newWord(_ letters:Int = Int.random(in: 3...8)) -> String? {
+		
+		return String.randomWord(withLetters: letters, excludingWords: words)
 	}
 }

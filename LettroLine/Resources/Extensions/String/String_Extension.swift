@@ -14,29 +14,44 @@ extension String {
 		self = NSLocalizedString(key, comment:"localizable string")
 	}
 	
+	private static var wordsDictionary: [String: [String]]? = {
+		
+		if let url = Bundle.main.url(forResource: "LL_Words", withExtension: "json"), let data = try? Data(contentsOf: url), let dict = try? JSONDecoder().decode([String: [String]].self, from: data) {
+			
+			return dict
+		}
+		
+		return nil
+	}()
+	
 	static public func randomWord(withLetters: Int, excludingWords: [String] = []) -> String? {
 		
-		guard let url = Bundle.main.url(forResource: "LL_Words", withExtension: "json"),
-			  let data = try? Data(contentsOf: url),
-			  let wordsDict = try? JSONDecoder().decode([String: [String]].self, from: data)
-		else { return nil }
-		
-		let key = String(withLetters)
-		
-		guard let words = wordsDict[key] else { return nil }
-		
-			// Filtrer pour exclure les mots déjà utilisés dans LL_Game.current.words
-		let availableWords = words.filter { word in
-			!excludingWords.contains { existingWord in
-					// Comparaison insensible aux accents et à la casse
-				existingWord.folding(options: .diacriticInsensitive, locale: .current)
-					.caseInsensitiveCompare(word) == .orderedSame
+		if let wordsDict = wordsDictionary, let words = wordsDict[String(withLetters)] {
+			
+			let availableWords = words.filter { word in
+				
+				!excludingWords.contains { existingWord in
+					
+					existingWord.folding(options: .diacriticInsensitive, locale: .current).caseInsensitiveCompare(word) == .orderedSame
+				}
+			}
+			
+			if !availableWords.isEmpty {
+				
+				return availableWords.randomElement()?.folding(options: .diacriticInsensitive, locale: .current)
 			}
 		}
 		
-		guard !availableWords.isEmpty else { return nil }
+		return nil
+	}
+	
+	static public var minLetters: Int {
 		
-			// Retourne un mot aléatoire parmi ceux restants
-		return availableWords.randomElement()?.folding(options: .diacriticInsensitive, locale: .current)
+		return wordsDictionary?.keys.compactMap { Int($0) }.min() ?? 0
+	}
+	
+	static public var maxLetters: Int {
+		
+		return wordsDictionary?.keys.compactMap { Int($0) }.max() ?? 0
 	}
 }

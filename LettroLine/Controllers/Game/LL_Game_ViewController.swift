@@ -7,13 +7,27 @@
 
 import UIKit
 import SnapKit
+import GoogleMobileAds
 
 public class LL_Game_ViewController: LL_ViewController {
 	
-	private lazy var usedIndexPaths: Array<IndexPath> = []
+	private var bannerView:BannerView?
+	public var canAddMorePoint:Bool = true
+	public var game:LL_Game {
+		
+		return LL_Game()
+	}
+	public var isBestScore:Bool = false {
+		
+		didSet {
+			
+			scoreButton.subtitle = isBestScore ? String(key: "game.score.subtitle") : nil
+		}
+	}
+	public lazy var usedIndexPaths: Array<IndexPath> = []
 	private var lastSelectedIndexPath: IndexPath?
-	private lazy var allowFingerLift: Bool = UserDefaults.get(.allowFingerLift) as? Bool ?? false
-	private lazy var showFirst:Bool = UserDefaults.get(.showFirstLetter) as? Bool ?? false {
+	private lazy var allowFingerLift: Bool = UserDefaults.get(.allowFingerLift) as? Bool ?? true
+	private lazy var showFirst:Bool = UserDefaults.get(.showFirstLetter) as? Bool ?? true {
 		
 		didSet {
 			
@@ -33,21 +47,22 @@ public class LL_Game_ViewController: LL_ViewController {
 		}
 	}
 	private lazy var isGameOver = false
-	private var grid: (grid: [[Character]], positions: [CGPoint], bonus: IndexPath?)? {
+	public var grid: (grid: [[Character]], positions: [CGPoint], bonus: IndexPath?)? {
 		
 		didSet {
 			
 			collectionView.reloadData()
 		}
 	}
-	private lazy var columns: Int = 5
-	private lazy var rows: Int = 5
-	private var solutionWord: String? {
+	public lazy var columns: Int = 5
+	public lazy var rows: Int = 5
+	public var solutionWord: String? {
 		
 		didSet {
 			
 			resetGame()
 			
+			wordStackView.word = solutionWord
 			grid = generateGrid()
 		}
 	}
@@ -104,29 +119,44 @@ public class LL_Game_ViewController: LL_ViewController {
 			})
 		])
 	}
-	private lazy var scoreButton:LL_Button = {
+	public lazy var scoreStackView:UIStackView = {
 		
+		$0.axis = .horizontal
+		$0.alignment = .fill
+		$0.distribution = .equalCentering
+		return $0
+		
+	}(UIStackView(arrangedSubviews: [scoreButton,helpButton]))
+	public lazy var scoreButton:LL_Button = {
+		
+		$0.subtitleFont = Fonts.Content.Button.Subtitle.withSize(Fonts.Content.Button.Subtitle.pointSize-4)
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
 		$0.snp.removeConstraints()
 		return $0
 		
-	}(LL_Button() { _ in
+	}(LL_Button() { [weak self] _ in
 		
-		if LL_Game.current.score != 0 {
-				
+		if self?.game.score != 0 {
+			
+			self?.pause()
+			
 			let alertController:LL_Alert_ViewController = .init()
 			alertController.title = String(key: "game.words.alert.title")
 			
-			LL_Game.current.words.forEach {
+			self?.game.words.forEach {
 				
 				alertController.add($0.uppercased())
 			}
 			
 			alertController.addDismissButton(sticky: true)
+			alertController.dismissHandler = { [weak self] in
+				
+				self?.play()
+			}
 			alertController.present(as: .Sheet)
 		}
 	})
-	private lazy var helpButton:LL_Button = {
+	public lazy var helpButton:LL_Button = {
 		
 		$0.title = [String(key: "game.bonus"),String(key: "game.help")].joined(separator: " ")
 		$0.style = .tinted
@@ -136,14 +166,18 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 	}(LL_Button() { [weak self] _ in
 		
-		if LL_Game.current.bonus != 0 {
+		if self?.game.bonus != 0 {
+			
+			self?.pause()
 			
 			let alertController:LL_Alert_ViewController = .init()
 			alertController.title = String(key: "game.help.alert.title")
 			alertController.add(String(format: String(key: "game.help.alert.text"), String(key: "game.bonus")))
 			let button = alertController.addDismissButton { [weak self] _ in
 				
-				LL_Game.current.bonus -= 1
+				self?.play()
+				
+				self?.game.bonus -= 1
 				
 				self?.updateScore()
 				self?.showSolution()
@@ -154,10 +188,51 @@ public class LL_Game_ViewController: LL_ViewController {
 		}
 		else {
 			
-			LL_Alert_ViewController.present(LL_Error(String(format: String(key: "game.help.alert.error"), String(key: "game.bonus"))))
+			self?.pause()
+			
+			let alertController:LL_Alert_ViewController = .init()
+			alertController.title = String(key: "game.help.alert.title")
+			alertController.add(String(format: String(key: "game.help.alert.content.0"), String(key: "game.bonus")))
+			alertController.backgroundView.isUserInteractionEnabled = false
+			alertController.add(String(key: "game.help.alert.content.1"))
+			alertController.addButton(title: String(key: "game.help.alert.button.title"), subtitle: String(key: "game.help.alert.button.subtitle")) { [weak self] button in
+				
+				button?.isLoading = true
+				
+				Task {
+					
+					await LL_Ads.shared.presentRewardedAd(Ads.FullScreen.GameBonus) { [weak self] state in
+						
+						button?.isLoading = true
+						
+						alertController.close { [weak self] in
+							
+							if state {
+								
+								self?.showSolution()
+								self?.play()
+							}
+							else {
+								
+								let alertController = LL_Alert_ViewController.present(LL_Error(String(key: "ads.error")))
+								alertController.dismissHandler = { [weak self] in
+									
+									self?.play()
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			alertController.addCancelButton() { [weak self] _ in
+				
+				self?.play()
+			}
+			alertController.present()
 		}
 	})
-	private lazy var wordStackView:LL_Word_StackView = .init()
+	public lazy var wordStackView:LL_Word_StackView = .init()
 	private lazy var collectionViewFlowLayout: UICollectionViewFlowLayout = {
 		
 		$0.scrollDirection = .vertical
@@ -167,7 +242,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		return $0
 		
 	}(UICollectionViewFlowLayout())
-	private lazy var collectionView: LL_CollectionView = {
+	public lazy var collectionView: LL_CollectionView = {
 		
 		$0.register(LL_Grid_Letter_CollectionViewCell.self, forCellWithReuseIdentifier: LL_Grid_Letter_CollectionViewCell.identifier)
 		$0.delegate = self
@@ -286,13 +361,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		isModal = true
 		
-		title = String(key: "game.title")
-		
 		navigationItem.rightBarButtonItem = settingsButton
-		
-		let scoreStackView:UIStackView = .init(arrangedSubviews: [scoreButton,.init(),helpButton])
-		scoreStackView.axis = .horizontal
-		scoreStackView.alignment = .fill
 		
 		let gridBackgroundView:UIView = .init()
 		gridBackgroundView.backgroundColor = Colors.Background.Grid
@@ -312,26 +381,101 @@ public class LL_Game_ViewController: LL_ViewController {
 		}
 		contentStackView.setCustomSpacing(3*UI.Margins, after: scoreStackView)
 		
+		if let bannerView = LL_Ads.shared.presentBanner(Ads.Banner.Game, self) {
+			
+			contentStackView.addArrangedSubview(bannerView)
+			
+			NotificationCenter.add(.updateAds) { _ in
+				
+				bannerView.isHidden = !LL_Ads.shared.shouldDisplayAd
+			}
+		}
+		
 		newWord()
 		
 		contentStackView.animate()
 		
 		updateScore()
+		
+		LL_Ads.shared.presentInterstitial(Ads.FullScreen.GameStart, { [weak self] in
+			
+			self?.pause()
+			
+		}, { [weak self] in
+			
+			self?.tutorial()
+		})
+	}
+	
+	public override func viewWillAppear(_ animated: Bool) {
+		
+		super.viewWillAppear(animated)
+		
+		updateScore()
+	}
+	
+	private func tutorial() {
+		
+		let viewController:LL_Tutorial_ViewController = .init()
+		viewController.key = .tutorialClassicGame
+		viewController.items = [
+			
+			LL_Tutorial_ViewController.Item(
+				title: String(key: "game.tutorial.0.title"),
+				subtitle: String(key: "game.tutorial.0.content"),
+				button: String(key: "game.tutorial.0.button")
+			),
+			LL_Tutorial_ViewController.Item(
+				title: String(key: "game.tutorial.3.title"),
+				subtitle: String(key: "game.tutorial.3.content"),
+				button: String(key: "game.tutorial.3.button")
+			),
+			LL_Tutorial_ViewController.Item(
+				title: String(key: "game.tutorial.4.title"),
+				subtitle: String(key: "game.tutorial.4.content"),
+				button: String(key: "game.tutorial.4.button")
+			),
+			LL_Tutorial_ViewController.Item(
+				sourceView: scoreButton,
+				title: String(key: "game.tutorial.1.title"),
+				subtitle: String(key: "game.tutorial.1.content"),
+				button: String(key: "game.tutorial.1.button")
+			),
+			LL_Tutorial_ViewController.Item(
+				sourceView: helpButton,
+				title: String(key: "game.tutorial.2.title"),
+				subtitle: String(key: "game.tutorial.2.content"),
+				button: String(key: "game.tutorial.2.button")
+			)
+		]
+		viewController.completion = { [weak self] in
+			
+			self?.specificTutorial()
+		}
+		viewController.present()
+	}
+	
+	public func play() {
+		
+	}
+	
+	public func pause() {
+		
 	}
 	
 	public func newWord() {
 		
-		var wordLength = 3
-		let baseThreshold = 15.0
-		let factor = 1.5
+		let score = Double(game.score)
 		
-		while wordLength < 8 {
+		var wordLength = String.minLetters
+		
+		for n in (String.minLetters + 1)...String.maxLetters {
 			
-			let threshold = baseThreshold * pow(factor, Double(wordLength - 3))
+			let threshold = Game.firstPointsLevel * pow(Game.pointsLevelMultiplier, Double(n - (String.minLetters + 1)))
 			
-			if Double(LL_Game.current.score) >= threshold {
+			if score >= threshold {
 				
-				wordLength += 1
+				wordLength = n
 			}
 			else {
 				
@@ -339,13 +483,13 @@ public class LL_Game_ViewController: LL_ViewController {
 			}
 		}
 		
-		if let word = String.randomWord(withLetters: wordLength, excludingWords: LL_Game.current.words) {
-			
-			wordStackView.word = word
-			solutionWord = word
-		}
+		solutionWord = game.newWord(wordLength)
 	}
-
+	
+	public func specificTutorial() {
+		
+		play()
+	}
 	
 	private func resetGame() {
 		
@@ -358,7 +502,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		grid = generateGrid()
 	}
 	
-	private func fail(reason:String?) {
+	public func fail(reason:String?) {
 		
 		collectionView.delegate = nil
 		collectionView.delegate = self
@@ -368,24 +512,70 @@ public class LL_Game_ViewController: LL_ViewController {
 		LL_Audio.shared.play(.error)
 		UIApplication.feedBack(.Error)
 		
-		let alertViewController:LL_Alert_ViewController = .init()
-		alertViewController.title = String(key: "game.fail.alert.title")
-		alertViewController.add(reason)
-		alertViewController.addDismissButton()
-		alertViewController.dismissHandler = { [weak self] in
+		pause()
+		
+		let alertController:LL_Alert_ViewController = .init()
+		alertController.title = String(key: "game.fail.alert.title")
+		alertController.add(reason)
+		alertController.backgroundView.isUserInteractionEnabled = false
+		alertController.add(String(key: "game.fail.alert.content"))
+		alertController.addButton(title: String(key: "game.fail.alert.button")) { [weak self] button in
 			
-			LL_Game.current.reset()
+			self?.pause()
 			
-			self?.updateScore()
+			button?.isLoading = true
 			
-			self?.newWord()
+			Task {
+				
+				await LL_Ads.shared.presentRewardedAd(Ads.FullScreen.GameChance) {  [weak self] state in
+					
+					alertController.close { [weak self] in
+						
+						if state {
+							
+							self?.play()
+							
+							self?.newWord()
+						}
+						else {
+							
+							let alertController = LL_Alert_ViewController.present(LL_Error(String(key: "ads.error")))
+							alertController.dismissHandler = { [weak self] in
+							
+								self?.game.reset()
+								
+								self?.dismiss()
+							}
+						}
+					}
+				}
+			}
 		}
-		alertViewController.present()
+		alertController.addDismissButton { [weak self] _ in
+			
+			self?.game.reset()
+			
+			self?.dismiss()
+		}
+		alertController.present()
 		
 		UIView.animation { [weak self] in
 			
 			self?.userPathLayer.opacity = 0.0
 		}
+	}
+	
+	public override func dismiss(_ completion: (() -> Void)? = nil) {
+		
+		super.dismiss(completion)
+		
+		LL_Ads.shared.presentInterstitial(Ads.FullScreen.GameLose, nil, {
+			
+			if LL_Ads.shared.shouldDisplayAd {
+				
+				LL_InAppPurchase.shared.promptInAppPurchaseAlert(withCapping: true)
+			}
+		})
 	}
 	
 	private func generateGrid() -> (grid: [[Character]], positions: [CGPoint], bonus: IndexPath?)? {
@@ -532,7 +722,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		var bonus:IndexPath? = nil
 		
-		if Double.random(in: 0...1) < 0.3 {
+		if Double.random(in: 0...1) < Game.BonusRate {
 			var candidateCells = [(row: Int, col: Int)]()
 			for row in 0..<rows {
 				for col in 0..<columns {
@@ -658,31 +848,116 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		let solutionPath = UIBezierPath()
 		
-		if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout, let positions = grid?.positions {
+			// Vérifie que nous disposons d'un layout et des positions
+		guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout,
+			  let positions = grid?.positions else { return }
+		
+			// Calcul des dimensions de chaque cellule
+		let totalSpacingX = layout.sectionInset.left + layout.sectionInset.right + (layout.minimumInteritemSpacing * CGFloat(columns - 1))
+		let cellWidth = (collectionView.frame.width - totalSpacingX) / CGFloat(columns)
+		
+		let totalSpacingY = layout.sectionInset.top + layout.sectionInset.bottom + (layout.minimumLineSpacing * CGFloat(rows - 1))
+		let cellHeight = (collectionView.frame.height - totalSpacingY) / CGFloat(rows)
+		
+			// Convertir les positions (stockées comme (col + 0.5, row + 0.5)) en indices et en centres de cellules
+		var validIndices: [(row: Int, col: Int)] = []
+		var validCenters: [CGPoint] = []
+		for point in positions {
+			let col = Int(point.x - 0.5)
+			let row = Int(point.y - 0.5)
+			validIndices.append((row: row, col: col))
+			let center = CGPoint(
+				x: layout.sectionInset.left + CGFloat(col) * (cellWidth + layout.minimumInteritemSpacing) + cellWidth / 2,
+				y: layout.sectionInset.top + CGFloat(row) * (cellHeight + layout.minimumLineSpacing) + cellHeight / 2
+			)
+			validCenters.append(center)
+		}
+		
+			// Fonction pour vérifier un déplacement autorisé (horizontal, vertical ou diagonal)
+		func isAllowedMove(from: (row: Int, col: Int), to: (row: Int, col: Int)) -> Bool {
+			let dr = abs(to.row - from.row)
+			let dc = abs(to.col - from.col)
+			return (dr == 0 || dc == 0 || dr == dc)
+		}
+		
+			// Insertion du bonus (s'il existe) dans le chemin, en le plaçant dans la fente qui respecte la contrainte
+		if let bonusIndexPath = grid?.bonus {
+			let bonusIndex = (row: bonusIndexPath.row, col: bonusIndexPath.section)
+				// Calculer le centre du bonus
+			let bonusCenter = CGPoint(
+				x: layout.sectionInset.left + CGFloat(bonusIndex.col) * (cellWidth + layout.minimumInteritemSpacing) + cellWidth / 2,
+				y: layout.sectionInset.top + CGFloat(bonusIndex.row) * (cellHeight + layout.minimumLineSpacing) + cellHeight / 2
+			)
 			
-			let totalSpacingX = layout.sectionInset.left + layout.sectionInset.right + (layout.minimumInteritemSpacing * CGFloat(columns - 1))
-			let cellWidth = (collectionView.frame.width - totalSpacingX) / CGFloat(columns)
-			
-			let totalSpacingY = layout.sectionInset.top + layout.sectionInset.bottom + (layout.minimumLineSpacing * CGFloat(rows - 1))
-			let cellHeight = (collectionView.frame.height - totalSpacingY) / CGFloat(rows)
-			
-			for (index, point) in positions.enumerated() {
-				
-				let col = point.x - 0.5
-				let row = point.y - 0.5
-				
-				let x = layout.sectionInset.left + col * (cellWidth + layout.minimumInteritemSpacing) + cellWidth / 2
-				let y = layout.sectionInset.top + row * (cellHeight + layout.minimumLineSpacing) + cellHeight / 2
-				let cellCenter = CGPoint(x: x, y: y)
-				
-				if index == 0 {
-					
-					solutionPath.move(to: cellCenter)
+			var bestInsertionIndex: Int? = nil
+			var minExtraDistance = CGFloat.greatestFiniteMagnitude
+			for i in 0..<validIndices.count - 1 {
+				let from = validIndices[i]
+				let to = validIndices[i+1]
+					// Le bonus ne peut être inséré que si le déplacement depuis 'from' vers le bonus et du bonus vers 'to' est autorisé.
+				if !isAllowedMove(from: from, to: bonusIndex) || !isAllowedMove(from: bonusIndex, to: to) {
+					continue
 				}
-				else {
-					
-					solutionPath.addLine(to: cellCenter)
+					// Calcul de l'extra distance (distance supplémentaire par rapport au chemin direct)
+				let directDistance = CGFloat(max(abs(to.row - from.row), abs(to.col - from.col)))
+				let d1 = CGFloat(max(abs(bonusIndex.row - from.row), abs(bonusIndex.col - from.col)))
+				let d2 = CGFloat(max(abs(to.row - bonusIndex.row), abs(to.col - bonusIndex.col)))
+				let extra = (d1 + d2) - directDistance
+				if extra < minExtraDistance {
+					minExtraDistance = extra
+					bestInsertionIndex = i + 1
 				}
+			}
+			if let insertionIndex = bestInsertionIndex {
+				validIndices.insert(bonusIndex, at: insertionIndex)
+					// Recalcule le centre pour le bonus (déjà calculé) et l'insère
+				validCenters.insert(bonusCenter, at: insertionIndex)
+			}
+		}
+		
+			// Construction du chemin interpolé :
+			// Pour chaque segment entre deux indices, on ajoute tous les points intermédiaires (déplacement cellule par cellule)
+		var interpolatedCenters: [CGPoint] = []
+		var interpolatedIndices: [(row: Int, col: Int)] = []
+		
+		func centerForIndex(_ index: (row: Int, col: Int)) -> CGPoint {
+			return CGPoint(
+				x: layout.sectionInset.left + CGFloat(index.col) * (cellWidth + layout.minimumInteritemSpacing) + cellWidth / 2,
+				y: layout.sectionInset.top + CGFloat(index.row) * (cellHeight + layout.minimumLineSpacing) + cellHeight / 2
+			)
+		}
+		
+			// On parcourt les points du chemin validIndices
+		for i in 0..<validIndices.count - 1 {
+			let start = validIndices[i]
+			let end = validIndices[i+1]
+				// On ajoute le point de départ
+			if i == 0 {
+				interpolatedIndices.append(start)
+				interpolatedCenters.append(centerForIndex(start))
+			}
+				// Calcul des différences
+			let dr = end.row - start.row
+			let dc = end.col - start.col
+				// Nombre de pas nécessaires (distance de Chebyshev)
+			let steps = max(abs(dr), abs(dc))
+				// Incréments par étape
+			let stepRow = dr != 0 ? dr / steps : 0
+			let stepCol = dc != 0 ? dc / steps : 0
+				// Ajouter les points intermédiaires (à partir de 1 jusqu'à steps)
+			for s in 1...steps {
+				let intermediate = (row: start.row + s * stepRow, col: start.col + s * stepCol)
+				interpolatedIndices.append(intermediate)
+				interpolatedCenters.append(centerForIndex(intermediate))
+			}
+		}
+		
+			// Construction du UIBezierPath en reliant les centres interpolés
+		for (index, center) in interpolatedCenters.enumerated() {
+			if index == 0 {
+				solutionPath.move(to: center)
+			} else {
+				solutionPath.addLine(to: center)
 			}
 		}
 		
@@ -697,7 +972,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		solutionPathLayer.add(animation, forKey: "strokeEnd")
 		CATransaction.commit()
 	}
-	
+
 	private func hideSolution() {
 		
 		if solutionPathLayer.strokeEnd != 0 {
@@ -713,45 +988,172 @@ public class LL_Game_ViewController: LL_ViewController {
 		}
 	}
 	
-	private func updateScore() {
+	public func updateScore() {
 		
-		scoreButton.title = String(key: "game.score") + "\(LL_Game.current.score)"
-		helpButton.badge = LL_Game.current.bonus > 0 ? "\(LL_Game.current.bonus)" : nil
+		scoreButton.title = String(key: "game.score") + "\(game.score)"
+		scoreButton.pulse()
 		
+		helpButton.badge = game.bonus > 0 ? "\(game.bonus)" : nil
+		
+		if game.bonus > 0 {
+			
+			helpButton.pulse()
+		}
 	}
 	
 	private func processPanGesture(at location: CGPoint) {
-		guard
-			let indexPath = self.collectionView.indexPathForItem(at: location),
-			let cell = self.collectionView.cellForItem(at: indexPath) as? LL_Grid_Letter_CollectionViewCell,
-			let word = self.solutionWord?.lowercased(),
-			self.currentSolutionIndex < word.count
-		else { return }
 		
-		let expectedLetter = word[word.index(word.startIndex, offsetBy: self.currentSolutionIndex)]
-		
-			// Si la cellule n'est pas encore sélectionnée et que la lettre ne correspond pas, jouer un son
-		if !cell.isSelected && cell.letter?.lowercased() != String(expectedLetter) && self.usedIndexPaths.last != indexPath {
-			LL_Audio.shared.play(.button)
-			UIApplication.feedBack(.Off)
-		}
-		
-			// Si la cellule n'a pas encore été ajoutée au chemin, on l'ajoute
-		if self.usedIndexPaths.last != indexPath {
+		if let indexPath = collectionView.indexPathForItem(at: location), let cell = collectionView.cellForItem(at: indexPath) as? LL_Grid_Letter_CollectionViewCell, let word = solutionWord?.lowercased(), currentSolutionIndex < word.count {
 			
-			let center = cell.superview?.convert(cell.center, to: self.collectionView) ?? CGPoint.zero
-			if self.usedIndexPaths.isEmpty {
-				self.userPath.move(to: center)
-			} else {
-				self.userPath.addLine(to: center)
+			if usedIndexPaths.last != indexPath {
+				
+				let center = cell.superview?.convert(cell.center, to: collectionView) ?? CGPoint.zero
+				
+				if usedIndexPaths.isEmpty {
+					
+					userPath.move(to: center)
+				}
+				else {
+					
+					userPath.addLine(to: center)
+				}
+				
+				userPathLayer.path = userPath.cgPath
+				
+				if usedIndexPaths.contains(indexPath) {
+					
+					fail(reason: String(key: "game.fail.reason.intersect"))
+				}
+				else {
+					
+					usedIndexPaths.append(indexPath)
+					
+					let expectedLetter = word[word.index(word.startIndex, offsetBy: currentSolutionIndex)]
+					
+					if cell.letter?.lowercased() != String(expectedLetter) {
+						
+						let bonusState = cell.letter == String(key: "game.bonus")
+						
+						if bonusState {
+							
+							LL_Audio.shared.play(.bonus)
+							UIApplication.feedBack(.Success)
+						}
+						else {
+							
+							LL_Audio.shared.play(.button)
+							UIApplication.feedBack(.Off)
+						}
+					}
+					else {
+						
+						cell.isSelected = true
+						wordStackView.select(expectedLetter)
+						lastSelectedIndexPath = indexPath
+						currentSolutionIndex += 1
+						
+						if currentSolutionIndex == word.count && canAddMorePoint {
+							
+							success()
+						}
+					}
+				}
 			}
-			self.userPathLayer.path = self.userPath.cgPath
 			
-			let row = indexPath.item / columns
-			let col = indexPath.item % columns
-			let lc_indexPath = IndexPath(row: row, section: col)
+//			let expectedLetter = word[word.index(word.startIndex, offsetBy: currentSolutionIndex)]
+//			
+//			if !cell.isSelected && cell.letter?.lowercased() != String(expectedLetter) && usedIndexPaths.last != indexPath {
+//				
+//				LL_Audio.shared.play(.button)
+//				UIApplication.feedBack(.Off)
+//			}
+//			
+//			if usedIndexPaths.last != indexPath {
+//				
+//				let center = cell.superview?.convert(cell.center, to: collectionView) ?? CGPoint.zero
+//				
+//				if usedIndexPaths.isEmpty {
+//					
+//					userPath.move(to: center)
+//				}
+//				else {
+//					
+//					userPath.addLine(to: center)
+//				}
+//				
+//				userPathLayer.path = userPath.cgPath
+//				
+//				let row = indexPath.item / columns
+//				let col = indexPath.item % columns
+//				let lc_indexPath = IndexPath(row: row, section: col)
+//				
+//				if let bonus = grid?.bonus, lc_indexPath == bonus, !usedIndexPaths.compactMap({
+//					
+//					let row = $0.item / columns
+//					let col = $0.item % columns
+//					let indexPath = IndexPath(row: row, section: col)
+//					
+//					return indexPath
+//					
+//				}).contains(bonus) && canAddMorePoint {
+//					
+//					LL_Audio.shared.play(.bonus)
+//					UIApplication.feedBack(.Success)
+//				}
+//				
+//				usedIndexPaths.append(indexPath)
+//			}
+//			
+//			if isSelfIntersecting(path: userPath) && !isGameOver {
+//				
+//				fail(reason: String(key: "game.fail.reason.intersect"))
+//				
+//				return
+//			}
+//			
+//			if cell.isSelected {
+//				
+//				if let lastSelected = lastSelectedIndexPath, lastSelected == indexPath {
+//					
+//				}
+//				else if !isGameOver {
+//					
+//					fail(reason: String(key: "game.fail.reason.sameLetter"))
+//					
+//					return
+//				}
+//			}
+//			
+//			if !cell.isSelected {
+//				
+//				if cell.letter?.lowercased() == String(expectedLetter) {
+//					
+//					cell.isSelected = true
+//					wordStackView.select(expectedLetter)
+//					lastSelectedIndexPath = indexPath
+//					currentSolutionIndex += 1
+//					
+//					if currentSolutionIndex == word.count && canAddMorePoint {
+//						
+//						success()
+//					}
+//				}
+//			}
+		}
+	}
+	
+	public func success() {
+		
+		LL_Audio.shared.play(.success)
+		UIApplication.feedBack(.Success)
+		
+		LL_Confettis.start()
+		
+		if let solutionWord {
 			
-			if let bonus = self.grid?.bonus, lc_indexPath == bonus, !self.usedIndexPaths.compactMap({
+			game.words.append(solutionWord)
+			
+			if let bonus = grid?.bonus, usedIndexPaths.compactMap({
 				
 				let row = $0.item / columns
 				let col = $0.item % columns
@@ -761,76 +1163,20 @@ public class LL_Game_ViewController: LL_ViewController {
 				
 			}).contains(bonus) {
 				
-				LL_Audio.shared.play(.bonus)
+				game.bonus += 1
 			}
 			
-			self.usedIndexPaths.append(indexPath)
+			updateScore()
 		}
 		
-			// Vérifier si le chemin s'auto-intersecte
-		if self.isSelfIntersecting(path: self.userPath) && !isGameOver {
-			self.fail(reason: String(key: "game.fail.reason.intersect"))
-			return
-		}
-		
-			// Si la cellule est déjà sélectionnée et que ce n'est pas la même que la dernière, c'est une erreur
-		if cell.isSelected {
-			if let lastSelected = self.lastSelectedIndexPath, lastSelected == indexPath {
-					// Même cellule, rien à faire
-			} else if !isGameOver {
-				self.fail(reason: String(key: "game.fail.reason.sameLetter"))
-				return
-			}
-		}
-		
-			// Si la cellule n'est pas encore sélectionnée et que la lettre correspond, on la sélectionne
-		if !cell.isSelected {
+		UIApplication.wait { [weak self] in
 			
-			if cell.letter?.lowercased() == String(expectedLetter) {
-					
-				cell.isSelected = true
-				self.wordStackView.select(expectedLetter)
-				self.lastSelectedIndexPath = indexPath
-				self.currentSolutionIndex += 1
-				
-				if self.currentSolutionIndex == word.count {
-					
-					LL_Audio.shared.play(.success)
-					UIApplication.feedBack(.Success)
-					
-					LL_Confettis.start()
-					
-					if let solutionWord = self.solutionWord {
-						
-						LL_Game.current.words.append(solutionWord)
-						
-						if let bonus = self.grid?.bonus, self.usedIndexPaths.compactMap({
-							
-							let row = $0.item / columns
-							let col = $0.item % columns
-							let indexPath = IndexPath(row: row, section: col)
-							
-							return indexPath
-							
-						}).contains(bonus) {
-							
-							LL_Game.current.bonus += 1
-						}
-						
-						self.updateScore()
-					}
-					
-					UIApplication.wait { [weak self] in
-						
-						self?.newWord()
-					}
-					
-					UIApplication.wait(1.0) {
-						
-						LL_Confettis.stop()
-					}
-				}
-			}
+			self?.newWord()
+		}
+		
+		UIApplication.wait(1.0) {
+			
+			LL_Confettis.stop()
 		}
 	}
 }

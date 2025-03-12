@@ -26,7 +26,8 @@ public class LL_Audio : NSObject {
 		
 		super.init()
 		
-		Sound.category = .playback
+		//Sound.category = .playback
+		Sound.category = .ambient
 	}
 	
 	public var isSoundsEnabled:Bool {
@@ -48,19 +49,26 @@ public class LL_Audio : NSObject {
 		
 		if isMusicEnabled {
 			
-			if let url = Bundle.main.url(forResource: "\(Int.random(in: 0...2))", withExtension: "mp3") {
+			DispatchQueue.global(qos: .background).async {
 				
-				currentMusic = Sound(url: url)
-				currentMusic?.play(numberOfLoops: -1)
+				if let url = Bundle.main.url(forResource: "\(Int.random(in: 0...2))", withExtension: "mp3") {
+					
+					let music = Sound(url: url)
+					self.currentMusic = music
+					music?.play(numberOfLoops: -1)
+				}
 			}
 		}
 	}
 	
-	public func play(_ sound:Keys) {
+	public func play(_ sound: Keys) {
 		
 		if isSoundsEnabled {
 			
-			Sound.play(file: "\(sound.rawValue).mp3")
+			DispatchQueue.global(qos: .background).async {
+				
+				Sound.play(file: "\(sound.rawValue).mp3")
+			}
 		}
 	}
 }

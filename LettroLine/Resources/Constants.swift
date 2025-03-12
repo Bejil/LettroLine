@@ -7,6 +7,14 @@
 
 import UIKit
 
+public struct Game {
+	
+	public static let BonusRate:Double = 0.2
+	public static let TimeTrialDuration:TimeInterval = 60
+	public static let firstPointsLevel: Double = 5.0
+	public static let pointsLevelMultiplier: Double = 2.3333
+}
+
 public struct UI {
 	
 	static var MainController :UIViewController {
@@ -50,6 +58,8 @@ public struct Colors {
 	}
 	
 	public struct Button {
+		
+		public static let Badge:UIColor = UIColor(named: "ButtonBadge")!
 		
 		public struct Primary {
 			
@@ -132,5 +142,30 @@ public struct Fonts {
 			public static let H3:UIFont = UIFont(name: Name.Black, size: Fonts.Size+8)!
 			public static let H4:UIFont = UIFont(name: Name.Black, size: Fonts.Size+5)!
 		}
+	}
+}
+
+public struct InAppPurchase {
+	
+	static let AlertCapping:Int = 5
+	static let Identifiers:[String] = [RemoveAds]
+	static let RemoveAds:String = "com.michaelblin.LettroLine.removeAds"
+}
+
+public struct Ads {
+	
+	public struct FullScreen {
+		
+		static let AppOpening:String = "ca-app-pub-9540216894729209/6324961115"
+		static let GameStart:String = "ca-app-pub-9540216894729209/2969670465"
+		static let GameLose:String = "ca-app-pub-9540216894729209/3530813793"
+		static let GameChance:String = "ca-app-pub-9540216894729209/6669242328"
+		static let GameBonus:String = "ca-app-pub-9540216894729209/9020073495"
+	}
+	
+	public struct Banner {
+		
+		static let Menu:String = "ca-app-pub-9540216894729209/6355236657"
+		static let Game:String = "ca-app-pub-9540216894729209/9604433403"
 	}
 }

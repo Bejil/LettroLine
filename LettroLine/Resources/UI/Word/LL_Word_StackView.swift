@@ -9,6 +9,7 @@ import UIKit
 
 public class LL_Word_StackView : UIStackView {
 
+	public var isPrimary:Bool = false
 	public var word: String? {
 		
 		didSet {
@@ -22,6 +23,7 @@ public class LL_Word_StackView : UIStackView {
 				word.forEach({ _ in
 					
 					let letterLabel: LL_Letter_Label = .init()
+					letterLabel.isSelected = isPrimary
 					addArrangedSubview(letterLabel)
 					letterLabel.snp.makeConstraints { make in
 						make.width.equalTo(snp.height)

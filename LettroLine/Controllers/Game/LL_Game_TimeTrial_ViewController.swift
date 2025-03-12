@@ -5,7 +5,198 @@
 //  Created by BLIN Michael on 04/03/2025.
 //
 
+import UIKit
+import GoogleMobileAds
+
 public class LL_Game_TimeTrial_ViewController : LL_Game_ViewController {
 	
+	public override var game: LL_Game {
+		
+		return LL_TimeTrial_Game.current
+	}
+	private var timer: Timer?
+	private var remainingTime:TimeInterval = Game.TimeTrialDuration
+	private var timerButton:LL_Button = {
+		
+		$0.isTertiary = true
+		$0.style = .solid
+		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
+		$0.snp.removeConstraints()
+		$0.isUserInteractionEnabled = false
+		return $0
+		
+	}(LL_Button())
 	
+	deinit {
+		
+		pause()
+	}
+	
+	public override func loadView() {
+		
+		super.loadView()
+		
+		title = String(key: "game.timeTrial.title")
+		
+		scoreStackView.insertArrangedSubview(timerButton, at: 1)
+		
+		updateText()
+	}
+	
+	public override func specificTutorial() {
+		
+		let viewController:LL_Tutorial_ViewController = .init()
+		viewController.key = .tutorialTimeTrialGame
+		viewController.items = [
+			
+			LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.0.title"), subtitle: String(key: "game.timeTrial.tutorial.0.content"), button: String(key: "game.timeTrial.tutorial.0.button")),
+			LL_Tutorial_ViewController.Item(sourceView: timerButton, title: String(key: "game.timeTrial.tutorial.1.title"), subtitle: String(key: "game.timeTrial.tutorial.1.content"), button: String(key: "game.timeTrial.tutorial.1.button"))
+		]
+		viewController.completion = { [weak self] in
+			
+			let viewController:LL_Tutorial_ViewController = .init()
+			viewController.items = [
+				
+				LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.start.0"), timeInterval: 2.0, closure: {
+					
+					UIApplication.feedBack(.On)
+					LL_Audio.shared.play(.button)
+				}),
+				LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.start.1"), timeInterval: 1.0, closure: {
+					
+					UIApplication.feedBack(.On)
+					LL_Audio.shared.play(.button)
+				}),
+				LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.start.2"), timeInterval: 1.0, closure: {
+					
+					UIApplication.feedBack(.On)
+					LL_Audio.shared.play(.button)
+				}),
+				LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.start.3"), timeInterval: 1.0, closure: {
+					
+					UIApplication.feedBack(.Success)
+					LL_Audio.shared.play(.tap)
+				}),
+				LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.start.4"), timeInterval: 2.0)
+			]
+			viewController.completion = { [weak self] in
+				
+				self?.play()
+			}
+			viewController.present()
+		}
+		viewController.present()
+	}
+	
+	public override func pause() {
+		
+		super.pause()
+		
+		timer?.invalidate()
+		timer = nil
+	}
+	
+	public override func play() {
+		
+		super.play()
+	
+		updateText()
+		
+		pause()
+		
+		timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [weak self] _ in
+			
+			if self?.remainingTime ?? 0 > 0 {
+				
+				self?.remainingTime -= 1
+				self?.updateText()
+			}
+			else {
+				
+				self?.pause()
+				
+				let newBestScoreState = (UserDefaults.get(.timeTrialBestScore) as? Int) ?? 0 < LL_TimeTrial_Game.current.score
+				
+				let viewController:LL_Tutorial_ViewController = .init()
+				viewController.items = [
+					
+					LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.end.0"), timeInterval: 2.0),
+					LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.end.1"), subtitle: [String(format: String(key: "game.timeTrial.tutorial.end.2"),LL_TimeTrial_Game.current.score),String(key: "game.timeTrial.tutorial.end.newBestScore" + (newBestScoreState ? ".on" : ".off"))].joined(separator: "\n\n"), button: String(key: "game.timeTrial.tutorial.end.button"))
+				]
+				viewController.completion = { [weak self] in
+					
+					LL_Confettis.stop()
+					
+					self?.dismiss()
+				}
+				viewController.present()
+				
+				if newBestScoreState {
+					
+					LL_Confettis.start()
+					
+					LL_TimeTrial_Game.current.saveBestScore()
+					UserDefaults.set(LL_TimeTrial_Game.current.score, .timeTrialBestScore)
+				}
+			}
+		})
+	}
+	
+	private func updateText() {
+		
+		let minutes = Int(remainingTime) / 60
+		let seconds = Int(remainingTime) % 60
+		
+		timerButton.title = String(format: "%02d:%02d", minutes, seconds)
+		timerButton.pulse(.clear)
+	}
+	
+	public override func newWord() {
+		
+		solutionWord = game.newWord()
+	}
+	
+	public override func success() {
+		
+		super.success()
+		
+		remainingTime += 3
+		updateText()
+	}
+	
+	public override func close() {
+		
+		pause()
+		
+		let alertController:LL_Alert_ViewController = .init()
+		alertController.title = String(key: "game.timeTrial.close.alert.title")
+		alertController.add(String(key: "game.timeTrial.close.alert.content"))
+		alertController.addDismissButton() { _ in
+			
+			super.close()
+		}
+		alertController.addCancelButton()
+		alertController.dismissHandler = { [weak self] in
+			
+			self?.play()
+		}
+		alertController.present()
+	}
+	
+	public override func dismiss(_ completion: (() -> Void)? = nil) {
+		
+		super.dismiss(completion)
+		
+		if (UserDefaults.get(.timeTrialBestScore) as? Int) ?? 0 < game.score {
+			
+			UserDefaults.set(game.score, .timeTrialBestScore)
+		}
+	}
+	
+	public override func updateScore() {
+		
+		super.updateScore()
+		
+		isBestScore = (UserDefaults.get(.timeTrialBestScore) as? Int) ?? 0 < game.score
+	}
 }

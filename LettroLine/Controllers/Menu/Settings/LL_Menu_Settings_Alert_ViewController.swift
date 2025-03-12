@@ -90,6 +90,21 @@ public class LL_Menu_Settings_Alert_ViewController : LL_Alert_ViewController {
 												 imageOff: "water.waves.slash")
 		add(vibrationsButton)
 		
+		if LL_Ads.shared.shouldDisplayAd {
+			
+			let adsTitleLabel = add(String(key: "menu.settings.alert.ads.title"))
+			adsTitleLabel.font = Fonts.Content.Title.H4
+			adsTitleLabel.textColor = .white
+			
+			let button = addDismissButton() { _ in
+				
+				LL_InAppPurchase.shared.promptInAppPurchaseAlert(withCapping: false)
+			}
+			button.style = .solid
+			button.title = String(key: "menu.settings.alert.ads.button")
+			button.image = UIImage(systemName: "rectangle.stack.badge.minus")
+		}
+		
 		let rulesTitleLabel = add(String(key: "menu.settings.alert.rules.title"))
 		rulesTitleLabel.font = Fonts.Content.Title.H4
 		rulesTitleLabel.textColor = .white

@@ -21,7 +21,7 @@ public class LL_ViewController : UIViewController {
 					UIApplication.feedBack(.Off)
 					LL_Audio.shared.play(.button)
 					
-					self?.dismiss()
+					self?.close()
 				}))
 			}
 		}
@@ -74,6 +74,7 @@ public class LL_ViewController : UIViewController {
 		
 		super.loadView()
 		
+		view.backgroundColor = Colors.Background.View.Primary
 		view.layer.addSublayer(gradientBackgroundLayer)
 		view.layer.addSublayer(particulesView.layer)
 		

@@ -11,13 +11,24 @@ extension UserDefaults {
 
 	public enum Keys : String, CaseIterable {
 		
+		case userId = "userId"
+		case shouldDisplayAds = "shouldDisplayAds"
+		case inAppPurchaseAlertCapping = "inAppPurchaseAlertCapping"
 		case onboarding = "onboarding"
 		case soundsEnabled = "soundsEnabled"
 		case musicEnabled = "musicEnabled"
 		case vibrationsEnabled = "vibrationsEnabled"
 		case allowFingerLift = "allowFingerLift"
 		case showFirstLetter = "showFirstLetter"
-		case currentGame = "currentGame"
+		case currentClassicGame = "currentClassicGame"
+		case currentTimeTrialGame = "currentTimeTrialGame"
+		case currentChallengeGame = "currentChallengeGame"
+		case classicBestScore = "classicBestScore"
+		case challengesBestScore = "challengeBestScore"
+		case timeTrialBestScore = "timeTrialBestScore"
+		case tutorialClassicGame = "tutorialClassicGame"
+		case tutorialTimeTrialGame = "tutorialTimeTrialGame"
+		case notifications = "notifications"
 	}
 	
 	public static func set(_ value:Any?, _ key:UserDefaults.Keys) {

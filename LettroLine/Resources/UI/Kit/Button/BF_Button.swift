@@ -124,11 +124,31 @@ public class LL_Button : UIButton {
 			
 			badgeView.text = badge
 			badgeView.isHidden = badge?.isEmpty ?? true
+			
+			if badge?.count ?? 0 == 1 {
+				
+				badgeView.snp.remakeConstraints { make in
+					make.height.equalTo(badgeView.snp.width)
+					make.width.greaterThanOrEqualTo(UI.Margins)
+					make.top.right.equalToSuperview().inset(-UI.Margins/3)
+				}
+			}
+			else {
+				
+				badgeView.snp.remakeConstraints { make in
+					make.height.equalTo(1.5*UI.Margins)
+					make.width.greaterThanOrEqualTo(badgeView.snp.height)
+					make.top.right.equalToSuperview().inset(-UI.Margins/3)
+				}
+			}
+
+			badgeView.layoutSubviews()
+			badgeView.layer.cornerRadius = badgeView.frame.size.height/2
 		}
 	}
 	private lazy var badgeView:LL_Label = {
 		
-		$0.backgroundColor = Colors.Primary
+		$0.backgroundColor = Colors.Button.Badge
 		$0.textColor = .white
 		$0.textAlignment = .center
 		$0.font = Fonts.Content.Text.Bold.withSize(Fonts.Size-2)
@@ -136,10 +156,6 @@ public class LL_Button : UIButton {
 		$0.clipsToBounds = true
 		$0.contentInsets = .init(2)
 		$0.isHidden = true
-		$0.snp.makeConstraints { make in
-			make.height.equalTo(UI.Margins)
-			make.width.greaterThanOrEqualTo(UI.Margins)
-		}
 		return $0
 		
 	}(LL_Label())
@@ -169,9 +185,6 @@ public class LL_Button : UIButton {
 		}
 		
 		addSubview(badgeView)
-		badgeView.snp.makeConstraints { make in
-			make.top.right.equalToSuperview()
-		}
 		
 		update()
 		
