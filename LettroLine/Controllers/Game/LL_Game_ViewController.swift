@@ -1005,6 +1005,14 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		if let indexPath = collectionView.indexPathForItem(at: location), let cell = collectionView.cellForItem(at: indexPath) as? LL_Grid_Letter_CollectionViewCell, let word = solutionWord?.lowercased(), currentSolutionIndex < word.count {
 			
+			let expectedLetter = word[word.index(word.startIndex, offsetBy: currentSolutionIndex)]
+			
+			if !cell.isSelected && cell.letter?.lowercased() != String(expectedLetter) && usedIndexPaths.last != indexPath {
+				
+				LL_Audio.shared.play(.button)
+				UIApplication.feedBack(.Off)
+			}
+			
 			if usedIndexPaths.last != indexPath {
 				
 				let center = cell.superview?.convert(cell.center, to: collectionView) ?? CGPoint.zero
@@ -1020,125 +1028,62 @@ public class LL_Game_ViewController: LL_ViewController {
 				
 				userPathLayer.path = userPath.cgPath
 				
-				if usedIndexPaths.contains(indexPath) {
+				let row = indexPath.item / columns
+				let col = indexPath.item % columns
+				let lc_indexPath = IndexPath(row: row, section: col)
+				
+				if let bonus = grid?.bonus, lc_indexPath == bonus, !usedIndexPaths.compactMap({
 					
-					fail(reason: String(key: "game.fail.reason.intersect"))
+					let row = $0.item / columns
+					let col = $0.item % columns
+					let indexPath = IndexPath(row: row, section: col)
+					
+					return indexPath
+					
+				}).contains(bonus) && canAddMorePoint {
+					
+					LL_Audio.shared.play(.bonus)
+					UIApplication.feedBack(.Success)
 				}
-				else {
+				
+				usedIndexPaths.append(indexPath)
+			}
+			
+			if isSelfIntersecting(path: userPath) && !isGameOver {
+				
+				fail(reason: String(key: "game.fail.reason.intersect"))
+				
+				return
+			}
+			
+			if cell.isSelected {
+				
+				if let lastSelected = lastSelectedIndexPath, lastSelected == indexPath {
 					
-					usedIndexPaths.append(indexPath)
+				}
+				else if !isGameOver {
 					
-					let expectedLetter = word[word.index(word.startIndex, offsetBy: currentSolutionIndex)]
+					fail(reason: String(key: "game.fail.reason.sameLetter"))
 					
-					if cell.letter?.lowercased() != String(expectedLetter) {
-						
-						let bonusState = cell.letter == String(key: "game.bonus")
-						
-						if bonusState {
-							
-							LL_Audio.shared.play(.bonus)
-							UIApplication.feedBack(.Success)
-						}
-						else {
-							
-							LL_Audio.shared.play(.button)
-							UIApplication.feedBack(.Off)
-						}
-					}
-					else {
-						
-						cell.isSelected = true
-						wordStackView.select(expectedLetter)
-						lastSelectedIndexPath = indexPath
-						currentSolutionIndex += 1
-						
-						if currentSolutionIndex == word.count && canAddMorePoint {
-							
-							success()
-						}
-					}
+					return
 				}
 			}
 			
-//			let expectedLetter = word[word.index(word.startIndex, offsetBy: currentSolutionIndex)]
-//			
-//			if !cell.isSelected && cell.letter?.lowercased() != String(expectedLetter) && usedIndexPaths.last != indexPath {
-//				
-//				LL_Audio.shared.play(.button)
-//				UIApplication.feedBack(.Off)
-//			}
-//			
-//			if usedIndexPaths.last != indexPath {
-//				
-//				let center = cell.superview?.convert(cell.center, to: collectionView) ?? CGPoint.zero
-//				
-//				if usedIndexPaths.isEmpty {
-//					
-//					userPath.move(to: center)
-//				}
-//				else {
-//					
-//					userPath.addLine(to: center)
-//				}
-//				
-//				userPathLayer.path = userPath.cgPath
-//				
-//				let row = indexPath.item / columns
-//				let col = indexPath.item % columns
-//				let lc_indexPath = IndexPath(row: row, section: col)
-//				
-//				if let bonus = grid?.bonus, lc_indexPath == bonus, !usedIndexPaths.compactMap({
-//					
-//					let row = $0.item / columns
-//					let col = $0.item % columns
-//					let indexPath = IndexPath(row: row, section: col)
-//					
-//					return indexPath
-//					
-//				}).contains(bonus) && canAddMorePoint {
-//					
-//					LL_Audio.shared.play(.bonus)
-//					UIApplication.feedBack(.Success)
-//				}
-//				
-//				usedIndexPaths.append(indexPath)
-//			}
-//			
-//			if isSelfIntersecting(path: userPath) && !isGameOver {
-//				
-//				fail(reason: String(key: "game.fail.reason.intersect"))
-//				
-//				return
-//			}
-//			
-//			if cell.isSelected {
-//				
-//				if let lastSelected = lastSelectedIndexPath, lastSelected == indexPath {
-//					
-//				}
-//				else if !isGameOver {
-//					
-//					fail(reason: String(key: "game.fail.reason.sameLetter"))
-//					
-//					return
-//				}
-//			}
-//			
-//			if !cell.isSelected {
-//				
-//				if cell.letter?.lowercased() == String(expectedLetter) {
-//					
-//					cell.isSelected = true
-//					wordStackView.select(expectedLetter)
-//					lastSelectedIndexPath = indexPath
-//					currentSolutionIndex += 1
-//					
-//					if currentSolutionIndex == word.count && canAddMorePoint {
-//						
-//						success()
-//					}
-//				}
-//			}
+			if !cell.isSelected {
+				
+				if cell.letter?.lowercased() == String(expectedLetter) {
+					
+					cell.isSelected = true
+					wordStackView.select(expectedLetter)
+					lastSelectedIndexPath = indexPath
+					currentSolutionIndex += 1
+					
+					if currentSolutionIndex == word.count && canAddMorePoint {
+						
+						success()
+					}
+				}
+			}
 		}
 	}
 	

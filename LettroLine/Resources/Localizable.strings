@@ -134,7 +134,6 @@
 "game.fail.alert.button" = "Regarder";
 "game.fail.reason.outOfBounds" = "Tu es sorti du terrain";
 "game.fail.reason.intersect" = "Tu as coupé ton chemin";
-"game.fail.reason.sameLetter" = "Tu es déjà passé par cette lettre";
 "game.fail.reason.fingerLift" = "Tu as levé ton doigt avant d'avoir fini";
 "game.challenges.title" = "Challenges";
 "game.challenges.remaining" = " coups";
