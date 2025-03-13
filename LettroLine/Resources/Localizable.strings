@@ -62,9 +62,6 @@
 "menu.settings.alert.ads.title" = "Publicités";
 "menu.settings.alert.ads.button" = "Marre des pubs ?";
 "menu.settings.alert.rules.title" = "Règles et contraintes de jeu";
-"menu.settings.alert.rules.showFirstLetter.content" = "La première lettre s'affiche pour te guider, active ce coup de pouce pour bien démarrer !";
-"menu.settings.alert.rules.showFirstLetter.button.title.on" = "Activé";
-"menu.settings.alert.rules.showFirstLetter.button.title.off" = "Désactivé";
 "menu.settings.alert.rules.allowFingerLift.content" = "Tu as le droit de relever ton doigt, mais ton tracé repartira de zéro !";
 "menu.settings.alert.rules.allowFingerLift.button.title.on" = "Activé";
 "menu.settings.alert.rules.allowFingerLift.button.title.off" = "Désactivé";

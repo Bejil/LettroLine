@@ -27,7 +27,7 @@ public class LL_Game_ViewController: LL_ViewController {
 	public lazy var usedIndexPaths: Array<IndexPath> = []
 	private var lastSelectedIndexPath: IndexPath?
 	private lazy var allowFingerLift: Bool = UserDefaults.get(.allowFingerLift) as? Bool ?? true
-	private lazy var showFirst:Bool = UserDefaults.get(.showFirstLetter) as? Bool ?? true {
+	private lazy var showFirst:Bool = false {
 		
 		didSet {
 			
@@ -465,6 +465,8 @@ public class LL_Game_ViewController: LL_ViewController {
 	
 	public func newWord() {
 		
+		showFirst = false
+		
 		let score = Double(game.score)
 		
 		var wordLength = String.minLetters
@@ -845,6 +847,9 @@ public class LL_Game_ViewController: LL_ViewController {
 	}
 	
 	public func showSolution() {
+		
+		showFirst = true
+		
 		let solutionPath = UIBezierPath()
 		guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout,
 			  let positions = grid?.positions else { return }
