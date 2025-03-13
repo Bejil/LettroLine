@@ -19,7 +19,6 @@ extension UserDefaults {
 		case musicEnabled = "musicEnabled"
 		case vibrationsEnabled = "vibrationsEnabled"
 		case allowFingerLift = "allowFingerLift"
-		case showFirstLetter = "showFirstLetter"
 		case currentClassicGame = "currentClassicGame"
 		case currentTimeTrialGame = "currentTimeTrialGame"
 		case currentChallengeGame = "currentChallengeGame"
