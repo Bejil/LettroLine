@@ -23,8 +23,7 @@ public class LL_Ads : NSObject {
 	
 	public var shouldDisplayAd:Bool {
 		
-		#warning("need to remove")
-		return false//UserDefaults.get(.shouldDisplayAds) as? Bool ?? true
+		return UserDefaults.get(.shouldDisplayAds) as? Bool ?? true
 	}
 	
 	public func start() {

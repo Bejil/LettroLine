@@ -13,10 +13,12 @@
 		D43334EE2D7C5A3C002D8A89 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = D43334ED2D7C5A3C002D8A89 /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		D43334F12D7EF49D002D8A89 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = D43334F02D7EF49D002D8A89 /* GoogleMobileAds */; };
 		D433350D2D817FC5002D8A89 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = D433350C2D817FC5002D8A89 /* FirebaseMessaging */; };
+		D43335162D82B1FE002D8A89 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43335152D82B1FE002D8A89 /* StoreKit.framework */; };
 		D4CE19192D5CA4680083A5AA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = D4CE19182D5CA4680083A5AA /* SnapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D43335152D82B1FE002D8A89 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		D4CE18C42D5B611D0083A5AA /* LettroLine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LettroLine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -49,6 +51,7 @@
 				D43334F12D7EF49D002D8A89 /* GoogleMobileAds in Frameworks */,
 				D4CE19192D5CA4680083A5AA /* SnapKit in Frameworks */,
 				D433350D2D817FC5002D8A89 /* FirebaseMessaging in Frameworks */,
+				D43335162D82B1FE002D8A89 /* StoreKit.framework in Frameworks */,
 				D43334EE2D7C5A3C002D8A89 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				D43334E62D7B2B29002D8A89 /* FirebaseFirestore in Frameworks */,
 				D43334392D64A1C8002D8A89 /* SwiftySound in Frameworks */,
@@ -59,10 +62,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D43335142D82B1FE002D8A89 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D43335152D82B1FE002D8A89 /* StoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		D4CE18BB2D5B611D0083A5AA = {
 			isa = PBXGroup;
 			children = (
 				D4CE18C62D5B611D0083A5AA /* LettroLine */,
+				D43335142D82B1FE002D8A89 /* Frameworks */,
 				D4CE18C52D5B611D0083A5AA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -174,8 +186,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LettroLine/LettroLine.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.0;
+				CURRENT_PROJECT_VERSION = 1.0.1;
 				DEVELOPMENT_TEAM = K73XJ748R3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "LettroLine/Resources/Supporting Files/Info.plist";
@@ -204,8 +217,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LettroLine/LettroLine.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.0;
+				CURRENT_PROJECT_VERSION = 1.0.1;
 				DEVELOPMENT_TEAM = K73XJ748R3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "LettroLine/Resources/Supporting Files/Info.plist";

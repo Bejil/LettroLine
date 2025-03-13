@@ -845,21 +845,16 @@ public class LL_Game_ViewController: LL_ViewController {
 	}
 	
 	public func showSolution() {
-		
 		let solutionPath = UIBezierPath()
-		
-			// Vérifie que nous disposons d'un layout et des positions
 		guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout,
 			  let positions = grid?.positions else { return }
 		
-			// Calcul des dimensions de chaque cellule
 		let totalSpacingX = layout.sectionInset.left + layout.sectionInset.right + (layout.minimumInteritemSpacing * CGFloat(columns - 1))
 		let cellWidth = (collectionView.frame.width - totalSpacingX) / CGFloat(columns)
-		
 		let totalSpacingY = layout.sectionInset.top + layout.sectionInset.bottom + (layout.minimumLineSpacing * CGFloat(rows - 1))
 		let cellHeight = (collectionView.frame.height - totalSpacingY) / CGFloat(rows)
 		
-			// Convertir les positions (stockées comme (col + 0.5, row + 0.5)) en indices et en centres de cellules
+			// Conversion des positions en indices et centres
 		var validIndices: [(row: Int, col: Int)] = []
 		var validCenters: [CGPoint] = []
 		for point in positions {
@@ -873,32 +868,36 @@ public class LL_Game_ViewController: LL_ViewController {
 			validCenters.append(center)
 		}
 		
-			// Fonction pour vérifier un déplacement autorisé (horizontal, vertical ou diagonal)
-		func isAllowedMove(from: (row: Int, col: Int), to: (row: Int, col: Int)) -> Bool {
-			let dr = abs(to.row - from.row)
-			let dc = abs(to.col - from.col)
-			return (dr == 0 || dc == 0 || dr == dc)
+			// Filtrer pour ne garder qu'une seule occurrence par cellule
+		var uniqueIndices: [(row: Int, col: Int)] = []
+		var uniqueCenters: [CGPoint] = []
+		for (i, idx) in validIndices.enumerated() {
+			if !uniqueIndices.contains(where: { $0.row == idx.row && $0.col == idx.col }) {
+				uniqueIndices.append(idx)
+				uniqueCenters.append(validCenters[i])
+			}
 		}
 		
-			// Insertion du bonus (s'il existe) dans le chemin, en le plaçant dans la fente qui respecte la contrainte
+			// Insertion du bonus dans le chemin si présent et si la cellule bonus n'a pas déjà été utilisée
 		if let bonusIndexPath = grid?.bonus {
 			let bonusIndex = (row: bonusIndexPath.row, col: bonusIndexPath.section)
-				// Calculer le centre du bonus
 			let bonusCenter = CGPoint(
 				x: layout.sectionInset.left + CGFloat(bonusIndex.col) * (cellWidth + layout.minimumInteritemSpacing) + cellWidth / 2,
 				y: layout.sectionInset.top + CGFloat(bonusIndex.row) * (cellHeight + layout.minimumLineSpacing) + cellHeight / 2
 			)
-			
+			func isAllowedMove(from: (row: Int, col: Int), to: (row: Int, col: Int)) -> Bool {
+				let dr = abs(to.row - from.row)
+				let dc = abs(to.col - from.col)
+				return (dr == 0 || dc == 0 || dr == dc)
+			}
 			var bestInsertionIndex: Int? = nil
 			var minExtraDistance = CGFloat.greatestFiniteMagnitude
-			for i in 0..<validIndices.count - 1 {
-				let from = validIndices[i]
-				let to = validIndices[i+1]
-					// Le bonus ne peut être inséré que si le déplacement depuis 'from' vers le bonus et du bonus vers 'to' est autorisé.
+			for i in 0..<uniqueIndices.count - 1 {
+				let from = uniqueIndices[i]
+				let to = uniqueIndices[i+1]
 				if !isAllowedMove(from: from, to: bonusIndex) || !isAllowedMove(from: bonusIndex, to: to) {
 					continue
 				}
-					// Calcul de l'extra distance (distance supplémentaire par rapport au chemin direct)
 				let directDistance = CGFloat(max(abs(to.row - from.row), abs(to.col - from.col)))
 				let d1 = CGFloat(max(abs(bonusIndex.row - from.row), abs(bonusIndex.col - from.col)))
 				let d2 = CGFloat(max(abs(to.row - bonusIndex.row), abs(to.col - bonusIndex.col)))
@@ -908,51 +907,41 @@ public class LL_Game_ViewController: LL_ViewController {
 					bestInsertionIndex = i + 1
 				}
 			}
-			if let insertionIndex = bestInsertionIndex {
-				validIndices.insert(bonusIndex, at: insertionIndex)
-					// Recalcule le centre pour le bonus (déjà calculé) et l'insère
-				validCenters.insert(bonusCenter, at: insertionIndex)
+			if let insertionIndex = bestInsertionIndex,
+			   !uniqueIndices.contains(where: { $0.row == bonusIndex.row && $0.col == bonusIndex.col }) {
+				uniqueIndices.insert(bonusIndex, at: insertionIndex)
+				uniqueCenters.insert(bonusCenter, at: insertionIndex)
 			}
 		}
 		
-			// Construction du chemin interpolé :
-			// Pour chaque segment entre deux indices, on ajoute tous les points intermédiaires (déplacement cellule par cellule)
+			// Construction du chemin interpolé (mouvement cellule par cellule)
 		var interpolatedCenters: [CGPoint] = []
-		var interpolatedIndices: [(row: Int, col: Int)] = []
-		
 		func centerForIndex(_ index: (row: Int, col: Int)) -> CGPoint {
 			return CGPoint(
 				x: layout.sectionInset.left + CGFloat(index.col) * (cellWidth + layout.minimumInteritemSpacing) + cellWidth / 2,
 				y: layout.sectionInset.top + CGFloat(index.row) * (cellHeight + layout.minimumLineSpacing) + cellHeight / 2
 			)
 		}
-		
-			// On parcourt les points du chemin validIndices
-		for i in 0..<validIndices.count - 1 {
-			let start = validIndices[i]
-			let end = validIndices[i+1]
-				// On ajoute le point de départ
+		for i in 0..<uniqueIndices.count - 1 {
+			let start = uniqueIndices[i]
+			let end = uniqueIndices[i+1]
 			if i == 0 {
-				interpolatedIndices.append(start)
 				interpolatedCenters.append(centerForIndex(start))
 			}
-				// Calcul des différences
 			let dr = end.row - start.row
 			let dc = end.col - start.col
-				// Nombre de pas nécessaires (distance de Chebyshev)
 			let steps = max(abs(dr), abs(dc))
-				// Incréments par étape
 			let stepRow = dr != 0 ? dr / steps : 0
 			let stepCol = dc != 0 ? dc / steps : 0
-				// Ajouter les points intermédiaires (à partir de 1 jusqu'à steps)
 			for s in 1...steps {
 				let intermediate = (row: start.row + s * stepRow, col: start.col + s * stepCol)
-				interpolatedIndices.append(intermediate)
-				interpolatedCenters.append(centerForIndex(intermediate))
+				if !interpolatedCenters.contains(where: { abs(centerForIndex(intermediate).x - $0.x) < 0.1 && abs(centerForIndex(intermediate).y - $0.y) < 0.1 }) {
+					interpolatedCenters.append(centerForIndex(intermediate))
+				}
 			}
 		}
 		
-			// Construction du UIBezierPath en reliant les centres interpolés
+			// Construction du UIBezierPath
 		for (index, center) in interpolatedCenters.enumerated() {
 			if index == 0 {
 				solutionPath.move(to: center)
@@ -960,9 +949,7 @@ public class LL_Game_ViewController: LL_ViewController {
 				solutionPath.addLine(to: center)
 			}
 		}
-		
 		solutionPathLayer.path = solutionPath.cgPath
-		
 		let animation = CABasicAnimation(keyPath: "strokeEnd")
 		animation.fromValue = 0.0
 		animation.toValue = 1.0
@@ -972,6 +959,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		solutionPathLayer.add(animation, forKey: "strokeEnd")
 		CATransaction.commit()
 	}
+
 
 	private func hideSolution() {
 		
