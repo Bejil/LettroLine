@@ -26,7 +26,10 @@ public class LL_Game_ViewController: LL_ViewController {
 	}
 	public lazy var usedIndexPaths: Array<IndexPath> = []
 	private var lastSelectedIndexPath: IndexPath?
-	private lazy var allowFingerLift: Bool = UserDefaults.get(.allowFingerLift) as? Bool ?? true
+	public var allowFingerLift: Bool {
+		
+		return true
+	}
 	private lazy var showFirst:Bool = false {
 		
 		didSet {
@@ -242,6 +245,102 @@ public class LL_Game_ViewController: LL_ViewController {
 		return $0
 		
 	}(UICollectionViewFlowLayout())
+	private lazy var panGestureRecognizer:UIPanGestureRecognizer = .init { [weak self] gestureRecognizer in
+		guard let self = self, let gesture = gestureRecognizer as? UIPanGestureRecognizer else { return }
+		
+		let location = gesture.location(in: self.collectionView)
+		
+		switch gesture.state {
+		case .began:
+			
+			self.hideSolution()
+				// Réinitialisation du tracé et des index utilisés
+			self.userPath.removeAllPoints()
+			self.usedIndexPaths.removeAll()
+			self.currentSolutionIndex = 0
+			
+				// Dérélection des cellules visibles
+			if let cells = self.collectionView.visibleCells as? [LL_Grid_Letter_CollectionViewCell] {
+				
+				cells.forEach {
+					
+					$0.isSelected = false
+					$0.isFirst = false
+					$0.resetTimers()
+				}
+			}
+			
+			self.userPathLayer.removeAllAnimations()
+			self.userPathLayer.strokeEnd = 1.0
+			
+			UIView.animation {
+				self.userPathLayer.opacity = 1.0
+			}
+			
+				// Traitement immédiat de la position de départ
+			self.processPanGesture(at: location)
+			
+		case .changed:
+			if isGameOver { return }
+			
+			if !self.collectionView.bounds.contains(location) {
+				if !isGameOver {
+					self.fail(reason: String(key: "game.fail.reason.outOfBounds"))
+					return
+				}
+			}
+				// Traitement de la position mise à jour
+			self.processPanGesture(at: location)
+			
+		case .ended, .cancelled:
+			if self.allowFingerLift {
+				UIApplication.feedBack(.Off)
+				self.userPathLayer.removeAnimation(forKey: "strokeEndReverse")
+				
+				CATransaction.begin()
+				CATransaction.setCompletionBlock { [weak self] in
+					guard let self = self else { return }
+					self.userPath.removeAllPoints()
+					self.usedIndexPaths.removeAll()
+					self.currentSolutionIndex = 0
+					
+					if let cells = self.collectionView.visibleCells as? [LL_Grid_Letter_CollectionViewCell] {
+						
+						cells.forEach {
+							
+							$0.isSelected = false
+							$0.isFirst = self.showFirst && $0.letter == self.solutionWord?.first?.uppercased()
+							$0.startTimers()
+						}
+					}
+					
+					for cell in self.collectionView.visibleCells {
+						cell.isSelected = false
+						(cell as? LL_Grid_Letter_CollectionViewCell)?.startTimers()
+					}
+					self.showFirst = self.showFirst
+					self.userPathLayer.path = nil
+					self.wordStackView.deselectAll()
+				}
+				
+				let currentStrokeEnd = self.userPathLayer.presentation()?.strokeEnd ?? 1.0
+				let animation = CABasicAnimation(keyPath: "strokeEnd")
+				animation.fromValue = currentStrokeEnd
+				animation.toValue = 0.0
+				animation.duration = 0.1 * Double(self.usedIndexPaths.count)
+				animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+				self.userPathLayer.strokeEnd = 0.0
+				self.userPathLayer.add(animation, forKey: "strokeEndReverse")
+				CATransaction.commit()
+			} else if !isGameOver, let word = self.solutionWord?.lowercased(), self.currentSolutionIndex < word.count {
+				self.fail(reason: String(key: "game.fail.reason.fingerLift"))
+				return
+			}
+			
+		default:
+			break
+		}
+	}
 	public lazy var collectionView: LL_CollectionView = {
 		
 		$0.register(LL_Grid_Letter_CollectionViewCell.self, forCellWithReuseIdentifier: LL_Grid_Letter_CollectionViewCell.identifier)
@@ -251,102 +350,6 @@ public class LL_Game_ViewController: LL_ViewController {
 		$0.clipsToBounds = false
 		$0.isHeightDynamic = true
 		
-		let panGestureRecognizer = UIPanGestureRecognizer { [weak self] gestureRecognizer in
-			guard let self = self, let gesture = gestureRecognizer as? UIPanGestureRecognizer else { return }
-			
-			let location = gesture.location(in: self.collectionView)
-			
-			switch gesture.state {
-			case .began:
-				
-				self.hideSolution()
-					// Réinitialisation du tracé et des index utilisés
-				self.userPath.removeAllPoints()
-				self.usedIndexPaths.removeAll()
-				self.currentSolutionIndex = 0
-				
-					// Dérélection des cellules visibles
-				if let cells = self.collectionView.visibleCells as? [LL_Grid_Letter_CollectionViewCell] {
-					
-					cells.forEach {
-						
-						$0.isSelected = false
-						$0.isFirst = false
-						$0.resetTimers()
-					}
-				}
-				
-				self.userPathLayer.removeAllAnimations()
-				self.userPathLayer.strokeEnd = 1.0
-				
-				UIView.animation {
-					self.userPathLayer.opacity = 1.0
-				}
-				
-					// Traitement immédiat de la position de départ
-				self.processPanGesture(at: location)
-				
-			case .changed:
-				if isGameOver { return }
-				
-				if !self.collectionView.bounds.contains(location) {
-					if !isGameOver {
-						self.fail(reason: String(key: "game.fail.reason.outOfBounds"))
-						return
-					}
-				}
-					// Traitement de la position mise à jour
-				self.processPanGesture(at: location)
-				
-			case .ended, .cancelled:
-				if self.allowFingerLift {
-					UIApplication.feedBack(.Off)
-					self.userPathLayer.removeAnimation(forKey: "strokeEndReverse")
-					
-					CATransaction.begin()
-					CATransaction.setCompletionBlock { [weak self] in
-						guard let self = self else { return }
-						self.userPath.removeAllPoints()
-						self.usedIndexPaths.removeAll()
-						self.currentSolutionIndex = 0
-						
-						if let cells = self.collectionView.visibleCells as? [LL_Grid_Letter_CollectionViewCell] {
-							
-							cells.forEach {
-								
-								$0.isSelected = false
-								$0.isFirst = self.showFirst && $0.letter == self.solutionWord?.first?.uppercased()
-								$0.startTimers()
-							}
-						}
-						
-						for cell in self.collectionView.visibleCells {
-							cell.isSelected = false
-							(cell as? LL_Grid_Letter_CollectionViewCell)?.startTimers()
-						}
-						self.showFirst = self.showFirst
-						self.userPathLayer.path = nil
-						self.wordStackView.deselectAll()
-					}
-					
-					let currentStrokeEnd = self.userPathLayer.presentation()?.strokeEnd ?? 1.0
-					let animation = CABasicAnimation(keyPath: "strokeEnd")
-					animation.fromValue = currentStrokeEnd
-					animation.toValue = 0.0
-					animation.duration = 0.1 * Double(self.usedIndexPaths.count)
-					animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-					self.userPathLayer.strokeEnd = 0.0
-					self.userPathLayer.add(animation, forKey: "strokeEndReverse")
-					CATransaction.commit()
-				} else if !isGameOver, let word = self.solutionWord?.lowercased(), self.currentSolutionIndex < word.count {
-					self.fail(reason: String(key: "game.fail.reason.fingerLift"))
-					return
-				}
-				
-			default:
-				break
-			}
-		}
 		$0.addGestureRecognizer(panGestureRecognizer)
 		
 		$0.layer.addSublayer(solutionPathLayer)
@@ -414,6 +417,10 @@ public class LL_Game_ViewController: LL_ViewController {
 		updateScore()
 	}
 	
+	public func updateBestScore() {
+		
+	}
+	
 	private func tutorial() {
 		
 		let viewController:LL_Tutorial_ViewController = .init()
@@ -464,6 +471,8 @@ public class LL_Game_ViewController: LL_ViewController {
 	}
 	
 	public func newWord() {
+		
+		updateBestScore()
 		
 		showFirst = false
 		
@@ -1082,6 +1091,8 @@ public class LL_Game_ViewController: LL_ViewController {
 	
 	public func success() {
 		
+		panGestureRecognizer.isEnabled = false
+		
 		LL_Audio.shared.play(.success)
 		UIApplication.feedBack(.Success)
 		
@@ -1109,6 +1120,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		UIApplication.wait { [weak self] in
 			
+			self?.panGestureRecognizer.isEnabled = true
 			self?.newWord()
 		}
 		
