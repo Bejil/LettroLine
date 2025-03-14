@@ -91,43 +91,50 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 	}(LL_Button(String(key: "menu.challenges.button")) { _ in
 		
-		let startClosure:(()->Void) = {
-			
-			UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Challenges_ViewController()), animated: true)
-		}
+		let alertController:LL_Alert_ViewController = .init()
+		alertController.title = String(key: "menu.challenges.alert.title")
+		alertController.add(String(key: "menu.challenges.alert.content"))
 		
-		if LL_Challenges_Game.current.score != 0 {
+		let moveLimitButton = alertController.addButton(title: String(key: "menu.challenges.alert.button.moveLimit")) { _ in
 			
-			let alertController:LL_Alert_ViewController = .init()
-			alertController.title = String(key: "menu.challenges.new.alert.title")
-			alertController.add(String(key: "menu.challenges.new.alert.content"))
-			alertController.addDismissButton() { _ in
+			alertController.close {
 				
 				LL_Challenges_Game.current.reset()
-				
-				startClosure()
+				UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Challenges_MoveLimit_ViewController()), animated: true)
 			}
-			alertController.addCancelButton()
-			alertController.present()
+		}
+		moveLimitButton.image = UIImage(systemName: "numbers.rectangle")
+		
+		if let bestScore = UserDefaults.get(.challengesMoveLimitBestScore) as? Int, bestScore > 0 {
+			
+			moveLimitButton.subtitle = String(key: "menu.challenges.button.subtitle") + "\(bestScore)"
 		}
 		else {
 			
-			startClosure()
+			moveLimitButton.subtitle = nil
 		}
-	})
-	private lazy var challengesGameContinueButton:LL_Button = { button in
 		
-		button.image = UIImage(systemName: "play.fill")
-		button.style = .tinted
-		button.snp.makeConstraints { make in
+		let noLiftButton = alertController.addButton(title: String(key: "menu.challenges.alert.button.noLift")) { _ in
 			
-			make.width.equalTo(button.snp.height)
+			alertController.close {
+				
+				LL_Challenges_Game.current.reset()
+				UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Challenges_NoLift_ViewController()), animated: true)
+			}
 		}
-		return button
+		noLiftButton.image = UIImage(systemName: "point.topright.filled.arrow.triangle.backward.to.point.bottomleft.scurvepath")
 		
-	}(LL_Button() { _ in
+		if let bestScore = UserDefaults.get(.challengesNoLiftBestScore) as? Int, bestScore > 0 {
+			
+			noLiftButton.subtitle = String(key: "menu.challenges.button.subtitle") + "\(bestScore)"
+		}
+		else {
+			
+			noLiftButton.subtitle = nil
+		}
 		
-		UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Challenges_ViewController()), animated: true)
+		alertController.addCancelButton()
+		alertController.present()
 	})
 	private lazy var timeTrialGameStartButton:LL_Button = {
 		
@@ -171,12 +178,8 @@ public class LL_Menu_ViewController: LL_ViewController {
 		timeTrialGameStackView.alignment = .fill
 		$0.addArrangedSubview(timeTrialGameStackView)
 		
-		let challengesGameStackView:UIStackView = .init(arrangedSubviews: [challengesGameStartButton,challengesGameContinueButton])
-		challengesGameStackView.axis = .horizontal
-		challengesGameStackView.spacing = UI.Margins
-		challengesGameStackView.alignment = .fill
-		$0.addArrangedSubview(challengesGameStackView)
-		$0.setCustomSpacing(1.5*$0.spacing, after: challengesGameStackView)
+		$0.addArrangedSubview(challengesGameStartButton)
+		$0.setCustomSpacing(1.5*$0.spacing, after: challengesGameStartButton)
 		
 		let settingsButton:LL_Button = .init(String(key: "menu.settings.button")) { _ in
 			
@@ -227,7 +230,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		if let bestScore = UserDefaults.get(.classicBestScore) as? Int, bestScore > 0 {
 			
-			classicGameStartButton.subtitle = String(key: "menu.timeTrial.button.subtitle") + "\(bestScore)"
+			classicGameStartButton.subtitle = String(key: "menu.classic.button.subtitle") + "\(bestScore)"
 		}
 		else {
 			
@@ -244,18 +247,6 @@ public class LL_Menu_ViewController: LL_ViewController {
 			timeTrialGameRankingButton.isHidden = true
 			timeTrialGameStartButton.subtitle = nil
 		}
-		
-		if let bestScore = UserDefaults.get(.challengesBestScore) as? Int, bestScore > 0 {
-			
-			challengesGameStartButton.subtitle = String(key: "menu.timeTrial.button.subtitle") + "\(bestScore)"
-		}
-		else {
-			
-			challengesGameStartButton.subtitle = nil
-		}
-		
-		challengesGameContinueButton.isHidden = LL_Challenges_Game.current.score == 0
-		challengesGameContinueButton.badge = "\(LL_Challenges_Game.current.score)"
 		
 		stackView.animate()
 	}

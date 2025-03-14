@@ -28,10 +28,7 @@ public class LL_Ads : NSObject {
 	
 	public func start() {
 		
-		if shouldDisplayAd {
-			
-			MobileAds.shared.start(completionHandler: nil)
-		}
+		MobileAds.shared.start(completionHandler: nil)
 	}
 	
 	private var appOpening:AppOpenAd?
