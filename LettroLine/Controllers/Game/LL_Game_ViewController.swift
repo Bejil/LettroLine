@@ -200,31 +200,38 @@ public class LL_Game_ViewController: LL_ViewController {
 			alertController.add(String(key: "game.help.alert.content.1"))
 			alertController.addButton(title: String(key: "game.help.alert.button.title"), subtitle: String(key: "game.help.alert.button.subtitle")) { [weak self] button in
 				
-				button?.isLoading = true
-				
-				Task {
+				if LL_Network.shared.isConnected {
 					
-					await LL_Ads.shared.presentRewardedAd(Ads.FullScreen.GameBonus) { [weak self] state in
+					button?.isLoading = true
+					
+					Task {
 						
-						button?.isLoading = true
-						
-						alertController.close { [weak self] in
+						await LL_Ads.shared.presentRewardedAd(Ads.FullScreen.GameBonus) { [weak self] state in
 							
-							if state {
+							button?.isLoading = true
+							
+							alertController.close { [weak self] in
 								
-								self?.showSolution()
-								self?.play()
-							}
-							else {
-								
-								let alertController = LL_Alert_ViewController.present(LL_Error(String(key: "ads.error")))
-								alertController.dismissHandler = { [weak self] in
+								if state {
 									
+									self?.showSolution()
 									self?.play()
+								}
+								else {
+									
+									let alertController = LL_Alert_ViewController.present(LL_Error(String(key: "ads.error")))
+									alertController.dismissHandler = { [weak self] in
+										
+										self?.play()
+									}
 								}
 							}
 						}
 					}
+				}
+				else {
+					
+					LL_Alert_ViewController.present(LL_Error(String(key: "Tu dois disposer d'une connexion Internet pour cela")))
 				}
 			}
 			
@@ -532,34 +539,41 @@ public class LL_Game_ViewController: LL_ViewController {
 		alertController.add(String(key: "game.fail.alert.content"))
 		alertController.addButton(title: String(key: "game.fail.alert.button")) { [weak self] button in
 			
-			self?.pause()
-			
-			button?.isLoading = true
-			
-			Task {
+			if LL_Network.shared.isConnected {
 				
-				await LL_Ads.shared.presentRewardedAd(Ads.FullScreen.GameChance) {  [weak self] state in
+				self?.pause()
+				
+				button?.isLoading = true
+				
+				Task {
 					
-					alertController.close { [weak self] in
+					await LL_Ads.shared.presentRewardedAd(Ads.FullScreen.GameChance) {  [weak self] state in
 						
-						if state {
+						alertController.close { [weak self] in
 							
-							self?.play()
-							
-							self?.newWord()
-						}
-						else {
-							
-							let alertController = LL_Alert_ViewController.present(LL_Error(String(key: "ads.error")))
-							alertController.dismissHandler = { [weak self] in
-							
-								self?.game.reset()
+							if state {
 								
-								self?.dismiss()
+								self?.play()
+								
+								self?.newWord()
+							}
+							else {
+								
+								let alertController = LL_Alert_ViewController.present(LL_Error(String(key: "ads.error")))
+								alertController.dismissHandler = { [weak self] in
+									
+									self?.game.reset()
+									
+									self?.dismiss()
+								}
 							}
 						}
 					}
 				}
+			}
+			else {
+				
+				LL_Alert_ViewController.present(LL_Error(String(key: "Tu dois disposer d'une connexion Internet pour cela")))
 			}
 		}
 		alertController.addDismissButton { [weak self] _ in

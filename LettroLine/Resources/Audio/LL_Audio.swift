@@ -26,8 +26,7 @@ public class LL_Audio : NSObject {
 		
 		super.init()
 		
-		//Sound.category = .playback
-		Sound.category = .ambient
+		Sound.category = .playback
 	}
 	
 	public var isSoundsEnabled:Bool {

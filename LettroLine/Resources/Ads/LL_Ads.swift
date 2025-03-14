@@ -12,6 +12,7 @@ public class LL_Ads : NSObject {
 	
 	public static let shared:LL_Ads = .init()
 	
+	private var appOpening:AppOpenAd?
 	private var appOpeningDismissCompletion:(()->Void)?
 	
 	private var rewardedAdReward:AdReward?
@@ -30,8 +31,6 @@ public class LL_Ads : NSObject {
 		
 		MobileAds.shared.start(completionHandler: nil)
 	}
-	
-	private var appOpening:AppOpenAd?
 	
 	public func presentAppOpening(_ dismissCompletion:(()->Void)?) {
 		
