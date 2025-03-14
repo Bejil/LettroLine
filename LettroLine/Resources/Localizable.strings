@@ -152,6 +152,8 @@
 
 //MARK: - Ads
 "ads.error" = "Une erreur est survenue pendant le chargement de la publicité";
+"ads.error.exception" = "Mais tu peux quand même continuer 😇";
+"ads.network.error" = "Tu dois disposer d'une connexion Internet pour cela";
 
 //MARK: - Authorizations
 "authorizations.ask.alert.button" = "Je comprends";

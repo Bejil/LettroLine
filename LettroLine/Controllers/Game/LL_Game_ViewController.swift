@@ -206,7 +206,7 @@ public class LL_Game_ViewController: LL_ViewController {
 					
 					Task {
 						
-						await LL_Ads.shared.presentRewardedAd(Ads.FullScreen.GameBonus) { [weak self] state in
+						await LL_Ads.shared.presentRewardedAd(Ads.FullScreen.GameBonus) { [weak self] state, exception in
 							
 							button?.isLoading = true
 							
@@ -219,8 +219,13 @@ public class LL_Game_ViewController: LL_ViewController {
 								}
 								else {
 									
-									let alertController = LL_Alert_ViewController.present(LL_Error(String(key: "ads.error")))
+									let alertController = LL_Alert_ViewController.present(LL_Error([String(key: "ads.error"),exception ?? false ? String(key: "ads.error.exception") : nil].compactMap({ $0 }).joined(separator: "\n")))
 									alertController.dismissHandler = { [weak self] in
+										
+										if exception ?? false {
+											
+											self?.showSolution()
+										}
 										
 										self?.play()
 									}
@@ -231,7 +236,7 @@ public class LL_Game_ViewController: LL_ViewController {
 				}
 				else {
 					
-					LL_Alert_ViewController.present(LL_Error(String(key: "Tu dois disposer d'une connexion Internet pour cela")))
+					LL_Alert_ViewController.present(LL_Error(String(key: "ads.network.error")))
 				}
 			}
 			
@@ -547,7 +552,7 @@ public class LL_Game_ViewController: LL_ViewController {
 				
 				Task {
 					
-					await LL_Ads.shared.presentRewardedAd(Ads.FullScreen.GameChance) {  [weak self] state in
+					await LL_Ads.shared.presentRewardedAd(Ads.FullScreen.GameChance) {  [weak self] state, exception in
 						
 						alertController.close { [weak self] in
 							
@@ -559,7 +564,7 @@ public class LL_Game_ViewController: LL_ViewController {
 							}
 							else {
 								
-								let alertController = LL_Alert_ViewController.present(LL_Error(String(key: "ads.error")))
+								let alertController = LL_Alert_ViewController.present(LL_Error([String(key: "ads.error"),exception ?? false ? String(key: "ads.error.exception") : nil].compactMap({ $0 }).joined(separator: "\n")))
 								alertController.dismissHandler = { [weak self] in
 									
 									self?.game.reset()
@@ -573,7 +578,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			}
 			else {
 				
-				LL_Alert_ViewController.present(LL_Error(String(key: "Tu dois disposer d'une connexion Internet pour cela")))
+				LL_Alert_ViewController.present(LL_Error(String(key: "ads.network.error")))
 			}
 		}
 		alertController.addDismissButton { [weak self] _ in
