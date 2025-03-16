@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UserMessagingPlatform
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		_ = LL_Network.shared
 		LL_Firebase.shared.start()
+		LL_Ads.shared.start()
 		UserDefaults.set(UserDefaults.get(.userId) as? String ?? UUID().uuidString, .userId)
 		UserDefaults.delete(.timeTrialBestScore)
 		
@@ -26,36 +28,58 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		LL_Audio.shared.playMusic()
 		
-		let splashscreenViewController:LL_Splashscreen_ViewController = .init()
-		splashscreenViewController.completion = {
+		if UserDefaults.get(.onboarding) == nil {
 			
-			if UserDefaults.get(.onboarding) == nil {
+			UserDefaults.set(true, .onboarding)
+			
+			let viewController:LL_Onboarding_ViewController = .init()
+			viewController.completion = {
 				
-				UserDefaults.set(true, .onboarding)
-				
-				let viewController:LL_Onboarding_ViewController = .init()
-				viewController.completion = {
-					
-					LL_Notifications.shared.check(withCapping: false)
-				}
-				UI.MainController.present(LL_Onboarding_ViewController(), animated: false)
+				LL_Notifications.shared.check(withCapping: false)
 			}
-			else {
+			UI.MainController.present(LL_Onboarding_ViewController(), animated: false)
+		}
+		else {
+			
+			let parameters = UMPRequestParameters()
+			parameters.tagForUnderAgeOfConsent = false
+			
+			UMPConsentInformation.sharedInstance.requestConsentInfoUpdate(with: parameters) { [weak self] _ in
 				
-				LL_Ads.shared.presentAppOpening {
+				UMPConsentForm.load { [weak self] form, _ in
 					
-					LL_Notifications.shared.check(withCapping: true)
+					if UMPConsentInformation.sharedInstance.consentStatus == .required {
+						
+						form?.present(from: UI.MainController)
+					}
+					else if UMPConsentInformation.sharedInstance.consentStatus == .obtained {
+						
+						self?.presentAdAppOpening()
+						NotificationCenter.post(.updateAds)
+					}
 				}
 			}
 		}
-		UI.MainController.present(splashscreenViewController, animated: false)
 		
 		return true
+	}
+	
+	func applicationWillEnterForeground(_ application: UIApplication) {
+		
+		presentAdAppOpening()
 	}
 	
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
 		
 		LL_Notifications.shared.apnsToken = deviceToken
+	}
+	
+	private func presentAdAppOpening() {
+		
+		LL_Ads.shared.presentAppOpening {
+			
+			LL_Notifications.shared.check(withCapping: true)
+		}
 	}
 }
 
