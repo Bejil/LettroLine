@@ -559,7 +559,6 @@ public class LL_Game_ViewController: LL_ViewController {
 							if state {
 								
 								self?.play()
-								
 								self?.newWord()
 							}
 							else {
@@ -567,9 +566,16 @@ public class LL_Game_ViewController: LL_ViewController {
 								let alertController = LL_Alert_ViewController.present(LL_Error([String(key: "ads.error"),exception ?? false ? String(key: "ads.error.exception") : nil].compactMap({ $0 }).joined(separator: "\n")))
 								alertController.dismissHandler = { [weak self] in
 									
-									self?.game.reset()
-									
-									self?.dismiss()
+									if exception ?? false {
+										
+										self?.play()
+										self?.newWord()
+									}
+									else {
+										
+										self?.game.reset()
+										self?.dismiss()
+									}
 								}
 							}
 						}
