@@ -14,6 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		
+		_ = LL_Network.shared
 		LL_Firebase.shared.start()
 		UserDefaults.set(UserDefaults.get(.userId) as? String ?? UUID().uuidString, .userId)
 		UserDefaults.delete(.timeTrialBestScore)

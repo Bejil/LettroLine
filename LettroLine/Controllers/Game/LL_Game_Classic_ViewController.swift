@@ -21,9 +21,9 @@ public class LL_Game_Classic_ViewController : LL_Game_ViewController {
 		title = String(key: "game.classic.title")
 	}
 	
-	public override func dismiss(_ completion: (() -> Void)? = nil) {
+	public override func updateBestScore() {
 		
-		super.dismiss(completion)
+		super.updateBestScore()
 		
 		if (UserDefaults.get(.classicBestScore) as? Int) ?? 0 < game.score {
 			

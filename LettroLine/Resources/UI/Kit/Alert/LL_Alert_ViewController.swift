@@ -57,7 +57,7 @@ public class LL_Alert_ViewController : UIViewController {
 		$0.isLayoutMarginsRelativeArrangement = true
 		$0.layoutMargins.top = UI.Margins
 		$0.axis = .vertical
-		$0.spacing = UI.Margins
+		$0.spacing = 2*UI.Margins
 		return $0
 		
 	}(UIStackView(arrangedSubviews: [titleLabel]))

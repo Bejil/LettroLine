@@ -1,5 +1,5 @@
 //
-//  LL_Game_Challenges_ViewController.swift
+//  LL_Game_Challenges_MoveLimit_ViewController.swift
 //  LettroLine
 //
 //  Created by BLIN Michael on 04/03/2025.
@@ -7,12 +7,8 @@
 
 import Foundation
 
-public class LL_Game_Challenges_ViewController : LL_Game_ViewController {
+public class LL_Game_Challenges_MoveLimit_ViewController : LL_Game_Challenges_ViewController {
 	
-	public override var game: LL_Game {
-		
-		return LL_Challenges_Game.current
-	}
 	private var constraintButton:LL_Button = {
 		
 		$0.isTertiary = true
@@ -44,11 +40,11 @@ public class LL_Game_Challenges_ViewController : LL_Game_ViewController {
 		
 		if count >= 0 {
 			
-			constraintButton.title = "\(count)" + String(key: "game.challenges.remaining")
+			constraintButton.title = "\(count)" + String(key: "game.challenges.moveLimit.remaining")
 		}
 		else {
 			
-			fail(reason: String(key: "game.challenges.fail.alert.content"))
+			fail(reason: String(key: "game.challenges.moveLimit.fail.alert.content"))
 		}
 		
 		canAddMorePoint = count >= 0
@@ -58,7 +54,7 @@ public class LL_Game_Challenges_ViewController : LL_Game_ViewController {
 		
 		super.loadView()
 		
-		title = String(key: "game.challenges.title")
+		title = String(key: "game.challenges.moveLimit.title")
 		
 		scoreStackView.insertArrangedSubview(constraintButton, at: 1)
 	}
@@ -117,13 +113,13 @@ public class LL_Game_Challenges_ViewController : LL_Game_ViewController {
 		return 0
 	}
 	
-	public override func dismiss(_ completion: (() -> Void)? = nil) {
+	public override func updateBestScore() {
 		
-		super.dismiss(completion)
+		super.updateBestScore()
 		
-		if (UserDefaults.get(.challengesBestScore) as? Int) ?? 0 < game.score {
+		if (UserDefaults.get(.challengesMoveLimitBestScore) as? Int) ?? 0 < game.score {
 			
-			UserDefaults.set(game.score, .challengesBestScore)
+			UserDefaults.set(game.score, .challengesMoveLimitBestScore)
 		}
 	}
 	
@@ -131,6 +127,6 @@ public class LL_Game_Challenges_ViewController : LL_Game_ViewController {
 		
 		super.updateScore()
 		
-		isBestScore = (UserDefaults.get(.challengesBestScore) as? Int) ?? 0 < game.score
+		isBestScore = (UserDefaults.get(.challengesMoveLimitBestScore) as? Int) ?? 0 < game.score
 	}
 }

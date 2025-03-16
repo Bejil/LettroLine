@@ -183,9 +183,9 @@ public class LL_Game_TimeTrial_ViewController : LL_Game_ViewController {
 		alertController.present()
 	}
 	
-	public override func dismiss(_ completion: (() -> Void)? = nil) {
+	public override func updateBestScore() {
 		
-		super.dismiss(completion)
+		super.updateBestScore()
 		
 		if (UserDefaults.get(.timeTrialBestScore) as? Int) ?? 0 < game.score {
 			

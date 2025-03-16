@@ -12,10 +12,11 @@ public class LL_Ads : NSObject {
 	
 	public static let shared:LL_Ads = .init()
 	
+	private var appOpening:AppOpenAd?
 	private var appOpeningDismissCompletion:(()->Void)?
 	
 	private var rewardedAdReward:AdReward?
-	private var rewardedAdCompletion:((Bool)->Void)?
+	private var rewardedAdCompletion:((Bool,Bool?)->Void)?
 	private var rewardedAd: RewardedAd?
 	
 	private var interstitialPresentCompletion:(()->Void)?
@@ -28,13 +29,8 @@ public class LL_Ads : NSObject {
 	
 	public func start() {
 		
-		if shouldDisplayAd {
-			
-			MobileAds.shared.start(completionHandler: nil)
-		}
+		MobileAds.shared.start(completionHandler: nil)
 	}
-	
-	private var appOpening:AppOpenAd?
 	
 	public func presentAppOpening(_ dismissCompletion:(()->Void)?) {
 		
@@ -81,7 +77,7 @@ public class LL_Ads : NSObject {
 		}
 	}
 	
-	public func presentRewardedAd(_ identifier:String, _ completion:((Bool)->Void)?) async {
+	public func presentRewardedAd(_ identifier:String, _ completion:((_ state:Bool, _ exception:Bool?)->Void)?) async {
 		
 		rewardedAdCompletion = completion
 		
@@ -100,7 +96,7 @@ public class LL_Ads : NSObject {
 		}
 		catch {
 			
-			rewardedAdCompletion?(false)
+			rewardedAdCompletion?(false,(error as NSError).code == 1)
 			rewardedAdCompletion = nil
 		}
 	}
@@ -138,7 +134,7 @@ extension LL_Ads : FullScreenContentDelegate {
 		
 		if rewardedAd != nil && rewardedAdCompletion != nil && ad is RewardedAd {
 			
-			rewardedAdCompletion?(true)
+			rewardedAdCompletion?(true,nil)
 			
 			rewardedAd = nil
 			rewardedAdCompletion = nil
@@ -165,7 +161,7 @@ extension LL_Ads : FullScreenContentDelegate {
 		}
 		else if rewardedAd != nil && rewardedAdCompletion != nil && ad is RewardedAd {
 			
-			rewardedAdCompletion?(false)
+			rewardedAdCompletion?(false,nil)
 			
 			rewardedAd = nil
 			rewardedAdCompletion = nil

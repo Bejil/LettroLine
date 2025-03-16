@@ -35,10 +35,9 @@
 "menu.title" = "LettroLine";
 "menu.subtitle" = "Suis les tracés, relie les lettres et regarde les mots se recréer, trait après trait !";
 "menu.classic.button.start" = "Classique";
+"menu.classic.button.subtitle" = "Meilleur score: ";
 "menu.classic.new.alert.title" = "Attention";
 "menu.classic.new.alert.content" = "Si tu recommences une nouvelle partie du perdra tes progrès précédents.";
-"menu.challenges.new.alert.title" = "Attention";
-"menu.challenges.new.alert.content" = "Si tu recommences une nouvelle partie du perdra tes progrès précédents.";
 "menu.timetrial.ranking.alert.title" = "Classement";
 "menu.timetrial.ranking.alert.content.0" = "Vous êtes";
 "menu.timetrial.ranking.alert.content.1" = "er";
@@ -47,6 +46,11 @@
 "menu.timeTrial.button.title" = "Contre la montre";
 "menu.timeTrial.button.subtitle" = "Meilleur score: ";
 "menu.challenges.button" = "Challenges";
+"menu.challenges.button.subtitle" = "Meilleur score: ";
+"menu.challenges.alert.title" = "Challenges";
+"menu.challenges.alert.content" = "Un mode de jeux avec des contraintes pour plus de défis";
+"menu.challenges.alert.button.moveLimit" = "Mouvements limités";
+"menu.challenges.alert.button.noLift" = "Tracé continue";
 "menu.settings.button" = "Réglages";
 "menu.settings.alert.title" = "Réglages";
 "menu.settings.alert.main.title" = "Général";
@@ -61,13 +65,6 @@
 "menu.settings.alert.vibrations.button.subtitle.off" = "Désactivées";
 "menu.settings.alert.ads.title" = "Publicités";
 "menu.settings.alert.ads.button" = "Marre des pubs ?";
-"menu.settings.alert.rules.title" = "Règles et contraintes de jeu";
-"menu.settings.alert.rules.showFirstLetter.content" = "La première lettre s'affiche pour te guider, active ce coup de pouce pour bien démarrer !";
-"menu.settings.alert.rules.showFirstLetter.button.title.on" = "Activé";
-"menu.settings.alert.rules.showFirstLetter.button.title.off" = "Désactivé";
-"menu.settings.alert.rules.allowFingerLift.content" = "Tu as le droit de relever ton doigt, mais ton tracé repartira de zéro !";
-"menu.settings.alert.rules.allowFingerLift.button.title.on" = "Activé";
-"menu.settings.alert.rules.allowFingerLift.button.title.off" = "Désactivé";
 
 //MARK: - Game
 "game.tutorial.0.title" = "Bienvenue dans LettroLine";
@@ -135,9 +132,12 @@
 "game.fail.reason.outOfBounds" = "Tu es sorti du terrain";
 "game.fail.reason.intersect" = "Tu as coupé ton chemin";
 "game.fail.reason.fingerLift" = "Tu as levé ton doigt avant d'avoir fini";
-"game.challenges.title" = "Challenges";
-"game.challenges.remaining" = " coups";
-"game.challenges.fail.alert.content" = "Tu as utilisé tout tes coups...";
+"game.challenges.moveLimit.title" = "Mouvements limités";
+"game.challenges.moveLimit.remaining" = " coups";
+"game.challenges.moveLimit.fail.alert.content" = "Tu as utilisé tout tes coups...";
+"game.challenges.noLift.title" = "Tracé continue";
+"game.challenges.close.alert.title" = "Attention";
+"game.challenges.close.alert.content" = "Si tu quittes le jeu maintenant, tu perdras ta progression";
 
 //MARK: - InAppPurchase
 "inAppPurchase.purchase.alert.buy.button" = "Premium";
@@ -152,6 +152,8 @@
 
 //MARK: - Ads
 "ads.error" = "Une erreur est survenue pendant le chargement de la publicité";
+"ads.error.exception" = "Mais tu peux quand même continuer 😇";
+"ads.network.error" = "Tu dois disposer d'une connexion Internet pour cela";
 
 //MARK: - Authorizations
 "authorizations.ask.alert.button" = "Je comprends";

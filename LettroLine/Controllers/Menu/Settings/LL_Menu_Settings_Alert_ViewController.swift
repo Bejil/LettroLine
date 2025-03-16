@@ -105,49 +105,6 @@ public class LL_Menu_Settings_Alert_ViewController : LL_Alert_ViewController {
 			button.image = UIImage(systemName: "rectangle.stack.badge.minus")
 		}
 		
-		let rulesTitleLabel = add(String(key: "menu.settings.alert.rules.title"))
-		rulesTitleLabel.font = Fonts.Content.Title.H4
-		rulesTitleLabel.textColor = .white
-		
-		let showFirstLetterLabel:LL_Label = .init(String(key: "menu.settings.alert.rules.showFirstLetter.content"))
-		showFirstLetterLabel.textColor = .white
-		
-		let showFirstLetterButton = setupToggleButton(for: .showFirstLetter,
-													  title: nil,
-													  subtitleOn: "menu.settings.alert.rules.showFirstLetter.button.title.on",
-													  subtitleOff: "menu.settings.alert.rules.showFirstLetter.button.title.off",
-													  imageOn: "a.square.fill",
-													  imageOff: "a.square")
-		
-		let showFirstLetterStackView:UIStackView = .init(arrangedSubviews: [showFirstLetterLabel,showFirstLetterButton])
-		showFirstLetterStackView.axis = .horizontal
-		showFirstLetterStackView.alignment = .center
-		showFirstLetterStackView.spacing = UI.Margins
-		add(showFirstLetterStackView)
-		
-		let allowFingerLiftLabel:LL_Label = .init(String(key: "menu.settings.alert.rules.allowFingerLift.content"))
-		allowFingerLiftLabel.textColor = .white
-		
-		let allowFingerLiftButton = setupToggleButton(for: .allowFingerLift,
-													  title: nil,
-													  subtitleOn: "menu.settings.alert.rules.allowFingerLift.button.title.on",
-													  subtitleOff: "menu.settings.alert.rules.allowFingerLift.button.title.off",
-													  imageOn: "hand.tap.fill",
-													  imageOff: "hand.tap")
-		
-		let allowFingerLiftStackView:UIStackView = .init(arrangedSubviews: [allowFingerLiftLabel,allowFingerLiftButton])
-		allowFingerLiftStackView.axis = .horizontal
-		allowFingerLiftStackView.alignment = .center
-		allowFingerLiftStackView.spacing = UI.Margins
-		add(allowFingerLiftStackView)
-		
-		contentStackView.arrangedSubviews.forEach({
-			
-			contentStackView.setCustomSpacing(UI.Margins*2, after: $0)
-		})
-		
-		contentStackView.setCustomSpacing(UI.Margins, after: showFirstLetterStackView)
-		
 		addDismissButton()
 	}
 	
