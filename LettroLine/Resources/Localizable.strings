@@ -50,7 +50,7 @@
 "menu.challenges.alert.title" = "Challenges";
 "menu.challenges.alert.content" = "Un mode de jeux avec des contraintes pour plus de défis";
 "menu.challenges.alert.button.moveLimit" = "Mouvements limités";
-"menu.challenges.alert.button.noLift" = "Tracé continue";
+"menu.challenges.alert.button.noLift" = "Tracé continu";
 "menu.settings.button" = "Réglages";
 "menu.settings.alert.title" = "Réglages";
 "menu.settings.alert.main.title" = "Général";
@@ -127,7 +127,7 @@
 "game.settings.vibrations.on" = "Activées";
 "game.settings.vibrations.off" = "Désactivées";
 "game.fail.alert.title" = "Raté !";
-"game.fail.alert.content" = "Tu peux continue à jouer après une publicité !";
+"game.fail.alert.content" = "Tu peux continuer à jouer après une publicité !";
 "game.fail.alert.button" = "Regarder";
 "game.fail.reason.outOfBounds" = "Tu es sorti du terrain";
 "game.fail.reason.intersect" = "Tu as coupé ton chemin";
@@ -135,7 +135,7 @@
 "game.challenges.moveLimit.title" = "Mouvements limités";
 "game.challenges.moveLimit.remaining" = " coups";
 "game.challenges.moveLimit.fail.alert.content" = "Tu as utilisé tout tes coups...";
-"game.challenges.noLift.title" = "Tracé continue";
+"game.challenges.noLift.title" = "Tracé continu";
 "game.challenges.close.alert.title" = "Attention";
 "game.challenges.close.alert.content" = "Si tu quittes le jeu maintenant, tu perdras ta progression";
 
@@ -152,7 +152,7 @@
 
 //MARK: - Ads
 "ads.error" = "Une erreur est survenue pendant le chargement de la publicité";
-"ads.error.exception" = "Mais tu peux quand même continuer 😇";
+"ads.error.exception" = "Mais tu peux quand même continuer à jouer 😇";
 "ads.network.error" = "Tu dois disposer d'une connexion Internet pour cela";
 
 //MARK: - Authorizations
