@@ -7,6 +7,7 @@
 
 import Foundation
 import GoogleMobileAds
+import UserMessagingPlatform
 
 public class LL_Ads : NSObject {
 	
@@ -24,7 +25,7 @@ public class LL_Ads : NSObject {
 	
 	public var shouldDisplayAd:Bool {
 		
-		return UserDefaults.get(.shouldDisplayAds) as? Bool ?? true
+		return (UserDefaults.get(.shouldDisplayAds) as? Bool ?? true) && UMPConsentInformation.sharedInstance.consentStatus == .obtained
 	}
 	
 	public func start() {
@@ -101,19 +102,19 @@ public class LL_Ads : NSObject {
 		}
 	}
 	
-	public func presentBanner(_ identifier:String, _ rootViewController:UIViewController) -> BannerView? {
+	public func presentBanner(_ identifier:String, _ rootViewController:UIViewController) -> BannerView {
+		
+		let bannerView:BannerView = .init(adSize: AdSizeBanner)
+		bannerView.adUnitID = identifier
+		bannerView.rootViewController = rootViewController
+		bannerView.delegate = self
 		
 		if shouldDisplayAd {
 			
-			let bannerView:BannerView = .init(adSize: AdSizeBanner)
-			bannerView.adUnitID = identifier
-			bannerView.rootViewController = rootViewController
-			bannerView.delegate = self
 			bannerView.load(Request())
-			return bannerView
 		}
 		
-		return nil
+		return bannerView
 	}
 }
 
@@ -180,6 +181,28 @@ extension LL_Ads : BannerViewDelegate {
 			bannerView.isHidden = true
 			bannerView.alpha = bannerView.isHidden ? 0.0 : 1.0
 			bannerView.superview?.layoutIfNeeded()
+		}
+	}
+}
+
+extension BannerView {
+	
+	open override func didMoveToSuperview() {
+		
+		super.didMoveToSuperview()
+		
+		NotificationCenter.add(.updateAds) { [weak self] _ in
+											  
+			self?.isHidden = !LL_Ads.shared.shouldDisplayAd
+			self?.refresh()
+		}
+	}
+	
+	public func refresh() {
+		
+		if !isHidden {
+			
+			load(Request())
 		}
 	}
 }

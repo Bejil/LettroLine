@@ -11,7 +11,6 @@ import GoogleMobileAds
 
 public class LL_Game_ViewController: LL_ViewController {
 	
-	private var bannerView:BannerView?
 	public var canAddMorePoint:Bool = true
 	public var game:LL_Game {
 		
@@ -369,6 +368,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		return $0
 		
 	}(LL_CollectionView(frame: .zero, collectionViewLayout: collectionViewFlowLayout))
+	private lazy var bannerView = LL_Ads.shared.presentBanner(Ads.Banner.Game, self)
 	
 	public override func loadView() {
 		
@@ -387,7 +387,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			make.top.bottom.equalToSuperview().inset(1.25*UI.Margins)
 		}
 		
-		let contentStackView:UIStackView = .init(arrangedSubviews: [scoreStackView,wordStackView,gridBackgroundView,.init()])
+		let contentStackView:UIStackView = .init(arrangedSubviews: [scoreStackView,wordStackView,gridBackgroundView,.init(),bannerView])
 		contentStackView.axis = .vertical
 		contentStackView.spacing = 2*UI.Margins
 		view.addSubview(contentStackView)
@@ -395,16 +395,6 @@ public class LL_Game_ViewController: LL_ViewController {
 			make.edges.equalTo(view.safeAreaLayoutGuide).inset(2*UI.Margins)
 		}
 		contentStackView.setCustomSpacing(3*UI.Margins, after: scoreStackView)
-		
-		if let bannerView = LL_Ads.shared.presentBanner(Ads.Banner.Game, self) {
-			
-			contentStackView.addArrangedSubview(bannerView)
-			
-			NotificationCenter.add(.updateAds) { _ in
-				
-				bannerView.isHidden = !LL_Ads.shared.shouldDisplayAd
-			}
-		}
 		
 		newWord()
 		
@@ -507,6 +497,8 @@ public class LL_Game_ViewController: LL_ViewController {
 		}
 		
 		solutionWord = game.newWord(wordLength)
+		
+		bannerView.refresh()
 	}
 	
 	public func specificTutorial() {
