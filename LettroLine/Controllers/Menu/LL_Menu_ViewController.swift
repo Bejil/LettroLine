@@ -202,22 +202,12 @@ public class LL_Menu_ViewController: LL_ViewController {
 		menuStackView.axis = .horizontal
 		menuStackView.alignment = .center
 		
-		let contentStackView:UIStackView = .init(arrangedSubviews: [menuStackView])
+		let contentStackView:UIStackView = .init(arrangedSubviews: [menuStackView,bannerView])
 		contentStackView.axis = .vertical
-		
-		if let bannerView {
-			
-			contentStackView.addArrangedSubview(bannerView)
-			
-			NotificationCenter.add(.updateAds) { _ in
-				
-				bannerView.isHidden = !LL_Ads.shared.shouldDisplayAd
-			}
-		}
 		
 		view.addSubview(contentStackView)
 		contentStackView.snp.makeConstraints { make in
-			make.edges.equalTo(view.safeAreaLayoutGuide).inset(2*UI.Margins)
+			make.edges.equalTo(view.safeAreaLayoutGuide)
 		}
 	}
 	
@@ -249,5 +239,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 		}
 		
 		stackView.animate()
+		
+		bannerView.refresh()
 	}
 }
