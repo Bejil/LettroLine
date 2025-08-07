@@ -20,7 +20,21 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		didSet {
 			
-			scoreButton.subtitle = isBestScore ? String(key: "game.score.subtitle") : nil
+			if oldValue != isBestScore {
+				
+				pause()
+				
+				let viewController:LL_Tutorial_ViewController = .init()
+				viewController.items = [
+					
+					LL_Tutorial_ViewController.Item(title: String(key: "game.score.subtitle"), timeInterval: 0.5)
+				]
+				viewController.completion = { [weak self] in
+					
+					self?.play()
+				}
+				viewController.present()
+			}
 		}
 	}
 	public lazy var usedIndexPaths: Array<IndexPath> = []
