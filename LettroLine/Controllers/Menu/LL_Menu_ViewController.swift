@@ -10,6 +10,34 @@ import SnapKit
 
 public class LL_Menu_ViewController: LL_ViewController {
 	
+	private lazy var classicGameRankingButton:LL_Button = { button in
+		
+		button.image = UIImage(systemName: "list.number")
+		button.style = .tinted
+		button.snp.makeConstraints { make in
+			
+			make.width.equalTo(button.snp.height)
+		}
+		return button
+		
+	}(LL_Button() { button in
+		
+		button?.isLoading = true
+		
+		LL_Classic_Game.getAll { objects in
+			
+			button?.isLoading = false
+			
+			let alertController:LL_Alert_ViewController = .init()
+			alertController.title = String(key: "menu.classic.ranking.alert.title")
+			
+			let rank = objects?.filter { $0.score ?? 0 > (UserDefaults.get(.timeTrialBestScore) as? Int) ?? 0}.count ?? 0
+			alertController.add([String(key: "menu.classic.ranking.alert.content.0"),"\(rank)",String(key: "menu.classic.ranking.alert.content." + (rank == 1 ? "1" : "2")),String(key: "menu.classic.ranking.alert.content.3"),"\(objects?.count ?? 0)"].joined(separator: " "))
+			
+			alertController.addDismissButton()
+			alertController.present()
+		}
+	})
 	private lazy var classicGameStartButton:LL_Button = {
 		
 		$0.image = UIImage(systemName: "hand.point.up.braille.fill")
@@ -166,7 +194,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 		$0.addArrangedSubview(baselineLabel)
 		$0.setCustomSpacing(2*$0.spacing, after: baselineLabel)
 		
-		let classicGameStackView:UIStackView = .init(arrangedSubviews: [classicGameStartButton,classicGameContinueButton])
+		let classicGameStackView:UIStackView = .init(arrangedSubviews: [classicGameRankingButton,classicGameStartButton,classicGameContinueButton])
 		classicGameStackView.axis = .horizontal
 		classicGameStackView.spacing = UI.Margins
 		classicGameStackView.alignment = .fill
@@ -220,10 +248,12 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		if let bestScore = UserDefaults.get(.classicBestScore) as? Int, bestScore > 0 {
 			
+			classicGameRankingButton.isHidden = false
 			classicGameStartButton.subtitle = String(key: "menu.classic.button.subtitle") + "\(bestScore)"
 		}
 		else {
 			
+			classicGameRankingButton.isHidden = true
 			classicGameStartButton.subtitle = nil
 		}
 		

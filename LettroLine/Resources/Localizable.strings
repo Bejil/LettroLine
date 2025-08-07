@@ -34,6 +34,11 @@
 //MARK: - Menu
 "menu.title" = "LettroLine";
 "menu.subtitle" = "Suis les tracés, relie les lettres et regarde les mots se recréer, trait après trait !";
+"menu.classic.ranking.alert.title" = "Classement";
+"menu.classic.ranking.alert.content.0" = "Vous êtes";
+"menu.classic.ranking.alert.content.1" = "er";
+"menu.classic.ranking.alert.content.2" = "ème";
+"menu.classic.ranking.alert.content.3" = "sur";
 "menu.classic.button.start" = "Classique";
 "menu.classic.button.subtitle" = "Meilleur score: ";
 "menu.classic.new.alert.title" = "Attention";

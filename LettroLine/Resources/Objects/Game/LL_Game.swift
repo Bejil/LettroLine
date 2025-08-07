@@ -17,7 +17,6 @@ public class LL_Game: Codable {
 			save()
 		}
 	}
-	
 	public var bonus: Int = 0 {
 		
 		didSet {
@@ -25,17 +24,14 @@ public class LL_Game: Codable {
 			save()
 		}
 	}
-	
 	public var score: Int {
 		
 		return words.count
 	}
-	
 	public class var currentUserDefaultsKey: UserDefaults.Keys? {
 		
 		return nil
 	}
-	
 	public static var current: Self {
 		
 		if let currentUserDefaultsKey, let savedData = UserDefaults.get(currentUserDefaultsKey) as? Data, let decodedGame = try? JSONDecoder().decode(Self.self, from: savedData) {
