@@ -169,7 +169,7 @@ public class LL_Game_ViewController: LL_ViewController {
 				
 				self?.play()
 			}
-			alertController.present(as: .Sheet)
+			alertController.present(as: .Sheet, withAnimation: false)
 		}
 	})
 	public lazy var helpButton:LL_Button = {
