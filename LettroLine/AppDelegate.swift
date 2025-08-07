@@ -19,7 +19,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		LL_Firebase.shared.start()
 		LL_Ads.shared.start()
 		UserDefaults.set(UserDefaults.get(.userId) as? String ?? UUID().uuidString, .userId)
-		UserDefaults.delete(.timeTrialBestScore)
 		
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.backgroundColor = Colors.Background.Application
