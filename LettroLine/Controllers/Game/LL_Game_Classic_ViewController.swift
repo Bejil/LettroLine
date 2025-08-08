@@ -28,12 +28,6 @@ public class LL_Game_Classic_ViewController : LL_Game_ViewController {
 		if (UserDefaults.get(.classicBestScore) as? Int) ?? 0 < game.score {
 			
 			UserDefaults.set(game.score, .classicBestScore)
-		}
-		
-		let newBestScoreState = (UserDefaults.get(.classicBestScore) as? Int) ?? 0 < LL_Classic_Game.current.score
-		
-		if newBestScoreState {
-			
 			LL_Classic_Game.current.saveBestScore()
 		}
 	}
