@@ -69,6 +69,8 @@
 "ranks.title" = "Classements";
 "ranks.classic" = "Classique";
 "ranks.timetrial" = "Contre la montre";
+"ranks.anonymous" = "Anonyme";
+"ranks.points" = "points";
 
 //MARK: - User
 "user.name.alert.title" = "Pseudo";

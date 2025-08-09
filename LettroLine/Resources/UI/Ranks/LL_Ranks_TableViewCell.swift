@@ -26,8 +26,8 @@ public class LL_Ranks_TableViewCell : LL_TableViewCell {
 			
 			rankButton.isPrimary = !(object?.uuid == UserDefaults.get(.userId) as? String)
 			rankButton.style = !(object?.uuid == UserDefaults.get(.userId) as? String) ? .tinted : .solid
-			nameLabel.text = "\(object?.uuid ?? "Anonyme")"
-			scoreLabel.text = "\(object?.score ?? 0) points"
+			nameLabel.text = "\(object?.name ?? String(key: "ranks.anonymous"))"
+			scoreLabel.text = "\(object?.score ?? 0) " + String(key: "ranks.points")
 		}
 	}
 	private lazy var rankButton: LL_Button = {
@@ -39,7 +39,10 @@ public class LL_Ranks_TableViewCell : LL_TableViewCell {
 	}(LL_Button())
 	private lazy var nameLabel: LL_Label = {
 		
-		$0.font = Fonts.Content.Title.H4.withSize(Fonts.Size)
+		$0.font = Fonts.Content.Title.H4
+		$0.numberOfLines = 1
+		$0.adjustsFontSizeToFitWidth = true
+		$0.minimumScaleFactor = 0.5
 		return $0
 		
 	}(LL_Label())
