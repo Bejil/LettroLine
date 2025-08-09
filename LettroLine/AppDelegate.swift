@@ -77,7 +77,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		LL_Ads.shared.presentAppOpening {
 			
-			LL_Notifications.shared.check(withCapping: true)
+			LL_Notifications.shared.check(withCapping: true) { _ in
+				
+				let name = UserDefaults.get(.userName) as? String
+				
+				if name == nil || name?.count == 0 {
+						
+					LL_User_Name_Alert_ViewController().present()
+				}
+			}
 		}
 	}
 }

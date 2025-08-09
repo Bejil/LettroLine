@@ -12,6 +12,7 @@ extension UserDefaults {
 	public enum Keys : String, CaseIterable {
 		
 		case userId = "userId"
+		case userName = "userName"
 		case shouldDisplayAds = "shouldDisplayAds"
 		case inAppPurchaseAlertCapping = "inAppPurchaseAlertCapping"
 		case onboarding = "onboarding"

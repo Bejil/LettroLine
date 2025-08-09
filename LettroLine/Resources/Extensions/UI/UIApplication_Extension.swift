@@ -9,6 +9,17 @@ import UIKit
 
 extension UIApplication {
 	
+	public static var isDebug:Bool {
+		
+		var state = false
+		
+#if DEBUG
+		state = true
+#endif
+		
+		return state
+	}
+	
 	public func topMostViewController() -> UIViewController? {
 		
 		return UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }?.rootViewController?.topMostViewController()

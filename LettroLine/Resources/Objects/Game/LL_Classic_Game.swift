@@ -13,8 +13,9 @@ public class LL_Classic_Game: LL_Game {
 	public struct FirebaseObject : Codable {
 		
 		@DocumentID public var id: String?
-		var uuid:String?
-		var score:Int?
+		public var uuid:String? = UserDefaults.get(.userId) as? String
+		public var name:String? = UserDefaults.get(.userName) as? String
+		public var score:Int?
 	}
 	
 	public override class var currentUserDefaultsKey: UserDefaults.Keys? {
@@ -25,7 +26,6 @@ public class LL_Classic_Game: LL_Game {
 	public func saveBestScore() {
 		
 		var object:FirebaseObject = .init()
-		object.uuid = UserDefaults.get(.userId) as? String
 		object.score = score
 		
 		let firestore = Firestore.firestore()
