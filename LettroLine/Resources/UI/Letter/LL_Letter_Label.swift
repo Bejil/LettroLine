@@ -9,6 +9,13 @@ import UIKit
 
 public class LL_Letter_Label : LL_Label {
 	
+	public var isBonus:Bool = false {
+	
+		didSet {
+			
+			bonusImageView.isHidden = !isBonus
+		}
+	}
 	public var isSelected: Bool? {
 		
 		didSet {
@@ -85,6 +92,14 @@ public class LL_Letter_Label : LL_Label {
 			}
 		}
 	}
+	private lazy var bonusImageView: UIImageView = {
+		
+		$0.tintColor = .white
+		$0.contentMode = .scaleAspectFit
+		$0.isHidden = true
+		return $0
+		
+	}(UIImageView(image: UIImage(systemName: "star")))
 	
 	private func updateLabelText(_ newText: String?) {
 		
@@ -104,6 +119,11 @@ public class LL_Letter_Label : LL_Label {
 		textAlignment = .center
 		clipsToBounds = true
 		contentInsets = .init(UI.Margins)
+		
+		addSubview(bonusImageView)
+		bonusImageView.snp.makeConstraints { make in
+			make.edges.equalToSuperview().inset(UI.Margins)
+		}
 		
 		defer {
 			

@@ -147,7 +147,9 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		$0.subtitleFont = Fonts.Content.Button.Subtitle.withSize(Fonts.Content.Button.Subtitle.pointSize-4)
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
+		$0.configuration?.imagePadding = UI.Margins/2
 		$0.snp.removeConstraints()
+		$0.image = UIImage(systemName: "trophy")
 		return $0
 		
 	}(LL_Button() { [weak self] _ in
@@ -174,9 +176,11 @@ public class LL_Game_ViewController: LL_ViewController {
 	})
 	public lazy var helpButton:LL_Button = {
 		
-		$0.title = [String(key: "game.bonus"),String(key: "game.help")].joined(separator: " ")
+		$0.image = UIImage(systemName: "star")
+		$0.title = String(key: "game.help")
 		$0.style = .tinted
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
+		$0.configuration?.imagePadding = UI.Margins/2
 		$0.snp.removeConstraints()
 		return $0
 		
@@ -188,7 +192,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			
 			let alertController:LL_Alert_ViewController = .init()
 			alertController.title = String(key: "game.help.alert.title")
-			alertController.add(String(format: String(key: "game.help.alert.text"), String(key: "game.bonus")))
+			alertController.add(String(key: "game.help.alert.text"))
 			let button = alertController.addDismissButton { [weak self] _ in
 				
 				self?.play()
@@ -208,8 +212,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			
 			let alertController:LL_Alert_ViewController = .init()
 			alertController.title = String(key: "game.help.alert.title")
-			alertController.add(String(format: String(key: "game.help.alert.content.0"), String(key: "game.bonus")))
-			alertController.backgroundView.isUserInteractionEnabled = false
+			alertController.add(String(key: "game.help.alert.content.0"))
 			alertController.add(String(key: "game.help.alert.content.1"))
 			alertController.addButton(title: String(key: "game.help.alert.button.title"), subtitle: String(key: "game.help.alert.button.subtitle")) { [weak self] button in
 				
@@ -1023,7 +1026,7 @@ public class LL_Game_ViewController: LL_ViewController {
 	
 	public func updateScore() {
 		
-		scoreButton.title = String(key: "game.score") + "\(game.score)"
+		scoreButton.title = "\(game.score)"
 		scoreButton.pulse()
 		
 		helpButton.badge = game.bonus > 0 ? "\(game.bonus)" : nil
@@ -1182,7 +1185,7 @@ extension LL_Game_ViewController : UICollectionViewDelegate, UICollectionViewDat
 			UIApplication.wait(Double(indexPath.row)*0.1) { [weak self] in
 				
 				let state = IndexPath(row: row, section: col) == self?.grid?.bonus
-				cell.letter = state ? String(key: "game.bonus") : String(grid[row][col])
+				cell.letter = state ? "" : String(grid[row][col])
 				cell.isFirst = self?.showFirst ?? false && grid[row][col].uppercased() == self?.solutionWord?.first?.uppercased()
 				cell.isBonus = state
 			}

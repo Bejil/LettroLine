@@ -118,14 +118,12 @@
 "game.timeTrial.tutorial.end.button" = "Terminer";
 "game.timeTrial.close.alert.title" = "Attention";
 "game.timeTrial.close.alert.content" = "Si tu quittes le jeu maintenant, tu perdras ta progression";
-"game.score" = "🏆 ";
 "game.score.subtitle" = "Nouveau record";
 "game.words.alert.title" = "Historique";
-"game.bonus" = "♦️";
 "game.help" = "Aide";
 "game.help.alert.title" = "Un peu d'aide ?";
-"game.help.alert.text" = "Veux-tu utiliser un %@ pour afficher la solution ?";
-"game.help.alert.content.0" = "Tu n'as pas assez de %@ pour afficher la solution";
+"game.help.alert.text" = "Veux-tu utiliser un bonus pour afficher la solution ?";
+"game.help.alert.content.0" = "Tu n'as pas assez de bonus pour afficher la solution";
 "game.help.alert.content.1" = "Mais tu peux regarder une publicité pour en obtenir un et la voir";
 "game.help.alert.button.title" = "Voir une publicité";
 "game.help.alert.button.subtitle" = "et afficher la solution";

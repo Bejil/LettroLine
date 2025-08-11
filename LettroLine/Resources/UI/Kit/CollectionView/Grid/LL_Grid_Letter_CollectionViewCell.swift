@@ -48,6 +48,7 @@ public class LL_Grid_Letter_CollectionViewCell : LL_CollectionViewCell {
 		
 		didSet {
 			
+			label.isBonus = isBonus
 			startTimers()
 		}
 	}
