@@ -149,7 +149,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
 		$0.configuration?.imagePadding = UI.Margins/2
 		$0.snp.removeConstraints()
-		$0.image = UIImage(systemName: "trophy")
+		$0.image = UIImage(systemName: "trophy")?.applyingSymbolConfiguration(.init(pointSize: 12))
 		return $0
 		
 	}(LL_Button() { [weak self] _ in
@@ -176,7 +176,7 @@ public class LL_Game_ViewController: LL_ViewController {
 	})
 	public lazy var helpButton:LL_Button = {
 		
-		$0.image = UIImage(systemName: "star")
+		$0.image = UIImage(systemName: "star")?.applyingSymbolConfiguration(.init(pointSize: 12))
 		$0.title = String(key: "game.help")
 		$0.style = .tinted
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
