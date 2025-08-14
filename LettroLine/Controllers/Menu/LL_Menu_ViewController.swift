@@ -157,15 +157,6 @@ public class LL_Menu_ViewController: LL_ViewController {
 		ranksButton.image = UIImage(systemName: "trophy")
 		$0.addArrangedSubview(ranksButton)
 		
-		let settingsButton:LL_Button = .init(String(key: "settings.button")) { _ in
-			
-			let alertController:LL_Settings_Alert_ViewController = .init()
-			alertController.present()
-		}
-		settingsButton.style = .bordered
-		settingsButton.image = UIImage(systemName: "slider.vertical.3")
-		$0.addArrangedSubview(settingsButton)
-		
 		return $0
 		
 	}(UIStackView())
@@ -174,11 +165,23 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		super.loadView()
 		
+		let settingsButton:LL_Button = .init(String(key: "settings.button")) { _ in
+			
+			let alertController:LL_Settings_Alert_ViewController = .init()
+			alertController.present()
+		}
+		settingsButton.style = .transparent
+		settingsButton.titleFont = Fonts.Content.Text.Bold.withSize(Fonts.Size-2)
+		settingsButton.image = UIImage(systemName: "slider.vertical.3")?.applyingSymbolConfiguration(.init(pointSize: Fonts.Size))
+		settingsButton.configuration?.contentInsets = .zero
+		settingsButton.configuration?.imagePadding = UI.Margins/3
+		navigationItem.rightBarButtonItem = .init(customView: settingsButton)
+		
 		let menuStackView:UIStackView = .init(arrangedSubviews: [stackView])
 		menuStackView.axis = .horizontal
 		menuStackView.alignment = .center
 		
-		let contentStackView:UIStackView = .init(arrangedSubviews: [menuStackView,bannerView])
+		let contentStackView:UIStackView = .init(arrangedSubviews: [menuStackView,bannerView,LL_User_StackView()])
 		contentStackView.axis = .vertical
 		
 		view.addSubview(contentStackView)

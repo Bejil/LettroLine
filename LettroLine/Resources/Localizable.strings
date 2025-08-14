@@ -172,3 +172,13 @@
 "authorizations.denied.alert.button" = "Réglages";
 "authorizations.denied.alert.content" = "Rends-toi dans les réglages pour activer l'autorisation";
 "authorizations.denied.alert.title" = "Autorisation demandée";
+
+//MARK: - Rewards
+"rewards.alert.title" = "Récompense";
+"rewards.alert.success.label" = "Félicitations ! Tu as rempli tes 3 objectifs quotidiens.";
+"rewards.alert.success.button" = "Récupérer 3 bonus";
+"rewards.alert.already.label" = "Tu as déjà récupérer tes bonus aujourd'hui. Reviens demain !";
+"rewards.alert.default.label" = "Pour récupérer 3 bonus quotidiennement tu dois remplir ces 3 objectifs";
+"rewards.alert.default.button.0" = "Te connecter au jeu";
+"rewards.alert.default.button.1" = "Compléter un mot";
+"rewards.alert.default.button.2" = "Battre un de tes meilleurs scores";

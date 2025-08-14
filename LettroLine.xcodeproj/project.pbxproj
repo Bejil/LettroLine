@@ -16,6 +16,8 @@
 		D43335162D82B1FE002D8A89 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43335152D82B1FE002D8A89 /* StoreKit.framework */; };
 		D43337912D876BA1002D8A89 /* GoogleUserMessagingPlatform in Frameworks */ = {isa = PBXBuildFile; productRef = D43337902D876BA1002D8A89 /* GoogleUserMessagingPlatform */; };
 		D4CE19192D5CA4680083A5AA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = D4CE19182D5CA4680083A5AA /* SnapKit */; };
+		D4D352E92E4B31BD00CD3936 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = D4D352E82E4B31BD00CD3936 /* SVGKit */; };
+		D4D352F02E4B322800CD3936 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = D4D352EF2E4B322800CD3936 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,10 +51,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4D352E92E4B31BD00CD3936 /* SVGKit in Frameworks */,
 				D43334F12D7EF49D002D8A89 /* GoogleMobileAds in Frameworks */,
 				D4CE19192D5CA4680083A5AA /* SnapKit in Frameworks */,
 				D433350D2D817FC5002D8A89 /* FirebaseMessaging in Frameworks */,
 				D43335162D82B1FE002D8A89 /* StoreKit.framework in Frameworks */,
+				D4D352F02E4B322800CD3936 /* Alamofire in Frameworks */,
 				D43334EE2D7C5A3C002D8A89 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				D43334E62D7B2B29002D8A89 /* FirebaseFirestore in Frameworks */,
 				D43334392D64A1C8002D8A89 /* SwiftySound in Frameworks */,
@@ -117,6 +121,8 @@
 				D43334F02D7EF49D002D8A89 /* GoogleMobileAds */,
 				D433350C2D817FC5002D8A89 /* FirebaseMessaging */,
 				D43337902D876BA1002D8A89 /* GoogleUserMessagingPlatform */,
+				D4D352E82E4B31BD00CD3936 /* SVGKit */,
+				D4D352EF2E4B322800CD3936 /* Alamofire */,
 			);
 			productName = LettroLine;
 			productReference = D4CE18C42D5B611D0083A5AA /* LettroLine.app */;
@@ -153,6 +159,8 @@
 				D43334E42D7B2B29002D8A89 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				D43334EF2D7EF49D002D8A89 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 				D433378F2D876BA1002D8A89 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */,
+				D4D352E72E4B31BD00CD3936 /* XCRemoteSwiftPackageReference "SVGKit" */,
+				D4D352EE2E4B322800CD3936 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D4CE18C52D5B611D0083A5AA /* Products */;
@@ -438,6 +446,22 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		D4D352E72E4B31BD00CD3936 /* XCRemoteSwiftPackageReference "SVGKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SVGKit/SVGKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		D4D352EE2E4B322800CD3936 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -480,6 +504,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D4CE19172D5CA4680083A5AA /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		D4D352E82E4B31BD00CD3936 /* SVGKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D4D352E72E4B31BD00CD3936 /* XCRemoteSwiftPackageReference "SVGKit" */;
+			productName = SVGKit;
+		};
+		D4D352EF2E4B322800CD3936 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D4D352EE2E4B322800CD3936 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -190,6 +190,7 @@ public class LL_Game_TimeTrial_ViewController : LL_Game_ViewController {
 			
 			UserDefaults.set(game.score, .timeTrialBestScore)
 			LL_TimeTrial_Game.current.saveBestScore()
+			LL_Rewards.shared.updateLastBestScoreDate()
 		}
 	}
 	

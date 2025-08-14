@@ -35,6 +35,7 @@ public class LL_User_Name_Alert_ViewController : LL_Alert_ViewController {
 		let button = addButton(title: String(key: "user.name.alert.button")) { [weak self] sender in
 			
 			UserDefaults.set(textField.text, .userName)
+			NotificationCenter.post(.updateUserName)
 			
 			self?.close()
 		}

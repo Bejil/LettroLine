@@ -94,12 +94,12 @@ public class LL_Letter_Label : LL_Label {
 	}
 	private lazy var bonusImageView: UIImageView = {
 		
-		$0.tintColor = .white
+		$0.tintColor = Colors.Button.Delete.Background
 		$0.contentMode = .scaleAspectFit
 		$0.isHidden = true
 		return $0
 		
-	}(UIImageView(image: UIImage(systemName: "star")))
+	}(UIImageView(image: UIImage(systemName: "star.fill")))
 	
 	private func updateLabelText(_ newText: String?) {
 		

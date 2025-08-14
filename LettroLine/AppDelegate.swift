@@ -22,7 +22,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.backgroundColor = Colors.Background.Application
-		window?.rootViewController = LL_Menu_ViewController()
+		
+		let navigationController:LL_NavigationController = .init(rootViewController: LL_Menu_ViewController())
+		navigationController.navigationBar.prefersLargeTitles = false
+		window?.rootViewController = navigationController
 		window?.makeKeyAndVisible()
 		
 		LL_Audio.shared.playMusic()
@@ -53,7 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 					}
 					else if UMPConsentInformation.sharedInstance.consentStatus == .obtained {
 						
-						self?.presentAdAppOpening()
+						self?.afterLaunch()
 						NotificationCenter.post(.updateAds)
 					}
 				}
@@ -65,7 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	func applicationWillEnterForeground(_ application: UIApplication) {
 		
-		presentAdAppOpening()
+		afterLaunch()
 	}
 	
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -87,6 +90,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				}
 			}
 		}
+	}
+	
+	private func afterLaunch() {
+		
+		presentAdAppOpening()
+		LL_Rewards.shared.updateLastConnexionDate()
 	}
 }
 

@@ -176,7 +176,7 @@ public class LL_Game_ViewController: LL_ViewController {
 	})
 	public lazy var helpButton:LL_Button = {
 		
-		$0.image = UIImage(systemName: "star")?.applyingSymbolConfiguration(.init(pointSize: 12))
+		$0.image = UIImage(systemName: "star.fill")?.withTintColor(Colors.Button.Delete.Background, renderingMode: .alwaysOriginal).applyingSymbolConfiguration(.init(pointSize: 12))
 		$0.title = String(key: "game.help")
 		$0.style = .tinted
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
@@ -186,7 +186,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 	}(LL_Button() { [weak self] _ in
 		
-		if self?.game.bonus != 0 {
+		if var bonus = UserDefaults.get(.userBonus) as? Int, bonus != 0 {
 			
 			self?.pause()
 			
@@ -197,7 +197,10 @@ public class LL_Game_ViewController: LL_ViewController {
 				
 				self?.play()
 				
-				self?.game.bonus -= 1
+				bonus -= 1
+				UserDefaults.set(bonus, .userBonus)
+				
+				NotificationCenter.post(.updateUserBonus)
 				
 				self?.updateScore()
 				self?.showSolution()
@@ -483,6 +486,7 @@ public class LL_Game_ViewController: LL_ViewController {
 	
 	public func play() {
 		
+		LL_Rewards.shared.updateLastGameDate()
 	}
 	
 	public func pause() {
@@ -1029,9 +1033,11 @@ public class LL_Game_ViewController: LL_ViewController {
 		scoreButton.title = "\(game.score)"
 		scoreButton.pulse()
 		
-		helpButton.badge = game.bonus > 0 ? "\(game.bonus)" : nil
+		let bonus = UserDefaults.get(.userBonus) as? Int ?? 0
 		
-		if game.bonus > 0 {
+		helpButton.badge = bonus > 0 ? "\(bonus)" : nil
+		
+		if bonus > 0 {
 			
 			helpButton.pulse()
 		}
@@ -1146,7 +1152,11 @@ public class LL_Game_ViewController: LL_ViewController {
 				
 			}).contains(bonus) {
 				
-				game.bonus += 1
+				var bonus = UserDefaults.get(.userBonus) as? Int ?? 0
+				bonus += 1
+				UserDefaults.set(bonus, .userBonus)
+				
+				NotificationCenter.post(.updateUserBonus)
 			}
 			
 			updateScore()

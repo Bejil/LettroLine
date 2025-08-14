@@ -13,6 +13,13 @@ extension UserDefaults {
 		
 		case userId = "userId"
 		case userName = "userName"
+		case userBonus = "userBonus"
+		
+		case lastConnexionDate = "lastConnexionDate"
+		case lastGameDate = "lastGameDate"
+		case lastBestScoreDate = "lastBestScoreDate"
+		case lastRewardsDate = "lastRewardsDate"
+		
 		case shouldDisplayAds = "shouldDisplayAds"
 		case inAppPurchaseAlertCapping = "inAppPurchaseAlertCapping"
 		case onboarding = "onboarding"

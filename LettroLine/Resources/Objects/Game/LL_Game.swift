@@ -17,13 +17,6 @@ public class LL_Game: Codable {
 			save()
 		}
 	}
-	public var bonus: Int = 0 {
-		
-		didSet {
-			
-			save()
-		}
-	}
 	public var score: Int {
 		
 		return words.count
@@ -47,7 +40,6 @@ public class LL_Game: Codable {
 	public func reset() {
 		
 		self.words = []
-		self.bonus = 0
 		save()
 	}
 	
