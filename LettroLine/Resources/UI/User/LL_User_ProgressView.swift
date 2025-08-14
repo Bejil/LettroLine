@@ -78,6 +78,7 @@ public class LL_User_ProgressView : UIProgressView {
 			if justCompleted {
 				
 				imageViews[i].pulse()
+				UIApplication.feedBack(.On)
 			}
 		}
 	}
