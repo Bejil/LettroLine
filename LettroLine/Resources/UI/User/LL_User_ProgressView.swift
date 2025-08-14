@@ -70,11 +70,10 @@ public class LL_User_ProgressView : UIProgressView {
 			
 			let threshold = Float(i + 1) / Float(imageViews.count)
 			let state = progress >= threshold
-			let justCompleted = progress >= threshold && progress < threshold + 0.01 // Marge pour détecter le moment exact
+			let justCompleted = progress >= threshold && progress < threshold + 0.01
 			
 			imageViews[i].image = state ? UIImage(systemName: "smallcircle.filled.circle") : nil
 			
-			// Pulse seulement quand l'étape vient d'être complétée
 			if justCompleted {
 				
 				imageViews[i].pulse()
