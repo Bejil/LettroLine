@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import FlexibleSteppedProgressBar
 
 public class LL_User_StackView : UIStackView {
 	
