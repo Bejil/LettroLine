@@ -38,11 +38,6 @@
 "menu.classic.button.subtitle" = "Meilleur score: ";
 "menu.classic.new.alert.title" = "Attention";
 "menu.classic.new.alert.content" = "Si tu recommences une nouvelle partie du perdra tes progrès précédents.";
-"menu.timetrial.ranking.alert.title" = "Classement";
-"menu.timetrial.ranking.alert.content.0" = "Vous êtes";
-"menu.timetrial.ranking.alert.content.1" = "er";
-"menu.timetrial.ranking.alert.content.2" = "ème";
-"menu.timetrial.ranking.alert.content.3" = "sur";
 "menu.timeTrial.button.title" = "Contre la montre";
 "menu.timeTrial.button.subtitle" = "Meilleur score: ";
 "menu.challenges.button" = "Challenges";
@@ -51,20 +46,37 @@
 "menu.challenges.alert.content" = "Un mode de jeux avec des contraintes pour plus de défis";
 "menu.challenges.alert.button.moveLimit" = "Mouvements limités";
 "menu.challenges.alert.button.noLift" = "Tracé continu";
-"menu.settings.button" = "Réglages";
-"menu.settings.alert.title" = "Réglages";
-"menu.settings.alert.main.title" = "Général";
-"menu.settings.alert.audio.music.button.title" = "Musique";
-"menu.settings.alert.audio.music.button.subtitle.on" = "Activée";
-"menu.settings.alert.audio.music.button.subtitle.off" = "Désactivée";
-"menu.settings.alert.audio.sounds.button.title" = "Sons";
-"menu.settings.alert.audio.sounds.button.subtitle.on" = "Activés";
-"menu.settings.alert.audio.sounds.button.subtitle.off" = "Désactivés";
-"menu.settings.alert.vibrations.button.title" = "Vibrations";
-"menu.settings.alert.vibrations.button.subtitle.on" = "Activées";
-"menu.settings.alert.vibrations.button.subtitle.off" = "Désactivées";
-"menu.settings.alert.ads.title" = "Publicités";
-"menu.settings.alert.ads.button" = "Marre des pubs ?";
+"menu.ranks.button" = "Classements";
+
+//MARK: - Settings
+"settings.button" = "Réglages";
+"settings.alert.title" = "Réglages";
+"settings.alert.main.title" = "Général";
+"settings.alert.name.button.title" = "Votre pseudo";
+"settings.alert.audio.music.button.title" = "Musique";
+"settings.alert.audio.music.button.subtitle.on" = "Activée";
+"settings.alert.audio.music.button.subtitle.off" = "Désactivée";
+"settings.alert.audio.sounds.button.title" = "Sons";
+"settings.alert.audio.sounds.button.subtitle.on" = "Activés";
+"settings.alert.audio.sounds.button.subtitle.off" = "Désactivés";
+"settings.alert.vibrations.button.title" = "Vibrations";
+"settings.alert.vibrations.button.subtitle.on" = "Activées";
+"settings.alert.vibrations.button.subtitle.off" = "Désactivées";
+"settings.alert.ads.title" = "Publicités";
+"settings.alert.ads.button" = "Marre des pubs ?";
+
+//MARK: - Ranks
+"ranks.title" = "Classements";
+"ranks.classic" = "Classique";
+"ranks.timetrial" = "Contre la montre";
+"ranks.anonymous" = "Anonyme";
+"ranks.points" = "points";
+
+//MARK: - User
+"user.name.alert.title" = "Pseudo";
+"user.name.alert.content" = "Quel est votre nom de joueur ?";
+"user.name.alert.textField.placeholder" = "Pseudo";
+"user.name.alert.button" = "Enregistrer";
 
 //MARK: - Game
 "game.tutorial.0.title" = "Bienvenue dans LettroLine";
@@ -106,14 +118,12 @@
 "game.timeTrial.tutorial.end.button" = "Terminer";
 "game.timeTrial.close.alert.title" = "Attention";
 "game.timeTrial.close.alert.content" = "Si tu quittes le jeu maintenant, tu perdras ta progression";
-"game.score" = "🏆 ";
 "game.score.subtitle" = "Nouveau record";
 "game.words.alert.title" = "Historique";
-"game.bonus" = "♦️";
 "game.help" = "Aide";
 "game.help.alert.title" = "Un peu d'aide ?";
-"game.help.alert.text" = "Veux-tu utiliser un %@ pour afficher la solution ?";
-"game.help.alert.content.0" = "Tu n'as pas assez de %@ pour afficher la solution";
+"game.help.alert.text" = "Veux-tu utiliser un bonus pour afficher la solution ?";
+"game.help.alert.content.0" = "Tu n'as pas assez de bonus pour afficher la solution";
 "game.help.alert.content.1" = "Mais tu peux regarder une publicité pour en obtenir un et la voir";
 "game.help.alert.button.title" = "Voir une publicité";
 "game.help.alert.button.subtitle" = "et afficher la solution";
@@ -162,3 +172,13 @@
 "authorizations.denied.alert.button" = "Réglages";
 "authorizations.denied.alert.content" = "Rends-toi dans les réglages pour activer l'autorisation";
 "authorizations.denied.alert.title" = "Autorisation demandée";
+
+//MARK: - Rewards
+"rewards.alert.title" = "Récompense";
+"rewards.alert.success.label" = "Félicitations ! Tu as rempli tes 3 objectifs quotidiens.";
+"rewards.alert.success.button" = "Récupérer 3 bonus";
+"rewards.alert.already.label" = "Tu as déjà récupérer tes bonus aujourd'hui. Reviens demain !";
+"rewards.alert.default.label" = "Pour récupérer 3 bonus quotidiennement tu dois remplir ces 3 objectifs";
+"rewards.alert.default.button.0" = "Te connecter au jeu";
+"rewards.alert.default.button.1" = "Compléter un mot";
+"rewards.alert.default.button.2" = "Battre un de tes meilleurs scores";

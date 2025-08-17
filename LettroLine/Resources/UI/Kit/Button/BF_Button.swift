@@ -142,7 +142,7 @@ public class LL_Button : UIButton {
 				}
 			}
 
-			badgeView.layoutSubviews()
+			badgeView.layoutIfNeeded()
 			badgeView.layer.cornerRadius = badgeView.frame.size.height/2
 		}
 	}

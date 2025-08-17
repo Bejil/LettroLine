@@ -19,11 +19,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		LL_Firebase.shared.start()
 		LL_Ads.shared.start()
 		UserDefaults.set(UserDefaults.get(.userId) as? String ?? UUID().uuidString, .userId)
-		UserDefaults.delete(.timeTrialBestScore)
 		
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.backgroundColor = Colors.Background.Application
-		window?.rootViewController = LL_Menu_ViewController()
+		
+		let navigationController:LL_NavigationController = .init(rootViewController: LL_Menu_ViewController())
+		navigationController.navigationBar.prefersLargeTitles = false
+		window?.rootViewController = navigationController
 		window?.makeKeyAndVisible()
 		
 		LL_Audio.shared.playMusic()
@@ -54,7 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 					}
 					else if UMPConsentInformation.sharedInstance.consentStatus == .obtained {
 						
-						self?.presentAdAppOpening()
+						self?.afterLaunch()
 						NotificationCenter.post(.updateAds)
 					}
 				}
@@ -66,7 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	func applicationWillEnterForeground(_ application: UIApplication) {
 		
-		presentAdAppOpening()
+		afterLaunch()
 	}
 	
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -78,8 +80,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		LL_Ads.shared.presentAppOpening {
 			
-			LL_Notifications.shared.check(withCapping: true)
+			LL_Notifications.shared.check(withCapping: true) { _ in
+				
+				let name = UserDefaults.get(.userName) as? String
+				
+				if name == nil || name?.count == 0 {
+						
+					LL_User_Name_Alert_ViewController().present()
+				}
+			}
 		}
+	}
+	
+	private func afterLaunch() {
+		
+		presentAdAppOpening()
+		LL_Rewards.shared.updateLastConnexionDate()
 	}
 }
 

@@ -45,6 +45,10 @@ public class LL_Notifications : NSObject {
 					
 					check(withCapping:false, andCompletion:completion)
 				}
+				else {
+					
+					completion?(nil)
+				}
 			}
 			else{
 				

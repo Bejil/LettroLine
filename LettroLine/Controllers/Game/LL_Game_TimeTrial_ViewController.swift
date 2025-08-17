@@ -134,9 +134,6 @@ public class LL_Game_TimeTrial_ViewController : LL_Game_ViewController {
 				if newBestScoreState {
 					
 					LL_Confettis.start()
-					
-					LL_TimeTrial_Game.current.saveBestScore()
-					UserDefaults.set(LL_TimeTrial_Game.current.score, .timeTrialBestScore)
 				}
 			}
 		})
@@ -153,7 +150,9 @@ public class LL_Game_TimeTrial_ViewController : LL_Game_ViewController {
 	
 	public override func newWord() {
 		
-		solutionWord = game.newWord()
+		updateBestScore()
+		
+		solutionWord = game.newWord(3)
 	}
 	
 	public override func success() {
@@ -190,6 +189,8 @@ public class LL_Game_TimeTrial_ViewController : LL_Game_ViewController {
 		if (UserDefaults.get(.timeTrialBestScore) as? Int) ?? 0 < game.score {
 			
 			UserDefaults.set(game.score, .timeTrialBestScore)
+			LL_TimeTrial_Game.current.saveBestScore()
+			LL_Rewards.shared.updateLastBestScoreDate()
 		}
 	}
 	

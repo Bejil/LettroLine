@@ -120,6 +120,7 @@ public class LL_Game_Challenges_MoveLimit_ViewController : LL_Game_Challenges_Vi
 		if (UserDefaults.get(.challengesMoveLimitBestScore) as? Int) ?? 0 < game.score {
 			
 			UserDefaults.set(game.score, .challengesMoveLimitBestScore)
+			LL_Rewards.shared.updateLastBestScoreDate()
 		}
 	}
 	

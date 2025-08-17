@@ -28,6 +28,7 @@ public class LL_Game_Challenges_NoLift_ViewController : LL_Game_Challenges_ViewC
 		if (UserDefaults.get(.challengesNoLiftBestScore) as? Int) ?? 0 < game.score {
 			
 			UserDefaults.set(game.score, .challengesNoLiftBestScore)
+			LL_Rewards.shared.updateLastBestScoreDate()
 		}
 	}
 	
