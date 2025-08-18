@@ -43,7 +43,7 @@
 "menu.challenges.button" = "Challenges";
 "menu.challenges.button.subtitle" = "Meilleur score: ";
 "menu.challenges.alert.title" = "Challenges";
-"menu.challenges.alert.content" = "Un mode de jeux avec des contraintes pour plus de défis";
+"menu.challenges.alert.content" = "Un mode de jeu avec des contraintes pour plus de défis";
 "menu.challenges.alert.button.moveLimit" = "Mouvements limités";
 "menu.challenges.alert.button.noLift" = "Tracé continu";
 "menu.ranks.button" = "Classements";
@@ -177,7 +177,7 @@
 "rewards.alert.title" = "Récompense";
 "rewards.alert.success.label" = "Félicitations ! Tu as rempli tes 3 objectifs quotidiens.";
 "rewards.alert.success.button" = "Récupérer 3 bonus";
-"rewards.alert.already.label" = "Tu as déjà récupérer tes bonus aujourd'hui. Reviens demain !";
+"rewards.alert.already.label" = "Tu as déjà récupéré tes bonus aujourd'hui. Reviens demain !";
 "rewards.alert.default.label" = "Pour récupérer 3 bonus quotidiennement tu dois remplir ces 3 objectifs";
 "rewards.alert.default.button.0" = "Te connecter au jeu";
 "rewards.alert.default.button.1" = "Compléter un mot";
