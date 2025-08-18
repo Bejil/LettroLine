@@ -124,6 +124,7 @@ public class LL_Game_Challenges_MoveLimit_ViewController : LL_Game_Challenges_Vi
 		if (UserDefaults.get(.challengesMoveLimitBestScore) as? Int) ?? 0 < game?.score ?? 0 {
 			
 			UserDefaults.set(game?.score ?? 0, .challengesMoveLimitBestScore)
+			LL_Challenges_MoveLimit_Game.current.saveBestScore()
 			LL_Rewards.shared.updateLastBestScoreDate()
 		}
 	}
