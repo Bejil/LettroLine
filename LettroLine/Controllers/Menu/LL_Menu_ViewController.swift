@@ -182,6 +182,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 		menuStackView.alignment = .center
 		
 		let contentStackView:UIStackView = .init(arrangedSubviews: [menuStackView,bannerView,LL_User_StackView()])
+		contentStackView.spacing = UI.Margins
 		contentStackView.axis = .vertical
 		
 		view.addSubview(contentStackView)
