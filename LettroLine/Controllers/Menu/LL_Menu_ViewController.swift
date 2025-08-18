@@ -55,17 +55,6 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Classic_ViewController()), animated: true)
 	})
-	private lazy var timeTrialGameStartButton:LL_Button = {
-		
-		$0.image = UIImage(systemName: "deskclock")
-		$0.isSecondary = true
-		return $0
-		
-	}(LL_Button(String(key: "menu.timeTrial.button.title")) { _ in
-		
-		LL_TimeTrial_Game.current.reset()
-		UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_TimeTrial_ViewController()), animated: true)
-	})
 	private lazy var challengesGameStartButton:LL_Button = {
 		
 		$0.isTertiary = true
@@ -77,6 +66,25 @@ public class LL_Menu_ViewController: LL_ViewController {
 		let alertController:LL_Alert_ViewController = .init()
 		alertController.title = String(key: "menu.challenges.alert.title")
 		alertController.add(String(key: "menu.challenges.alert.content"))
+		
+		let timeTrialButton = alertController.addButton(title: String(key: "menu.challenges.alert.button.timeTrial")) { _ in
+			
+			alertController.close {
+				
+				LL_TimeTrial_Game.current.reset()
+				UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_TimeTrial_ViewController()), animated: true)
+			}
+		}
+		timeTrialButton.image = UIImage(systemName: "deskclock")
+		
+		if let bestScore = UserDefaults.get(.timeTrialBestScore) as? Int, bestScore > 0 {
+			
+			timeTrialButton.subtitle = String(key: "menu.challenges.button.subtitle") + "\(bestScore)"
+		}
+		else {
+			
+			timeTrialButton.subtitle = nil
+		}
 		
 		let moveLimitButton = alertController.addButton(title: String(key: "menu.challenges.alert.button.moveLimit")) { _ in
 			
@@ -144,8 +152,6 @@ public class LL_Menu_ViewController: LL_ViewController {
 		classicGameStackView.alignment = .fill
 		$0.addArrangedSubview(classicGameStackView)
 		
-		$0.addArrangedSubview(timeTrialGameStartButton)
-		
 		$0.addArrangedSubview(challengesGameStartButton)
 		$0.setCustomSpacing(1.5*$0.spacing, after: challengesGameStartButton)
 		
@@ -205,15 +211,6 @@ public class LL_Menu_ViewController: LL_ViewController {
 		else {
 			
 			classicGameStartButton.subtitle = nil
-		}
-		
-		if let bestScore = UserDefaults.get(.timeTrialBestScore) as? Int, bestScore > 0 {
-			
-			timeTrialGameStartButton.subtitle = String(key: "menu.timeTrial.button.subtitle") + "\(bestScore)"
-		}
-		else {
-			
-			timeTrialGameStartButton.subtitle = nil
 		}
 		
 		stackView.animate()

@@ -38,12 +38,11 @@
 "menu.classic.button.subtitle" = "Meilleur score: ";
 "menu.classic.new.alert.title" = "Attention";
 "menu.classic.new.alert.content" = "Si tu recommences une nouvelle partie du perdra tes progrès précédents.";
-"menu.timeTrial.button.title" = "Contre la montre";
-"menu.timeTrial.button.subtitle" = "Meilleur score: ";
 "menu.challenges.button" = "Challenges";
 "menu.challenges.button.subtitle" = "Meilleur score: ";
 "menu.challenges.alert.title" = "Challenges";
 "menu.challenges.alert.content" = "Un mode de jeu avec des contraintes pour plus de défis";
+"menu.challenges.alert.button.timeTrial" = "Contre la montre";
 "menu.challenges.alert.button.moveLimit" = "Mouvements limités";
 "menu.challenges.alert.button.noLift" = "Tracé continu";
 "menu.ranks.button" = "Classements";
