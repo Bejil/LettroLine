@@ -1,0 +1,138 @@
+[
+	{
+		"title": "Chapitre 1",
+		"subtitle": "L'éveil",
+		"caption": "La découverte des pouvoirs",
+		"description": "Tu découvres tes pouvoirs de traceur de mots dans un village mystérieux",
+		"background": "",
+		"isPremium": false,
+		"words": [
+			{
+				"word" : "CHAT",
+				"sentences": [
+					"Un chat mystérieux apparaît et te regarde avec des yeux brillants. Il semble comprendre tes pouvoirs...",
+					"Le mot 'chat' résonne dans l'air. Un petit félin magique se matérialise devant toi.",
+					"En traçant 'chat', tu sens une présence féline se rapprocher..."
+				]
+			},
+			{
+				"word" : "SAGE",
+				"sentences": [
+					"Le sage du village s'approche, impressionné par tes capacités. Il voit en toi un grand potentiel...",
+					"En traçant 'sage', tu ressens la sagesse ancestrale qui émane de ce village mystérieux.",
+					"Le mot 'sage' attire l'attention des anciens. Ils reconnaissent en toi un apprenti prometteur."
+				]
+			},
+			{
+				"word" : "MAGIE",
+				"sentences": [
+					"La magie coule dans tes veines. Chaque lettre que tu traces libère un pouvoir mystérieux...",
+					"En formant 'magie', tu comprends que tes pouvoirs sont plus profonds que tu ne le pensais.",
+					"Le village résonne de magie ancienne. Tes mots ont le pouvoir de réveiller des forces endormies."
+				]
+			}
+		]
+	},
+	{
+		"title": "Chapitre 2",
+		"subtitle": "L'apprentissage",
+		"caption": "Maîtriser ses pouvoirs",
+		"description": "Tu apprends à contrôler tes pouvoirs sous la tutelle du sage",
+		"background": "",
+		"isPremium": false,
+		"words": [
+			{
+				"word" : "LIVRE",
+				"sentences": [
+					"Le sage t'ouvre un ancien grimoire. Ses pages renferment des secrets millénaires...",
+					"En traçant 'livre', tu sens la connaissance ancestrale qui émane de ces pages mystérieuses.",
+					"Le mot 'livre' dévoile des passages cachés. Des histoires de magie s'écrivent sous tes yeux."
+				]
+			},
+			{
+				"word" : "FORCE",
+				"sentences": [
+					"Ta force intérieure grandit avec chaque mot tracé. Tu deviens plus puissant...",
+					"En formant 'force', tu ressens une énergie nouvelle qui parcourt ton corps.",
+					"Le mot 'force' réveille des capacités que tu ignorais posséder. Tu te sens invincible."
+				]
+			},
+			{
+				"word" : "SORT",
+				"sentences": [
+					"Tu apprends à lancer des sorts avec tes mots. Chaque lettre devient un sortilège...",
+					"En traçant 'sort', tu maîtrises l'art de la magie verbale. Tes mots ont un pouvoir réel.",
+					"Le mot 'sort' transforme l'air autour de toi. La magie répond à ton appel."
+				]
+			}
+		]
+	},
+	{
+		"title": "Chapitre 3",
+		"subtitle": "L'épreuve",
+		"caption": "Tester ses limites",
+		"description": "Tu dois prouver ta valeur en affrontant des défis magiques",
+		"background": "",
+		"isPremium": true,
+		"words": [
+			{
+				"word" : "DRAGON",
+				"sentences": [
+					"Un dragon de mots se dresse devant toi. Seuls tes pouvoirs peuvent le vaincre...",
+					"En traçant 'dragon', tu invoques la force nécessaire pour affronter cette créature légendaire.",
+					"Le mot 'dragon' résonne comme un défi. Tu dois prouver que tu es digne de tes pouvoirs."
+				]
+			},
+			{
+				"word" : "COMBAT",
+				"sentences": [
+					"Le combat fait rage. Tes mots sont tes armes contre les forces du mal...",
+					"En formant 'combat', tu engages une bataille épique où la magie s'affronte à la magie.",
+					"Le mot 'combat' déclenche une tempête de sorts. Tu te bats pour la survie du village."
+				]
+			},
+			{
+				"word" : "VICTOIRE",
+				"sentences": [
+					"La victoire est à portée de main. Tes mots ont le pouvoir de changer le destin...",
+					"En traçant 'victoire', tu sens que le triomphe est proche. Tes efforts vont être récompensés.",
+					"Le mot 'victoire' brille comme un phare d'espoir. Tu vas sauver le village et ses habitants."
+				]
+			}
+		]
+	},
+	{
+		"title": "Chapitre 4",
+		"subtitle": "La révélation",
+		"caption": "Découvrir la vérité",
+		"description": "Tu découvres les secrets les plus profonds de tes pouvoirs",
+		"background": "",
+		"isPremium": true,
+		"words": [
+			{
+				"word" : "MYSTERE",
+				"sentences": [
+					"Le mystère de tes origines se dévoile enfin. Tu comprends d'où viennent tes pouvoirs...",
+					"En traçant 'mystère', tu pénètres dans les secrets les plus profonds de ton être.",
+					"Le mot 'mystère' ouvre des portes vers des vérités cachées. Ton destin se révèle."
+				]
+			},
+			{
+				"word" : "DESTIN",
+				"sentences": [
+					"Ton destin était écrit depuis le début. Tes mots sont le chemin vers ton avenir...",
+					"En formant 'destin', tu acceptes le rôle qui t'a été confié. Tu es le gardien des mots.",
+					"Le mot 'destin' résonne comme une prophétie. Tu vas accomplir de grandes choses."
+				]
+			},
+			{
+				"word" : "LEGENDE",
+				"sentences": [
+					"Tu deviens une légende vivante. Tes mots vont traverser les âges...",
+					"En traçant 'légende', tu comprends que ton histoire sera racontée pour toujours.",
+					"Le mot 'légende' scelle ton destin. Tu es devenu le héros que le village attendait."
+				]
+			}
+		]
+	}
+]
