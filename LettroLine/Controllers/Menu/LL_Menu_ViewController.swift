@@ -55,6 +55,16 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Classic_ViewController()), animated: true)
 	})
+	private lazy var storyStartButton:LL_Button = {
+		
+		$0.isSecondary = true
+		$0.image = UIImage(systemName: "book.fill")
+		return $0
+		
+	}(LL_Button(String(key: "menu.story.button")) { _ in
+		
+		
+	})
 	private lazy var challengesGameStartButton:LL_Button = {
 		
 		$0.isTertiary = true
@@ -71,13 +81,13 @@ public class LL_Menu_ViewController: LL_ViewController {
 			
 			alertController.close {
 				
-				LL_TimeTrial_Game.current.reset()
-				UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_TimeTrial_ViewController()), animated: true)
+				LL_Challenges_TimeTrial_Game.current.reset()
+				UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Challenges_TimeTrial_ViewController()), animated: true)
 			}
 		}
 		timeTrialButton.image = UIImage(systemName: "deskclock")
 		
-		if let bestScore = UserDefaults.get(.timeTrialBestScore) as? Int, bestScore > 0 {
+		if let bestScore = UserDefaults.get(.challengesTimeTrialBestScore) as? Int, bestScore > 0 {
 			
 			timeTrialButton.subtitle = String(key: "menu.challenges.button.subtitle") + "\(bestScore)"
 		}
@@ -90,7 +100,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 			
 			alertController.close {
 				
-				LL_Challenges_Game.current.reset()
+				LL_Challenges_MoveLimit_Game.current.reset()
 				UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Challenges_MoveLimit_ViewController()), animated: true)
 			}
 		}
@@ -109,7 +119,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 			
 			alertController.close {
 				
-				LL_Challenges_Game.current.reset()
+				LL_Challenges_NoLift_Game.current.reset()
 				UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Challenges_NoLift_ViewController()), animated: true)
 			}
 		}
@@ -132,8 +142,6 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		$0.axis = .vertical
 		$0.spacing = 2*UI.Margins
-		$0.isLayoutMarginsRelativeArrangement = true
-		$0.layoutMargins = .init(horizontal: 3*UI.Margins)
 		
 		let titleLabel:LL_Label = .init(String(key: "menu.title"))
 		titleLabel.font = Fonts.Content.Title.H1.withSize(Fonts.Content.Title.H1.pointSize + 20)
@@ -152,6 +160,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 		classicGameStackView.alignment = .fill
 		$0.addArrangedSubview(classicGameStackView)
 		
+		$0.addArrangedSubview(storyStartButton)
 		$0.addArrangedSubview(challengesGameStartButton)
 		$0.setCustomSpacing(1.5*$0.spacing, after: challengesGameStartButton)
 		
@@ -188,8 +197,10 @@ public class LL_Menu_ViewController: LL_ViewController {
 		menuStackView.alignment = .center
 		
 		let contentStackView:UIStackView = .init(arrangedSubviews: [menuStackView,bannerView,LL_User_StackView()])
-		contentStackView.spacing = UI.Margins
+		contentStackView.spacing = 2*UI.Margins
 		contentStackView.axis = .vertical
+		contentStackView.isLayoutMarginsRelativeArrangement = true
+		contentStackView.layoutMargins = .init(horizontal: 3*UI.Margins)
 		
 		view.addSubview(contentStackView)
 		contentStackView.snp.makeConstraints { make in

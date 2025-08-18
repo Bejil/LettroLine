@@ -1,5 +1,5 @@
 //
-//  LL_TimeTrial_Game.swift
+//  LL_Challenges_MoveLimit_Game.swift
 //  LettroLine
 //
 //  Created by BLIN Michael on 10/03/2025.
@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-public class LL_TimeTrial_Game: LL_Game {
+public class LL_Challenges_MoveLimit_Game: LL_Game {
 	
 	public struct FirebaseObject : Codable {
 		
@@ -20,7 +20,7 @@ public class LL_TimeTrial_Game: LL_Game {
 	
 	public override class var currentUserDefaultsKey: UserDefaults.Keys? {
 		
-		return .currentTimeTrialGame
+		return .currentChallengesMoveLimit
 	}
 	
 	public func saveBestScore() {
@@ -29,7 +29,7 @@ public class LL_TimeTrial_Game: LL_Game {
 		object.score = score
 		
 		let firestore = Firestore.firestore()
-		let collection = firestore.collection("timeTrialScores")
+		let collection = firestore.collection("moveLimitScores")
 		
 		collection.whereField("uuid", isEqualTo: object.uuid ?? "").getDocuments { snapshot, error in
 			
@@ -60,15 +60,15 @@ public class LL_TimeTrial_Game: LL_Game {
 		}
 	}
 	
-	public static func getAll(_ completion: (([LL_TimeTrial_Game.FirebaseObject]?) -> Void)?) {
+	public static func getAll(_ completion: (([LL_Game.FirebaseObject]?) -> Void)?) {
 		
-		let collectionRef = Firestore.firestore().collection("timeTrialScores")
+		let collectionRef = Firestore.firestore().collection("moveLimitScores")
 		
 		collectionRef.order(by: "score", descending: true).getDocuments { (snapshot, error) in
 			
 			let objects = snapshot?.documents.compactMap({ document in
 				
-				return try? document.data(as: LL_TimeTrial_Game.FirebaseObject.self)
+				return try? document.data(as: LL_Game.FirebaseObject.self)
 				
 			}).sorted(by: {
 				

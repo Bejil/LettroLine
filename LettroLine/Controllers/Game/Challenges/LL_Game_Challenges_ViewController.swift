@@ -9,11 +9,6 @@ import Foundation
 
 public class LL_Game_Challenges_ViewController : LL_Game_ViewController {
 	
-	public override var game: LL_Game {
-		
-		return LL_Challenges_Game.current
-	}
-	
 	public override func close() {
 		
 		pause()

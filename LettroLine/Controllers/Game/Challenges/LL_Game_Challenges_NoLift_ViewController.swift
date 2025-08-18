@@ -9,6 +9,10 @@ import Foundation
 
 public class LL_Game_Challenges_NoLift_ViewController : LL_Game_Challenges_ViewController {
 	
+	public override var game: LL_Game? {
+		
+		return LL_Challenges_NoLift_Game.current
+	}
 	public override var allowFingerLift: Bool {
 		
 		return false
@@ -25,9 +29,9 @@ public class LL_Game_Challenges_NoLift_ViewController : LL_Game_Challenges_ViewC
 		
 		super.updateBestScore()
 		
-		if (UserDefaults.get(.challengesNoLiftBestScore) as? Int) ?? 0 < game.score {
+		if (UserDefaults.get(.challengesNoLiftBestScore) as? Int) ?? 0 < game?.score ?? 0 {
 			
-			UserDefaults.set(game.score, .challengesNoLiftBestScore)
+			UserDefaults.set(game?.score ?? 0, .challengesNoLiftBestScore)
 			LL_Rewards.shared.updateLastBestScoreDate()
 		}
 	}
@@ -36,6 +40,6 @@ public class LL_Game_Challenges_NoLift_ViewController : LL_Game_Challenges_ViewC
 		
 		super.updateScore()
 		
-		isBestScore = (UserDefaults.get(.challengesNoLiftBestScore) as? Int) ?? 0 < game.score
+		isBestScore = (UserDefaults.get(.challengesNoLiftBestScore) as? Int) ?? 0 < game?.score ?? 0
 	}
 }

@@ -20,7 +20,7 @@ public class LL_Ranks_TableViewCell : LL_TableViewCell {
 			rankButton.title = "\(rank ?? 0)"
 		}
 	}
-	public var object:LL_TimeTrial_Game.FirebaseObject? {
+	public var object:LL_Challenges_TimeTrial_Game.FirebaseObject? {
 		
 		didSet {
 			

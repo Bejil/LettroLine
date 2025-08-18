@@ -10,6 +10,14 @@ import FirebaseFirestore
 
 public class LL_Game: Codable {
 	
+	public struct FirebaseObject : Codable {
+		
+		@DocumentID public var id: String?
+		public var uuid:String? = UserDefaults.get(.userId) as? String
+		public var name:String? = UserDefaults.get(.userName) as? String
+		public var score:Int?
+	}
+	
 	public var words: [String] = [] {
 		
 		didSet {

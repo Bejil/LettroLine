@@ -26,15 +26,17 @@ extension UserDefaults {
 		case soundsEnabled = "soundsEnabled"
 		case musicEnabled = "musicEnabled"
 		case vibrationsEnabled = "vibrationsEnabled"
-		case currentClassicGame = "currentClassicGame"
-		case currentTimeTrialGame = "currentTimeTrialGame"
-		case currentChallengeGame = "currentChallengeGame"
-		case classicBestScore = "classicBestScore"
 		
+		case currentClassicGame = "currentClassicGame"
+		case currentChallengesNoLift = "currentChallengesNoLift"
+		case currentChallengesMoveLimit = "currentChallengesMoveLimit"
+		case currentChallengesTimeTrialGame = "currentChallengesTimeTrialGame"
+		
+		case classicBestScore = "classicBestScore"
 		case challengesMoveLimitBestScore = "challengesMoveLimitBestScore"
 		case challengesNoLiftBestScore = "challengesNoLiftBestScore"
+		case challengesTimeTrialBestScore = "challengesTimeTrialBestScore"
 		
-		case timeTrialBestScore = "timeTrialBestScore"
 		case tutorialClassicGame = "tutorialClassicGame"
 		case tutorialTimeTrialGame = "tutorialTimeTrialGame"
 		case notifications = "notifications"
