@@ -25,7 +25,6 @@ public class LL_User_StackView : UIStackView {
 		
 		let bonus = UserDefaults.get(.userBonus) as? Int ?? 0
 		$0.text = "\(bonus)"
-		$0.isHidden = bonus == 0
 		
 		return $0
 		
@@ -39,6 +38,9 @@ public class LL_User_StackView : UIStackView {
 		$0.alignment = .center
 		$0.isLayoutMarginsRelativeArrangement = true
 		$0.layoutMargins = .init(horizontal: UI.Margins/3, vertical: 3)
+		
+		let bonus = UserDefaults.get(.userBonus) as? Int ?? 0
+		$0.isHidden = bonus == 0
 		
 		$0.addArrangedSubview(bonusLabel)
 		
