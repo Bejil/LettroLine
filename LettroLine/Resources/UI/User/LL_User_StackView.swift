@@ -55,7 +55,12 @@ public class LL_User_StackView : UIStackView {
 		return $0
 		
 	}(UIStackView())
-	private lazy var progressView:LL_User_ProgressView = .init()
+	private lazy var progressView:LL_ProgressView = {
+		
+		$0.steps = 3
+		return $0
+		
+	}(LL_ProgressView())
 	private lazy var bonusImageView:UIImageView = {
 		
 		$0.contentMode = .scaleAspectFit

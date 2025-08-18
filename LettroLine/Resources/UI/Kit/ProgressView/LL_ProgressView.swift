@@ -1,39 +1,44 @@
 //
-//  LL_User_ProgressView.swift
+//  LL_ProgressView.swift
 //  LettroLine
 //
-//  Created by BLIN Michael on 14/08/2025.
+//  Created by BLIN Michael on 18/08/2025.
 //
 
 import UIKit
 
-public class LL_User_ProgressView : UIProgressView {
+public class LL_ProgressView : UIProgressView {
 	
+	public var steps:Int = 0 {
+		
+		didSet {
+			
+			stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+			stackView.addArrangedSubview(.init())
+			
+			let dotHeight = 1.25*UI.Margins
+			
+			for _ in 0..<steps {
+				
+				let imageView:UIImageView = .init()
+				imageView.backgroundColor = .white
+				imageView.tintColor = Colors.Primary
+				imageView.contentMode = .scaleAspectFit
+				imageView.layer.cornerRadius = dotHeight/2
+				imageView.layer.borderWidth = 3
+				imageView.layer.borderColor = Colors.Tertiary.cgColor
+				imageView.snp.makeConstraints { make in
+					make.size.equalTo(dotHeight)
+				}
+				stackView.addArrangedSubview(imageView)
+			}
+		}
+	}
 	private var stackView:UIStackView = {
 		
 		$0.axis = .horizontal
 		$0.distribution = .equalCentering
 		$0.alignment = .center
-		
-		$0.addArrangedSubview(.init())
-		
-		let dotHeight = 1.25*UI.Margins
-		
-		for _ in 0...2 {
-			
-			let imageView:UIImageView = .init()
-			imageView.backgroundColor = .white
-			imageView.tintColor = Colors.Primary
-			imageView.contentMode = .scaleAspectFit
-			imageView.layer.cornerRadius = dotHeight/2
-			imageView.layer.borderWidth = 3
-			imageView.layer.borderColor = Colors.Tertiary.cgColor
-			imageView.snp.makeConstraints { make in
-				make.size.equalTo(dotHeight)
-			}
-			$0.addArrangedSubview(imageView)
-		}
-		
 		return $0
 		
 	}(UIStackView())
