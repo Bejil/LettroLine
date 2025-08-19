@@ -9,6 +9,10 @@ import Foundation
 
 public class LL_Game_Challenges_MoveLimit_ViewController : LL_Game_Challenges_ViewController {
 	
+	public override var game: LL_Game? {
+		
+		return LL_Challenges_MoveLimit_Game.current
+	}
 	private var constraintButton:LL_Button = {
 		
 		$0.isTertiary = true
@@ -117,9 +121,10 @@ public class LL_Game_Challenges_MoveLimit_ViewController : LL_Game_Challenges_Vi
 		
 		super.updateBestScore()
 		
-		if (UserDefaults.get(.challengesMoveLimitBestScore) as? Int) ?? 0 < game.score {
+		if (UserDefaults.get(.challengesMoveLimitBestScore) as? Int) ?? 0 < game?.score ?? 0 {
 			
-			UserDefaults.set(game.score, .challengesMoveLimitBestScore)
+			UserDefaults.set(game?.score ?? 0, .challengesMoveLimitBestScore)
+			LL_Challenges_MoveLimit_Game.current.saveBestScore()
 			LL_Rewards.shared.updateLastBestScoreDate()
 		}
 	}
@@ -128,6 +133,6 @@ public class LL_Game_Challenges_MoveLimit_ViewController : LL_Game_Challenges_Vi
 		
 		super.updateScore()
 		
-		isBestScore = (UserDefaults.get(.challengesMoveLimitBestScore) as? Int) ?? 0 < game.score
+		isBestScore = (UserDefaults.get(.challengesMoveLimitBestScore) as? Int) ?? 0 < game?.score ?? 0
 	}
 }

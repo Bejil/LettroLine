@@ -145,8 +145,6 @@ public class LL_User_StackView : UIStackView {
 		
 		axis = .horizontal
 		spacing = UI.Margins
-		isLayoutMarginsRelativeArrangement = true
-		layoutMargins = .init(horizontal: 2*UI.Margins)
 		alignment = .center
 		
 		addArrangedSubview(imageView)

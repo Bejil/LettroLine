@@ -12,9 +12,9 @@ import GoogleMobileAds
 public class LL_Game_ViewController: LL_ViewController {
 	
 	public var canAddMorePoint:Bool = true
-	public var game:LL_Game {
+	public var game:LL_Game? {
 		
-		return LL_Game()
+		return nil
 	}
 	public var isBestScore:Bool = false {
 		
@@ -154,14 +154,14 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 	}(LL_Button() { [weak self] _ in
 		
-		if self?.game.score != 0 {
+		if self?.game?.score != 0 {
 			
 			self?.pause()
 			
 			let alertController:LL_Alert_ViewController = .init()
 			alertController.title = String(key: "game.words.alert.title")
 			
-			self?.game.words.forEach {
+			self?.game?.words.forEach {
 				
 				alertController.add($0.uppercased())
 			}
@@ -388,6 +388,43 @@ public class LL_Game_ViewController: LL_ViewController {
 		return $0
 		
 	}(LL_CollectionView(frame: .zero, collectionViewLayout: collectionViewFlowLayout))
+	public lazy var gridView:UIView = {
+		
+		$0.layer.cornerRadius = UI.CornerRadius
+		$0.layer.masksToBounds = true
+		
+		$0.addSubview(gridBackgroundView)
+		gridBackgroundView.snp.makeConstraints { make in
+			make.edges.equalToSuperview()
+		}
+		
+		$0.addSubview(collectionView)
+		collectionView.snp.makeConstraints { make in
+			make.left.right.equalToSuperview().inset(UI.Margins/2)
+			make.top.bottom.equalToSuperview().inset(1.25*UI.Margins)
+		}
+		return $0
+		
+	}(UIView())
+	public lazy var gridBackgroundView:UIView = {
+		
+		$0.backgroundColor = Colors.Background.Grid
+		return $0
+		
+	}(UIView())
+	public lazy var contentStackView:UIStackView = {
+		
+		$0.axis = .vertical
+		$0.spacing = 2*UI.Margins
+		$0.addArrangedSubview(scoreStackView)
+		$0.addArrangedSubview(wordStackView)
+		$0.addArrangedSubview(gridView)
+		$0.addArrangedSubview(.init())
+		$0.addArrangedSubview(bannerView)
+		
+		return $0
+		
+	}(UIStackView())
 	private lazy var bannerView = LL_Ads.shared.presentBanner(Ads.Banner.Game, self)
 	
 	public override func loadView() {
@@ -407,9 +444,6 @@ public class LL_Game_ViewController: LL_ViewController {
 			make.top.bottom.equalToSuperview().inset(1.25*UI.Margins)
 		}
 		
-		let contentStackView:UIStackView = .init(arrangedSubviews: [scoreStackView,wordStackView,gridBackgroundView,.init(),bannerView])
-		contentStackView.axis = .vertical
-		contentStackView.spacing = 2*UI.Margins
 		view.addSubview(contentStackView)
 		contentStackView.snp.makeConstraints { make in
 			make.edges.equalTo(view.safeAreaLayoutGuide).inset(2*UI.Margins)
@@ -499,7 +533,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		showFirst = false
 		
-		let score = Double(game.score)
+		let score = Double(game?.score ?? 0)
 		
 		var wordLength = String.minLetters
 		
@@ -517,7 +551,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			}
 		}
 		
-		solutionWord = game.newWord(wordLength)
+		solutionWord = game?.newWord(wordLength)
 		
 		bannerView.refresh()
 	}
@@ -586,7 +620,7 @@ public class LL_Game_ViewController: LL_ViewController {
 									}
 									else {
 										
-										self?.game.reset()
+										self?.game?.reset()
 										self?.dismiss()
 									}
 								}
@@ -602,7 +636,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		}
 		alertController.addDismissButton { [weak self] _ in
 			
-			self?.game.reset()
+			self?.game?.reset()
 			
 			self?.dismiss()
 		}
@@ -1030,7 +1064,7 @@ public class LL_Game_ViewController: LL_ViewController {
 	
 	public func updateScore() {
 		
-		scoreButton.title = "\(game.score)"
+		scoreButton.title = "\(game?.score ?? 0)"
 		scoreButton.pulse()
 		
 		let bonus = UserDefaults.get(.userBonus) as? Int ?? 0
@@ -1140,7 +1174,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		if let solutionWord {
 			
-			game.words.append(solutionWord)
+			game?.words.append(solutionWord)
 			
 			if let bonus = grid?.bonus, usedIndexPaths.compactMap({
 				

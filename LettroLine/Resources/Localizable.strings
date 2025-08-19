@@ -38,12 +38,11 @@
 "menu.classic.button.subtitle" = "Meilleur score: ";
 "menu.classic.new.alert.title" = "Attention";
 "menu.classic.new.alert.content" = "Si tu recommences une nouvelle partie du perdra tes progrès précédents.";
-"menu.timeTrial.button.title" = "Contre la montre";
-"menu.timeTrial.button.subtitle" = "Meilleur score: ";
 "menu.challenges.button" = "Challenges";
 "menu.challenges.button.subtitle" = "Meilleur score: ";
 "menu.challenges.alert.title" = "Challenges";
 "menu.challenges.alert.content" = "Un mode de jeu avec des contraintes pour plus de défis";
+"menu.challenges.alert.button.timeTrial" = "Contre la montre";
 "menu.challenges.alert.button.moveLimit" = "Mouvements limités";
 "menu.challenges.alert.button.noLift" = "Tracé continu";
 "menu.ranks.button" = "Classements";
@@ -69,6 +68,8 @@
 "ranks.title" = "Classements";
 "ranks.classic" = "Classique";
 "ranks.timetrial" = "Contre la montre";
+"ranks.moveLimit" = "Mouvements limités";
+"ranks.noLift" = "Tracé continu";
 "ranks.anonymous" = "Anonyme";
 "ranks.points" = "points";
 
@@ -116,8 +117,6 @@
 "game.timeTrial.tutorial.end.newBestScore.on" = "Tu as battu ton record ! Continue sur cette lancée, le meilleur reste à venir...";
 "game.timeTrial.tutorial.end.newBestScore.off" = "Tu n'as pas battu ton record cette fois-ci. La prochaine fois peut être ?";
 "game.timeTrial.tutorial.end.button" = "Terminer";
-"game.timeTrial.close.alert.title" = "Attention";
-"game.timeTrial.close.alert.content" = "Si tu quittes le jeu maintenant, tu perdras ta progression";
 "game.score.subtitle" = "Nouveau record";
 "game.words.alert.title" = "Historique";
 "game.help" = "Aide";
