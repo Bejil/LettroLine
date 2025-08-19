@@ -145,6 +145,6 @@ public class LL_Letter_Label : LL_Label {
 	
 	private func updateColor()	{
 		
-		backgroundColor = isSelected ?? false ? Colors.Letter.Selected :  isFirst ? Colors.Tertiary : Colors.Letter.Unselected
+		backgroundColor = isSelected ?? false ? Colors.Letter.Selected : isFirst ? Colors.Tertiary : Colors.Letter.Unselected
 	}
 }

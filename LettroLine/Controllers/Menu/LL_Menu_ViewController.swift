@@ -55,16 +55,6 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Classic_ViewController()), animated: true)
 	})
-	private lazy var storyStartButton:LL_Button = {
-		
-		$0.isSecondary = true
-		$0.image = UIImage(systemName: "book.fill")
-		return $0
-		
-	}(LL_Button(String(key: "menu.story.button")) { _ in
-		
-		
-	})
 	private lazy var challengesGameStartButton:LL_Button = {
 		
 		$0.isTertiary = true
@@ -160,7 +150,6 @@ public class LL_Menu_ViewController: LL_ViewController {
 		classicGameStackView.alignment = .fill
 		$0.addArrangedSubview(classicGameStackView)
 		
-		$0.addArrangedSubview(storyStartButton)
 		$0.addArrangedSubview(challengesGameStartButton)
 		$0.setCustomSpacing(1.5*$0.spacing, after: challengesGameStartButton)
 		

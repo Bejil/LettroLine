@@ -57,7 +57,7 @@ public class LL_Particules_View : SKView {
 		return $0
 		
 	}(SKScene())
-	private lazy var particulesEmitterNode:SKEmitterNode = {
+	public lazy var particulesEmitterNode:SKEmitterNode = {
 		
 		$0.particleColorSequence = nil
 		$0.particleColor = Colors.Primary.withAlphaComponent(0.1)

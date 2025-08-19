@@ -388,6 +388,43 @@ public class LL_Game_ViewController: LL_ViewController {
 		return $0
 		
 	}(LL_CollectionView(frame: .zero, collectionViewLayout: collectionViewFlowLayout))
+	public lazy var gridView:UIView = {
+		
+		$0.layer.cornerRadius = UI.CornerRadius
+		$0.layer.masksToBounds = true
+		
+		$0.addSubview(gridBackgroundView)
+		gridBackgroundView.snp.makeConstraints { make in
+			make.edges.equalToSuperview()
+		}
+		
+		$0.addSubview(collectionView)
+		collectionView.snp.makeConstraints { make in
+			make.left.right.equalToSuperview().inset(UI.Margins/2)
+			make.top.bottom.equalToSuperview().inset(1.25*UI.Margins)
+		}
+		return $0
+		
+	}(UIView())
+	public lazy var gridBackgroundView:UIView = {
+		
+		$0.backgroundColor = Colors.Background.Grid
+		return $0
+		
+	}(UIView())
+	public lazy var contentStackView:UIStackView = {
+		
+		$0.axis = .vertical
+		$0.spacing = 2*UI.Margins
+		$0.addArrangedSubview(scoreStackView)
+		$0.addArrangedSubview(wordStackView)
+		$0.addArrangedSubview(gridView)
+		$0.addArrangedSubview(.init())
+		$0.addArrangedSubview(bannerView)
+		
+		return $0
+		
+	}(UIStackView())
 	private lazy var bannerView = LL_Ads.shared.presentBanner(Ads.Banner.Game, self)
 	
 	public override func loadView() {
@@ -407,9 +444,6 @@ public class LL_Game_ViewController: LL_ViewController {
 			make.top.bottom.equalToSuperview().inset(1.25*UI.Margins)
 		}
 		
-		let contentStackView:UIStackView = .init(arrangedSubviews: [scoreStackView,wordStackView,gridBackgroundView,.init(),bannerView])
-		contentStackView.axis = .vertical
-		contentStackView.spacing = 2*UI.Margins
 		view.addSubview(contentStackView)
 		contentStackView.snp.makeConstraints { make in
 			make.edges.equalTo(view.safeAreaLayoutGuide).inset(2*UI.Margins)

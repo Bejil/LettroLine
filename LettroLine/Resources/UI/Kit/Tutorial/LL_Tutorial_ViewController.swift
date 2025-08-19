@@ -68,6 +68,12 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 	private var currentIndex: Int = -1
 	private var pulseTimer:Timer?
 	private lazy var maskLayer:CAShapeLayer = .init()
+	public lazy var dimBackgroundView:UIVisualEffectView = {
+		
+		$0.alpha = 0.75
+		return $0
+		
+	}(UIVisualEffectView(effect: UIBlurEffect.init(style: .dark)))
 	
 	public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
 		
@@ -97,8 +103,6 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 			$0.removeFromSuperlayer()
 		})
 		
-		let dimBackgroundView: UIVisualEffectView = .init(effect: UIBlurEffect.init(style: .dark))
-		dimBackgroundView.alpha = 0.75
 		view.addSubview(dimBackgroundView)
 		dimBackgroundView.snp.makeConstraints { make in
 			
@@ -117,7 +121,7 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 		view.layer.mask = maskLayer
 	}
 	
-	public func present() {
+	public func present(_ presentCompletion:(()->Void)? = nil) {
 		
 		let presentClosure:(()->Void) = { [weak self] in
 			
@@ -126,6 +130,7 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 				UI.MainController.present(self, animated: true) { [weak self] in
 					
 					self?.next()
+					presentCompletion?()
 				}
 			}
 		}
