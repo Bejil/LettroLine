@@ -57,7 +57,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 	})
 	private lazy var challengesGameStartButton:LL_Button = {
 		
-		$0.isTertiary = true
+		$0.type = .tertiary
 		$0.image = UIImage(systemName: "figure.strengthtraining.traditional")
 		return $0
 		
@@ -157,7 +157,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 			
 			UI.MainController.present(LL_NavigationController(rootViewController: LL_Ranks_ViewController()), animated: true)
 		}
-		ranksButton.style = .tinted
+		ranksButton.type = .secondary
 		ranksButton.image = UIImage(systemName: "trophy")
 		$0.addArrangedSubview(ranksButton)
 		
@@ -169,17 +169,11 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		super.loadView()
 		
-		let settingsButton:LL_Button = .init(String(key: "settings.button")) { _ in
+		navigationItem.rightBarButtonItem = .init(image: UIImage(systemName: "slider.vertical.3"), primaryAction: .init(handler: { _ in
 			
 			let alertController:LL_Settings_Alert_ViewController = .init()
 			alertController.present()
-		}
-		settingsButton.style = .transparent
-		settingsButton.titleFont = Fonts.Content.Text.Bold.withSize(Fonts.Size-2)
-		settingsButton.image = UIImage(systemName: "slider.vertical.3")?.applyingSymbolConfiguration(.init(pointSize: Fonts.Size))
-		settingsButton.configuration?.contentInsets = .zero
-		settingsButton.configuration?.imagePadding = UI.Margins/3
-		navigationItem.rightBarButtonItem = .init(customView: settingsButton)
+		}))
 		
 		let menuStackView:UIStackView = .init(arrangedSubviews: [stackView])
 		menuStackView.axis = .horizontal
@@ -188,12 +182,11 @@ public class LL_Menu_ViewController: LL_ViewController {
 		let contentStackView:UIStackView = .init(arrangedSubviews: [menuStackView,bannerView,LL_User_StackView()])
 		contentStackView.spacing = 2*UI.Margins
 		contentStackView.axis = .vertical
-		contentStackView.isLayoutMarginsRelativeArrangement = true
-		contentStackView.layoutMargins = .init(horizontal: 3*UI.Margins)
 		
 		view.addSubview(contentStackView)
 		contentStackView.snp.makeConstraints { make in
-			make.edges.equalTo(view.safeAreaLayoutGuide)
+			make.left.right.equalTo(view.safeAreaLayoutGuide).inset(3*UI.Margins)
+			make.top.bottom.equalTo(view.safeAreaLayoutGuide).inset(UI.Margins)
 		}
 	}
 	

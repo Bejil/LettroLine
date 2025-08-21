@@ -67,6 +67,10 @@ public class LL_Settings_Alert_ViewController : LL_Alert_ViewController {
 		button.title = String(key: "settings.alert.name.button.title")
 		button.image = UIImage(systemName: "person.fill")
 		
+		let systemTitleLabel = add(String(key: "settings.alert.system.title"))
+		systemTitleLabel.font = Fonts.Content.Title.H4
+		systemTitleLabel.textColor = .white
+		
 		let musicButton = setupToggleButton(for: .musicEnabled,
 											title: "settings.alert.audio.music.button.title",
 											subtitleOn: "settings.alert.audio.music.button.subtitle.on",
@@ -113,7 +117,7 @@ public class LL_Settings_Alert_ViewController : LL_Alert_ViewController {
 			button.image = UIImage(systemName: "rectangle.stack.badge.minus")
 		}
 		
-		addDismissButton()
+		addCancelButton()
 	}
 	
 	@MainActor required public init?(coder: NSCoder) {

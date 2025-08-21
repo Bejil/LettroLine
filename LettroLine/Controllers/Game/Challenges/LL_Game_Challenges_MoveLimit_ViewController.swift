@@ -15,7 +15,7 @@ public class LL_Game_Challenges_MoveLimit_ViewController : LL_Game_Challenges_Vi
 	}
 	private var constraintButton:LL_Button = {
 		
-		$0.isTertiary = true
+		$0.type = .primary
 		$0.style = .solid
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
 		$0.snp.removeConstraints()

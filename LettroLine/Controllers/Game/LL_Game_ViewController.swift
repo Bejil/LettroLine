@@ -176,7 +176,7 @@ public class LL_Game_ViewController: LL_ViewController {
 	})
 	public lazy var helpButton:LL_Button = {
 		
-		$0.image = UIImage(systemName: "star.fill")?.withTintColor(Colors.Button.Delete.Background, renderingMode: .alwaysOriginal).applyingSymbolConfiguration(.init(pointSize: 12))
+		$0.image = UIImage(systemName: "star.fill")?.applyingSymbolConfiguration(.init(pointSize: 12))
 		$0.title = String(key: "game.help")
 		$0.style = .tinted
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
@@ -270,7 +270,6 @@ public class LL_Game_ViewController: LL_ViewController {
 	private lazy var collectionViewFlowLayout: UICollectionViewFlowLayout = {
 		
 		$0.scrollDirection = .vertical
-		$0.sectionInset = .init(horizontal: UI.Margins)
 		$0.minimumInteritemSpacing = UI.Margins
 		$0.minimumLineSpacing = UI.Margins
 		return $0
@@ -390,32 +389,17 @@ public class LL_Game_ViewController: LL_ViewController {
 	}(LL_CollectionView(frame: .zero, collectionViewLayout: collectionViewFlowLayout))
 	public lazy var gridView:UIView = {
 		
-		$0.layer.cornerRadius = UI.CornerRadius
-		$0.layer.masksToBounds = true
-		
-		$0.addSubview(gridBackgroundView)
-		gridBackgroundView.snp.makeConstraints { make in
-			make.edges.equalToSuperview()
-		}
-		
 		$0.addSubview(collectionView)
 		collectionView.snp.makeConstraints { make in
-			make.left.right.equalToSuperview().inset(UI.Margins/2)
-			make.top.bottom.equalToSuperview().inset(1.25*UI.Margins)
+			make.edges.equalToSuperview()
 		}
-		return $0
-		
-	}(UIView())
-	public lazy var gridBackgroundView:UIView = {
-		
-		$0.backgroundColor = Colors.Background.Grid
 		return $0
 		
 	}(UIView())
 	public lazy var contentStackView:UIStackView = {
 		
 		$0.axis = .vertical
-		$0.spacing = 2*UI.Margins
+		$0.spacing = 3*UI.Margins
 		$0.addArrangedSubview(scoreStackView)
 		$0.addArrangedSubview(wordStackView)
 		$0.addArrangedSubview(gridView)
@@ -435,20 +419,10 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		navigationItem.rightBarButtonItem = settingsButton
 		
-		let gridBackgroundView:UIView = .init()
-		gridBackgroundView.backgroundColor = Colors.Background.Grid
-		gridBackgroundView.layer.cornerRadius = UI.CornerRadius
-		gridBackgroundView.addSubview(collectionView)
-		collectionView.snp.makeConstraints { make in
-			make.left.right.equalToSuperview().inset(UI.Margins/2)
-			make.top.bottom.equalToSuperview().inset(1.25*UI.Margins)
-		}
-		
 		view.addSubview(contentStackView)
 		contentStackView.snp.makeConstraints { make in
 			make.edges.equalTo(view.safeAreaLayoutGuide).inset(2*UI.Margins)
 		}
-		contentStackView.setCustomSpacing(3*UI.Margins, after: scoreStackView)
 		
 		newWord()
 		
@@ -634,12 +608,13 @@ public class LL_Game_ViewController: LL_ViewController {
 				LL_Alert_ViewController.present(LL_Error(String(key: "ads.network.error")))
 			}
 		}
-		alertController.addDismissButton { [weak self] _ in
+		let button = alertController.addDismissButton { [weak self] _ in
 			
 			self?.game?.reset()
 			
 			self?.dismiss()
 		}
+		button.style = .transparent
 		alertController.present()
 		
 		UIView.animation { [weak self] in

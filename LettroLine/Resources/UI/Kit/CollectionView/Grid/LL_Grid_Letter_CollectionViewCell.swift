@@ -18,10 +18,10 @@ public class LL_Grid_Letter_CollectionViewCell : LL_CollectionViewCell {
 		
 		didSet {
 			
-			label.text = letter
+			label.letter = letter
 		}
 	}
-	private lazy var label:LL_Letter_Label = .init()
+	private lazy var label:LL_Letter_View = .init()
 	public override var isSelected: Bool {
 		
 		didSet {

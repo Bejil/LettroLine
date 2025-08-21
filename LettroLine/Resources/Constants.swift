@@ -41,8 +41,6 @@ public struct Colors {
 			public static let Primary:UIColor = UIColor(named: "ViewBackgroundPrimary")!
 			public static let Secondary:UIColor = UIColor(named: "ViewBackgroundSecondary")!
 		}
-		
-		public static let Grid:UIColor = UIColor(named: "GridBackground")!
 	}
 	
 	public struct Navigation {
@@ -95,7 +93,6 @@ public struct Colors {
 	public struct Letter {
 			
 		public static let Selected:UIColor = UIColor(named: "LetterSelected")!
-		public static let Unselected:UIColor = UIColor(named: "LetterUnselected")!
 	}
 }
 
@@ -106,9 +103,12 @@ public struct Fonts {
 		static let Regular:String = "TTInterphasesProTrl-Rg"
 		static let Bold:String = "TTInterphasesProTrl-Bd"
 		static let Black:String = "GROBOLD"
+		static let Letter:String = "Fredoka-Bold"
 	}
 	
 	public static let Size:CGFloat = 13
+	
+	public static let Letter:UIFont = UIFont(name: Name.Letter, size: Fonts.Size+25)!
 	
 	public struct Navigation {
 		

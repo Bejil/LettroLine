@@ -48,10 +48,10 @@
 "menu.ranks.button" = "Classements";
 
 //MARK: - Settings
-"settings.button" = "Réglages";
 "settings.alert.title" = "Réglages";
 "settings.alert.main.title" = "Général";
 "settings.alert.name.button.title" = "Votre pseudo";
+"settings.alert.system.title" = "Système";
 "settings.alert.audio.music.button.title" = "Musique";
 "settings.alert.audio.music.button.subtitle.on" = "Activée";
 "settings.alert.audio.music.button.subtitle.off" = "Désactivée";
@@ -67,9 +67,9 @@
 //MARK: - Ranks
 "ranks.title" = "Classements";
 "ranks.classic" = "Classique";
-"ranks.timetrial" = "Contre la montre";
-"ranks.moveLimit" = "Mouvements limités";
-"ranks.noLift" = "Tracé continu";
+"ranks.challenges.timetrial" = "Contre la montre";
+"ranks.challenges.moveLimit" = "Mouvements limités";
+"ranks.challenges.noLift" = "Tracé continu";
 "ranks.anonymous" = "Anonyme";
 "ranks.points" = "points";
 

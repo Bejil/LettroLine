@@ -101,6 +101,8 @@ public class LL_User_StackView : UIStackView {
 				if LL_Rewards.shared.alreadyGetReward {
 					
 					alertController.add(String(key: "rewards.alert.already.label"))
+					
+					alertController.addCancelButton()
 				}
 				else {
 					
@@ -123,9 +125,10 @@ public class LL_User_StackView : UIStackView {
 					button.isUserInteractionEnabled = false
 					button.style = state ? .solid : .tinted
 					button.image = UIImage(systemName: state ? "checkmark.square" : "square")
+					
+					alertController.addDismissButton()
 				}
 				
-				alertController.addDismissButton()
 				alertController.present()
 			}
 		}))

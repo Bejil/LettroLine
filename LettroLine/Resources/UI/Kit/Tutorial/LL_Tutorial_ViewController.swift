@@ -219,12 +219,12 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 			if currentIndex == (items?.count ?? 0) - 1 {
 				
 				nextButton.style = .solid
-				nextButton.isText = false
+				nextButton.type = .primary
 			}
 			else {
 				
-				nextButton.style = .transparent
-				nextButton.isText = true
+				nextButton.style = .tinted
+				nextButton.type = .primary
 			}
 			
 			let animation: CATransition = CATransition()
