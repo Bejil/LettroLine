@@ -57,7 +57,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 	})
 	private lazy var challengesGameStartButton:LL_Button = {
 		
-		$0.isTertiary = true
+		$0.type = .tertiary
 		$0.image = UIImage(systemName: "figure.strengthtraining.traditional")
 		return $0
 		
@@ -65,7 +65,6 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		let alertController:LL_Alert_ViewController = .init()
 		alertController.title = String(key: "menu.challenges.alert.title")
-		alertController.add(String(key: "menu.challenges.alert.content"))
 		
 		let timeTrialButton = alertController.addButton(title: String(key: "menu.challenges.alert.button.timeTrial")) { _ in
 			
@@ -75,7 +74,8 @@ public class LL_Menu_ViewController: LL_ViewController {
 				UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Challenges_TimeTrial_ViewController()), animated: true)
 			}
 		}
-		timeTrialButton.image = UIImage(systemName: "deskclock")
+		timeTrialButton.subtitle = String(key: "menu.challenges.alert.timeTrial.label")
+		timeTrialButton.image = UIImage(systemName: "deskclock.fill")
 		
 		if let bestScore = UserDefaults.get(.challengesTimeTrialBestScore) as? Int, bestScore > 0 {
 			
@@ -94,7 +94,8 @@ public class LL_Menu_ViewController: LL_ViewController {
 				UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Challenges_MoveLimit_ViewController()), animated: true)
 			}
 		}
-		moveLimitButton.image = UIImage(systemName: "numbers.rectangle")
+		moveLimitButton.subtitle = String(key: "menu.challenges.alert.moveLimit.label")
+		moveLimitButton.image = UIImage(systemName: "numbers.rectangle.fill")
 		
 		if let bestScore = UserDefaults.get(.challengesMoveLimitBestScore) as? Int, bestScore > 0 {
 			
@@ -113,6 +114,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 				UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Challenges_NoLift_ViewController()), animated: true)
 			}
 		}
+		noLiftButton.subtitle = String(key: "menu.challenges.alert.noLift.label")
 		noLiftButton.image = UIImage(systemName: "point.topright.filled.arrow.triangle.backward.to.point.bottomleft.scurvepath")
 		
 		if let bestScore = UserDefaults.get(.challengesNoLiftBestScore) as? Int, bestScore > 0 {
@@ -131,7 +133,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 	private lazy var stackView:UIStackView = {
 		
 		$0.axis = .vertical
-		$0.spacing = 2*UI.Margins
+		$0.spacing = 1.5*UI.Margins
 		
 		let titleLabel:LL_Label = .init(String(key: "menu.title"))
 		titleLabel.font = Fonts.Content.Title.H1.withSize(Fonts.Content.Title.H1.pointSize + 20)
@@ -142,7 +144,7 @@ public class LL_Menu_ViewController: LL_ViewController {
 		let baselineLabel:LL_Label = .init(String(key: "menu.subtitle"))
 		baselineLabel.textAlignment = .center
 		$0.addArrangedSubview(baselineLabel)
-		$0.setCustomSpacing(2*$0.spacing, after: baselineLabel)
+		$0.setCustomSpacing(1.5*$0.spacing, after: baselineLabel)
 		
 		let classicGameStackView:UIStackView = .init(arrangedSubviews: [classicGameStartButton,classicGameContinueButton])
 		classicGameStackView.axis = .horizontal
@@ -151,15 +153,25 @@ public class LL_Menu_ViewController: LL_ViewController {
 		$0.addArrangedSubview(classicGameStackView)
 		
 		$0.addArrangedSubview(challengesGameStartButton)
-		$0.setCustomSpacing(1.5*$0.spacing, after: challengesGameStartButton)
 		
 		let ranksButton:LL_Button = .init(String(key: "menu.ranks.button")) { [weak self] _ in
 			
 			UI.MainController.present(LL_NavigationController(rootViewController: LL_Ranks_ViewController()), animated: true)
 		}
-		ranksButton.style = .tinted
-		ranksButton.image = UIImage(systemName: "trophy")
+		ranksButton.type = .secondary
+		ranksButton.image = UIImage(systemName: "trophy.fill")
 		$0.addArrangedSubview(ranksButton)
+		
+		if LL_Ads.shared.shouldDisplayAd {
+			
+			let adsButton:LL_Button = .init(String(key: "menu.ads.button")) { [weak self] _ in
+				
+				LL_InAppPurchase.shared.promptInAppPurchaseAlert(withCapping: false)
+			}
+			adsButton.type = .primary
+			adsButton.image = UIImage(systemName: "rectangle.stack.badge.minus")
+			$0.addArrangedSubview(adsButton)
+		}
 		
 		return $0
 		
@@ -169,31 +181,27 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		super.loadView()
 		
-		let settingsButton:LL_Button = .init(String(key: "settings.button")) { _ in
-			
-			let alertController:LL_Settings_Alert_ViewController = .init()
-			alertController.present()
-		}
-		settingsButton.style = .transparent
-		settingsButton.titleFont = Fonts.Content.Text.Bold.withSize(Fonts.Size-2)
-		settingsButton.image = UIImage(systemName: "slider.vertical.3")?.applyingSymbolConfiguration(.init(pointSize: Fonts.Size))
-		settingsButton.configuration?.contentInsets = .zero
-		settingsButton.configuration?.imagePadding = UI.Margins/3
-		navigationItem.rightBarButtonItem = .init(customView: settingsButton)
+		navigationItem.rightBarButtonItem = LL_Settings_BarButtonItem()
 		
 		let menuStackView:UIStackView = .init(arrangedSubviews: [stackView])
 		menuStackView.axis = .horizontal
 		menuStackView.alignment = .center
 		
-		let contentStackView:UIStackView = .init(arrangedSubviews: [menuStackView,bannerView,LL_User_StackView()])
+		let contentStackView:UIStackView = .init(arrangedSubviews: [menuStackView,bannerView])
 		contentStackView.spacing = 2*UI.Margins
 		contentStackView.axis = .vertical
 		contentStackView.isLayoutMarginsRelativeArrangement = true
 		contentStackView.layoutMargins = .init(horizontal: 3*UI.Margins)
 		
-		view.addSubview(contentStackView)
-		contentStackView.snp.makeConstraints { make in
-			make.edges.equalTo(view.safeAreaLayoutGuide)
+		let stackView:UIStackView = .init(arrangedSubviews: [contentStackView,LL_User_StackView()])
+		stackView.spacing = 2*UI.Margins
+		stackView.axis = .vertical
+		
+		view.addSubview(stackView)
+		stackView.snp.makeConstraints { make in
+			make.left.right.equalTo(view.safeAreaLayoutGuide)
+			make.top.equalTo(view.safeAreaLayoutGuide).inset(UI.Margins)
+			make.bottom.equalToSuperview()
 		}
 	}
 	

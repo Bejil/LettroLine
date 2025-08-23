@@ -125,7 +125,8 @@ public class LL_User_StackView : UIStackView {
 					button.image = UIImage(systemName: state ? "checkmark.square" : "square")
 				}
 				
-				alertController.addDismissButton()
+				alertController.addCancelButton()
+				
 				alertController.present()
 			}
 		}))
@@ -133,6 +134,12 @@ public class LL_User_StackView : UIStackView {
 		
 	}(UIImageView(image: UIImage(systemName: "bubble.right.fill")))
 	private var bonusTimer:Timer?
+	private lazy var backgroundShapeLayer:CAShapeLayer = {
+		
+		$0.fillColor = Colors.Background.View.Secondary.cgColor
+		return $0
+		
+	}(CAShapeLayer())
 	
 	deinit {
 		
@@ -146,6 +153,11 @@ public class LL_User_StackView : UIStackView {
 		axis = .horizontal
 		spacing = UI.Margins
 		alignment = .center
+		layer.addSublayer(backgroundShapeLayer)
+		isLayoutMarginsRelativeArrangement = true
+		layoutMargins = .init(horizontal: 3*UI.Margins)
+		layoutMargins.bottom = safeAreaInsets.bottom + UI.Margins
+		layoutMargins.top = 2*UI.Margins
 		
 		addArrangedSubview(imageView)
 		
@@ -158,7 +170,22 @@ public class LL_User_StackView : UIStackView {
 		}
 		starImageView.transform = .init(translationX: 0, y: -UI.Margins/7)
 		
-		let nameStackView:UIStackView = .init(arrangedSubviews: [nameLabel,bonusStackView,.init(),bonusImageView])
+		let button:UIButton = .init()
+		button.setImage(UIImage(systemName: "info.circle.fill"), for: .normal)
+		button.tintColor = .white
+		button.addAction(.init(handler: { _ in
+			
+			UIApplication.feedBack(.On)
+			LL_Audio.shared.play(.button)
+			
+			LL_User_Name_Alert_ViewController().present()
+			
+		}), for: .touchUpInside)
+		button.snp.makeConstraints { make in
+			make.size.equalTo(1.5*UI.Margins)
+		}
+		
+		let nameStackView:UIStackView = .init(arrangedSubviews: [nameLabel,button,bonusStackView,.init(),bonusImageView])
 		nameStackView.axis = .horizontal
 		nameStackView.alignment = .center
 		nameStackView.spacing = 2*UI.Margins/3
@@ -198,6 +225,19 @@ public class LL_User_StackView : UIStackView {
 	
 	required init(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
+	}
+	
+	public override func layoutSubviews() {
+		
+		super.layoutSubviews()
+		
+		let bezierPath = UIBezierPath()
+		bezierPath.move(to: .init(x: 0, y: UI.Margins/2))
+		bezierPath.addLine(to: .init(x: frame.size.width, y: 0))
+		bezierPath.addLine(to: .init(x: frame.size.width, y: frame.size.height))
+		bezierPath.addLine(to: .init(x: 0, y: frame.size.height))
+		bezierPath.close()
+		backgroundShapeLayer.path = bezierPath.cgPath
 	}
 	
 	private func startTimer() {

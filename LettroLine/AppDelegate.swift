@@ -23,45 +23,51 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.backgroundColor = Colors.Background.Application
 		
-		let navigationController:LL_NavigationController = .init(rootViewController: LL_Menu_ViewController())
-		navigationController.navigationBar.prefersLargeTitles = false
-		window?.rootViewController = navigationController
-		window?.makeKeyAndVisible()
-		
-		LL_Audio.shared.playMusic()
-		
-		if UserDefaults.get(.onboarding) == nil {
+		let splashscreenViewController:LL_Splashscreen_ViewController = .init()
+		splashscreenViewController.completion = { [weak self] in
 			
-			UserDefaults.set(true, .onboarding)
+			let navigationController:LL_NavigationController = .init(rootViewController: LL_Menu_ViewController())
+			navigationController.navigationBar.prefersLargeTitles = false
+			self?.window?.rootViewController = navigationController
 			
-			let viewController:LL_Onboarding_ViewController = .init()
-			viewController.completion = {
+			if UserDefaults.get(.onboarding) == nil {
 				
-				LL_Notifications.shared.check(withCapping: false)
-			}
-			UI.MainController.present(LL_Onboarding_ViewController(), animated: false)
-		}
-		else {
-			
-			let parameters = UMPRequestParameters()
-			parameters.tagForUnderAgeOfConsent = false
-			
-			UMPConsentInformation.sharedInstance.requestConsentInfoUpdate(with: parameters) { [weak self] _ in
+				UserDefaults.set(true, .onboarding)
 				
-				UMPConsentForm.load { [weak self] form, _ in
+				let viewController:LL_Onboarding_ViewController = .init()
+				viewController.completion = {
 					
-					if UMPConsentInformation.sharedInstance.consentStatus == .required {
+					LL_Notifications.shared.check(withCapping: false)
+				}
+				UI.MainController.present(LL_Onboarding_ViewController(), animated: false)
+			}
+			else {
+				
+				let parameters = UMPRequestParameters()
+				parameters.tagForUnderAgeOfConsent = false
+				
+				UMPConsentInformation.sharedInstance.requestConsentInfoUpdate(with: parameters) { [weak self] _ in
+					
+					UMPConsentForm.load { [weak self] form, _ in
 						
-						form?.present(from: UI.MainController)
-					}
-					else if UMPConsentInformation.sharedInstance.consentStatus == .obtained {
-						
-						self?.afterLaunch()
-						NotificationCenter.post(.updateAds)
+						if UMPConsentInformation.sharedInstance.consentStatus == .required {
+							
+							form?.present(from: UI.MainController)
+						}
+						else if UMPConsentInformation.sharedInstance.consentStatus == .obtained {
+							
+							self?.afterLaunch()
+							NotificationCenter.post(.updateAds)
+						}
 					}
 				}
 			}
 		}
+		
+		window?.rootViewController = splashscreenViewController
+		window?.makeKeyAndVisible()
+		
+		LL_Audio.shared.playMusic()
 		
 		return true
 	}

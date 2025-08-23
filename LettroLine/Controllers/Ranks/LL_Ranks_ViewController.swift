@@ -33,7 +33,7 @@ public class LL_Ranks_ViewController : LL_ViewController {
 		
 		title = String(key: "ranks.title")
 		
-		let segmentedControl:LL_SegmentedControl = .init(items: [String(key: "ranks.classic"), String(key: "ranks.timetrial"), String(key: "ranks.timetrial.moveLimit"), String(key: "ranks.timetrial.noLift")])
+		let segmentedControl:LL_SegmentedControl = .init(items: [String(key: "ranks.classic"), String(key: "ranks.challenges.timetrial"), String(key: "ranks.challenges.moveLimit"), String(key: "ranks.challenges.noLift")])
 		segmentedControl.addAction(.init(handler: { [weak self] _ in
 			
 			if segmentedControl.selectedSegmentIndex == 0 {

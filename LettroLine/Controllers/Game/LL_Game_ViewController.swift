@@ -104,37 +104,6 @@ public class LL_Game_ViewController: LL_ViewController {
 		return $0
 		
 	}(CAShapeLayer())
-	private lazy var settingsButton:UIBarButtonItem = .init(image: UIImage(systemName: "slider.vertical.3"), menu: settingsMenu)
-	private var settingsMenu:UIMenu {
-		
-		return .init(children: [
-			
-			UIAction(title: String(key: "game.settings.sounds"), subtitle: String(key: "game.settings.sounds." + (LL_Audio.shared.isSoundsEnabled ? "on" : "off")), image: UIImage(systemName: LL_Audio.shared.isSoundsEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill"), handler: { [weak self] _ in
-				
-				LL_Audio.shared.play(.button)
-				
-				UserDefaults.set(!LL_Audio.shared.isSoundsEnabled, .soundsEnabled)
-				
-				self?.settingsButton.menu = self?.settingsMenu
-			}),
-			UIAction(title: String(key: "game.settings.music"), subtitle: String(key: "game.settings.music." + (LL_Audio.shared.isMusicEnabled ? "on" : "off")), image: UIImage(systemName: LL_Audio.shared.isMusicEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill"), handler: { [weak self] _ in
-				
-				LL_Audio.shared.play(.button)
-				
-				UserDefaults.set(!LL_Audio.shared.isMusicEnabled, .musicEnabled)
-				
-				LL_Audio.shared.isMusicEnabled ? LL_Audio.shared.playMusic() : LL_Audio.shared.stopMusic()
-				
-				self?.settingsButton.menu = self?.settingsMenu
-			}),
-			UIAction(title: String(key: "game.settings.vibrations"), subtitle: String(key: "game.settings.vibrations." + (UIApplication.isVibrationsEnabled ? "on" : "off")), image: UIImage(systemName: UIApplication.isVibrationsEnabled ? "water.waves" : "water.waves.slash"), handler: { [weak self] _ in
-				
-				UserDefaults.set(!UIApplication.isVibrationsEnabled, .vibrationsEnabled)
-				
-				self?.settingsButton.menu = self?.settingsMenu
-			})
-		])
-	}
 	public lazy var scoreStackView:UIStackView = {
 		
 		$0.axis = .horizontal
@@ -148,7 +117,9 @@ public class LL_Game_ViewController: LL_ViewController {
 		$0.subtitleFont = Fonts.Content.Button.Subtitle.withSize(Fonts.Content.Button.Subtitle.pointSize-4)
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
 		$0.configuration?.imagePadding = UI.Margins/2
-		$0.snp.removeConstraints()
+		$0.snp.remakeConstraints { make in
+			make.height.equalTo(3.5*UI.Margins)
+		}
 		$0.image = UIImage(systemName: "trophy")?.applyingSymbolConfiguration(.init(pointSize: 12))
 		return $0
 		
@@ -176,12 +147,14 @@ public class LL_Game_ViewController: LL_ViewController {
 	})
 	public lazy var helpButton:LL_Button = {
 		
-		$0.image = UIImage(systemName: "star.fill")?.withTintColor(Colors.Button.Delete.Background, renderingMode: .alwaysOriginal).applyingSymbolConfiguration(.init(pointSize: 12))
+		$0.image = UIImage(systemName: "star.fill")?.applyingSymbolConfiguration(.init(pointSize: 12))
 		$0.title = String(key: "game.help")
-		$0.style = .tinted
+		$0.type = .tertiary
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
 		$0.configuration?.imagePadding = UI.Margins/2
-		$0.snp.removeConstraints()
+		$0.snp.remakeConstraints { make in
+			make.height.equalTo(3.5*UI.Margins)
+		}
 		return $0
 		
 	}(LL_Button() { [weak self] _ in
@@ -270,13 +243,13 @@ public class LL_Game_ViewController: LL_ViewController {
 	private lazy var collectionViewFlowLayout: UICollectionViewFlowLayout = {
 		
 		$0.scrollDirection = .vertical
-		$0.sectionInset = .init(horizontal: UI.Margins)
 		$0.minimumInteritemSpacing = UI.Margins
 		$0.minimumLineSpacing = UI.Margins
 		return $0
 		
 	}(UICollectionViewFlowLayout())
 	private lazy var panGestureRecognizer:UIPanGestureRecognizer = .init { [weak self] gestureRecognizer in
+		
 		guard let self = self, let gesture = gestureRecognizer as? UIPanGestureRecognizer else { return }
 		
 		let location = gesture.location(in: self.collectionView)
@@ -390,34 +363,29 @@ public class LL_Game_ViewController: LL_ViewController {
 	}(LL_CollectionView(frame: .zero, collectionViewLayout: collectionViewFlowLayout))
 	public lazy var gridView:UIView = {
 		
-		$0.layer.cornerRadius = UI.CornerRadius
-		$0.layer.masksToBounds = true
-		
-		$0.addSubview(gridBackgroundView)
-		gridBackgroundView.snp.makeConstraints { make in
-			make.edges.equalToSuperview()
-		}
-		
 		$0.addSubview(collectionView)
 		collectionView.snp.makeConstraints { make in
-			make.left.right.equalToSuperview().inset(UI.Margins/2)
-			make.top.bottom.equalToSuperview().inset(1.25*UI.Margins)
+			make.edges.equalToSuperview()
 		}
-		return $0
-		
-	}(UIView())
-	public lazy var gridBackgroundView:UIView = {
-		
-		$0.backgroundColor = Colors.Background.Grid
 		return $0
 		
 	}(UIView())
 	public lazy var contentStackView:UIStackView = {
 		
 		$0.axis = .vertical
-		$0.spacing = 2*UI.Margins
+		$0.spacing = 3*UI.Margins
 		$0.addArrangedSubview(scoreStackView)
-		$0.addArrangedSubview(wordStackView)
+		
+		let wordView:UIView = .init()
+		wordView.backgroundColor = Colors.Background.View.Secondary
+		wordView.layer.cornerRadius = (4*UI.Margins)/2.5
+		wordView.addSubview(wordStackView)
+		wordStackView.snp.makeConstraints { make in
+			make.edges.equalToSuperview().inset(UI.Margins)
+		}
+		
+		$0.addArrangedSubview(wordView)
+		
 		$0.addArrangedSubview(gridView)
 		$0.addArrangedSubview(.init())
 		$0.addArrangedSubview(bannerView)
@@ -433,22 +401,12 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		isModal = true
 		
-		navigationItem.rightBarButtonItem = settingsButton
-		
-		let gridBackgroundView:UIView = .init()
-		gridBackgroundView.backgroundColor = Colors.Background.Grid
-		gridBackgroundView.layer.cornerRadius = UI.CornerRadius
-		gridBackgroundView.addSubview(collectionView)
-		collectionView.snp.makeConstraints { make in
-			make.left.right.equalToSuperview().inset(UI.Margins/2)
-			make.top.bottom.equalToSuperview().inset(1.25*UI.Margins)
-		}
+		navigationItem.rightBarButtonItem = LL_Settings_BarButtonItem()
 		
 		view.addSubview(contentStackView)
 		contentStackView.snp.makeConstraints { make in
 			make.edges.equalTo(view.safeAreaLayoutGuide).inset(2*UI.Margins)
 		}
-		contentStackView.setCustomSpacing(3*UI.Margins, after: scoreStackView)
 		
 		newWord()
 		
@@ -634,12 +592,13 @@ public class LL_Game_ViewController: LL_ViewController {
 				LL_Alert_ViewController.present(LL_Error(String(key: "ads.network.error")))
 			}
 		}
-		alertController.addDismissButton { [weak self] _ in
+		let button = alertController.addDismissButton { [weak self] _ in
 			
 			self?.game?.reset()
 			
 			self?.dismiss()
 		}
+		button.style = .transparent
 		alertController.present()
 		
 		UIView.animation { [weak self] in

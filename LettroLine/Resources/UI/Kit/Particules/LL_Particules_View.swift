@@ -60,7 +60,7 @@ public class LL_Particules_View : SKView {
 	public lazy var particulesEmitterNode:SKEmitterNode = {
 		
 		$0.particleColorSequence = nil
-		$0.particleColor = Colors.Primary.withAlphaComponent(0.1)
+		$0.particleColor = UIColor.white.withAlphaComponent(0.2)
 		return $0
 		
 	}(SKEmitterNode(fileNamed: "LL_Particules.sks")!)

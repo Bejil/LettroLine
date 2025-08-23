@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UIDesignRequiresCompatibility</key>
+	<true/>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-9540216894729209~8407127146</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -182,6 +184,7 @@
 		<string>TT Interphases Pro Trial Bold.ttf</string>
 		<string>TT Interphases Pro Trial Regular.ttf</string>
 		<string>GROBOLD.ttf</string>
+		<string>Fredoka-VariableFont_wdth,wght.ttf</string>
 	</array>
 </dict>
 </plist>
