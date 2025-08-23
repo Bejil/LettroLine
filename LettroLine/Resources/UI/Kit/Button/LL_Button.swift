@@ -149,8 +149,8 @@ public class LL_Button : UIButton {
 		configuration?.background.cornerRadius = (4*UI.Margins)/2.5
 		
 		// Ajouter les layers de dégradé
-		layer.addSublayer(gradientBackgroundLayer)
-		layer.addSublayer(borderGradientLayer)
+		layer.insertSublayer(gradientBackgroundLayer, at: 0)
+		layer.insertSublayer(borderGradientLayer, at: 0)
 		
 		// Configuration de l'ombre
 		layer.shadowOffset = .zero

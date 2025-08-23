@@ -71,7 +71,10 @@ public class LL_Word_StackView : UIStackView {
 			
 			UIApplication.feedBack(.On)
 			
-			arrangedSubviews.compactMap({ $0 as? LL_Letter_View }).first(where: { !($0.isSelected ?? false) && $0.letter == String(character).uppercased() })?.isSelected = true
+			if let letterView = arrangedSubviews.compactMap({ $0 as? LL_Letter_View }).first(where: { !($0.isSelected ?? false)  && $0.letter?.uppercased() == String(character).uppercased() }) {
+				
+				letterView.isSelected = true
+			}
 		}
 	}
 	

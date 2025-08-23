@@ -41,35 +41,21 @@
 "menu.challenges.button" = "Challenges";
 "menu.challenges.button.subtitle" = "Meilleur score: ";
 "menu.challenges.alert.title" = "Challenges";
-"menu.challenges.alert.content" = "Un mode de jeu avec des contraintes pour plus de défis";
-"menu.challenges.alert.button.timeTrial" = "Contre la montre";
-"menu.challenges.alert.button.moveLimit" = "Mouvements limités";
-"menu.challenges.alert.button.noLift" = "Tracé continu";
+"menu.challenges.alert.button.timeTrial" = "Chrono";
+"menu.challenges.alert.timeTrial.label" = "Finis le niveau avant la fin du temps imparti !";
+"menu.challenges.alert.button.moveLimit" = "Coups";
+"menu.challenges.alert.moveLimit.label" = "Garde un œil sur tes coups : ils sont comptés !";
+"menu.challenges.alert.button.noLift" = "Continu";
+"menu.challenges.alert.noLift.label" = "Trace sans jamais lever ton doigt, sinon c’est perdu !";
 "menu.ranks.button" = "Classements";
-
-//MARK: - Settings
-"settings.alert.title" = "Réglages";
-"settings.alert.main.title" = "Général";
-"settings.alert.name.button.title" = "Votre pseudo";
-"settings.alert.system.title" = "Système";
-"settings.alert.audio.music.button.title" = "Musique";
-"settings.alert.audio.music.button.subtitle.on" = "Activée";
-"settings.alert.audio.music.button.subtitle.off" = "Désactivée";
-"settings.alert.audio.sounds.button.title" = "Sons";
-"settings.alert.audio.sounds.button.subtitle.on" = "Activés";
-"settings.alert.audio.sounds.button.subtitle.off" = "Désactivés";
-"settings.alert.vibrations.button.title" = "Vibrations";
-"settings.alert.vibrations.button.subtitle.on" = "Activées";
-"settings.alert.vibrations.button.subtitle.off" = "Désactivées";
-"settings.alert.ads.title" = "Publicités";
-"settings.alert.ads.button" = "Marre des pubs ?";
+"menu.ads.button" = "Marre des pubs ?";
 
 //MARK: - Ranks
 "ranks.title" = "Classements";
 "ranks.classic" = "Classique";
-"ranks.challenges.timetrial" = "Contre la montre";
-"ranks.challenges.moveLimit" = "Mouvements limités";
-"ranks.challenges.noLift" = "Tracé continu";
+"ranks.challenges.timetrial" = "Chrono";
+"ranks.challenges.moveLimit" = "Coups";
+"ranks.challenges.noLift" = "Continu";
 "ranks.anonymous" = "Anonyme";
 "ranks.points" = "points";
 
