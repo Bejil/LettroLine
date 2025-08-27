@@ -22,17 +22,12 @@ public class LL_Letter_View : UIView {
 			}
 		}
 	}
-	public var isFirst: Bool = false {
-		didSet {
-			updateLabelText(letter)
-		}
-	}
 	private lazy var label:LL_Label = {
 		
 		$0.textColor = .white
 		$0.font = Fonts.Letter
 		$0.adjustsFontSizeToFitWidth = true
-		$0.minimumScaleFactor = 0.5
+		$0.minimumScaleFactor = 0.4
 		$0.textAlignment = .center
 		$0.layer.shadowOffset = .zero
 		$0.layer.shadowRadius = 1.5*UI.Margins
@@ -75,7 +70,7 @@ public class LL_Letter_View : UIView {
 						}
 					}
 				} else {
-					isFirst = false
+					
 					updateLabelText(finalText)
 				}
 			}
@@ -192,11 +187,11 @@ public class LL_Letter_View : UIView {
 		
 		UIView.animation() {
 			
-			let state = self.isSelected ?? false || self.isFirst
+			let state = self.isSelected ?? false
 			self.gradientBackgroundLayer.isHidden = state
 			self.gradientBorderLayer.isHidden = state
 			
-			self.backgroundColor = self.isSelected ?? false ? Colors.Letter.Selected : self.isFirst ? Colors.Tertiary : .clear
+			self.backgroundColor = self.isSelected ?? false ? Colors.Letter.Selected : .clear
 		}
 	}
 }

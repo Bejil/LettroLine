@@ -28,6 +28,7 @@ extension UserDefaults {
 		case vibrationsEnabled = "vibrationsEnabled"
 		
 		case currentClassicGame = "currentClassicGame"
+		case currentStoryGame = "currentStoryGame"
 		case currentChallengesNoLift = "currentChallengesNoLift"
 		case currentChallengesMoveLimit = "currentChallengesMoveLimit"
 		case currentChallengesTimeTrialGame = "currentChallengesTimeTrialGame"

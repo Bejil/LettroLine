@@ -22,14 +22,14 @@ public class LL_Menu_ViewController: LL_ViewController {
 			UI.MainController.present(LL_NavigationController(rootViewController: LL_Game_Classic_ViewController()), animated: true)
 		}
 		
-		if LL_Classic_Game.current.score != 0 {
+		if LL_Game_Classic.current.score != 0 {
 			
 			let alertController:LL_Alert_ViewController = .init()
 			alertController.title = String(key: "menu.classic.new.alert.title")
 			alertController.add(String(key: "menu.classic.new.alert.content"))
 			alertController.addDismissButton() { _ in
 				
-				LL_Classic_Game.current.reset()
+				LL_Game_Classic.current.reset()
 				
 				startClosure()
 			}
@@ -152,6 +152,31 @@ public class LL_Menu_ViewController: LL_ViewController {
 		classicGameStackView.alignment = .fill
 		$0.addArrangedSubview(classicGameStackView)
 		
+		let storyButton:LL_Button = .init(String(key: "menu.story.button")) { [weak self] _ in
+			
+			let alertController:LL_Alert_ViewController = .init()
+			alertController.title = String(key: "Histoires")
+			
+			LL_Game_Story.stories?.forEach { story in
+				
+				if let title = story.title {
+					
+					alertController.addButton(title: title, subtitle: story.subtitle) { _ in
+						
+						let viewController:LL_Game_Story_ViewController = .init()
+						viewController.story = story.current ?? story
+						UI.MainController.present(LL_NavigationController(rootViewController: viewController), animated: true)
+					}
+				}
+			}
+			
+			alertController.addCancelButton()
+			alertController.present()
+		}
+		storyButton.type = .secondary
+		storyButton.image = UIImage(systemName: "trophy.fill")
+		$0.addArrangedSubview(storyButton)
+		
 		$0.addArrangedSubview(challengesGameStartButton)
 		
 		let ranksButton:LL_Button = .init(String(key: "menu.ranks.button")) { [weak self] _ in
@@ -209,8 +234,8 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		super.viewWillAppear(animated)
 		
-		classicGameContinueButton.isHidden = LL_Classic_Game.current.score == 0
-		classicGameContinueButton.badge = "\(LL_Classic_Game.current.score)"
+		classicGameContinueButton.isHidden = LL_Game_Classic.current.score == 0
+		classicGameContinueButton.badge = "\(LL_Game_Classic.current.score)"
 		
 		if let bestScore = UserDefaults.get(.classicBestScore) as? Int, bestScore > 0 {
 			

@@ -15,6 +15,7 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 		public var sourceView:UIView?
 		public var title:String?
 		public var subtitle:String?
+		public var attributedSubtitle:NSAttributedString?
 		public var button:String?
 		public var timeInterval:TimeInterval?
 		public var closure:(()->Void)?
@@ -202,12 +203,13 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 			titleLabel.layer.add(animation, forKey: CATransitionType.push.rawValue)
 		}
 		
-		if let subtitle = items?[currentIndex].subtitle {
+		if ((items?[currentIndex].subtitle) != nil) || ((items?[currentIndex].attributedSubtitle) != nil) {
 			
 			let animation: CATransition = CATransition()
 			animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
 			animation.type = .fade
-			subtitleLabel.text = String(key: subtitle)
+			subtitleLabel.text = items?[currentIndex].subtitle
+			subtitleLabel.attributedText = items?[currentIndex].attributedSubtitle
 			animation.duration = animationDuration
 			subtitleLabel.layer.add(animation, forKey: CATransitionType.push.rawValue)
 		}
@@ -244,7 +246,7 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 			self.titleLabel.isHidden = self.items?[self.currentIndex].title == nil
 			self.titleLabel.superview?.layoutIfNeeded()
 			
-			self.subtitleLabel.isHidden = self.items?[self.currentIndex].subtitle == nil
+			self.subtitleLabel.isHidden = self.items?[self.currentIndex].subtitle == nil && self.items?[self.currentIndex].attributedSubtitle == nil
 			self.subtitleLabel.superview?.layoutIfNeeded()
 			
 			self.nextButton.isHidden = self.items?[self.currentIndex].button == nil

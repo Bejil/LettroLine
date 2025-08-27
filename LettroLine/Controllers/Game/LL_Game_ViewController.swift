@@ -43,25 +43,6 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		return true
 	}
-	private lazy var showFirst:Bool = false {
-		
-		didSet {
-			
-			collectionView.indexPathsForVisibleItems.forEach({
-				
-				if let cell = collectionView.cellForItem(at: $0) as? LL_Grid_Letter_CollectionViewCell {
-					
-					let row = $0.item / columns
-					let col = $0.item % columns
-					
-					if let grid = grid?.grid, row < grid.count, col < grid[row].count {
-						
-						cell.isFirst = showFirst && grid[row][col].uppercased() == solutionWord?.first?.uppercased()
-					}
-				}
-			})
-		}
-	}
 	private lazy var isGameOver = false
 	public var grid: (grid: [[Character]], positions: [CGPoint], bonus: IndexPath?)? {
 		
@@ -107,13 +88,13 @@ public class LL_Game_ViewController: LL_ViewController {
 	public lazy var scoreStackView:UIStackView = {
 		
 		$0.axis = .horizontal
-		$0.alignment = .fill
-		$0.distribution = .equalCentering
+		$0.alignment = .center
 		return $0
 		
-	}(UIStackView(arrangedSubviews: [scoreButton,helpButton]))
+	}(UIStackView(arrangedSubviews: [scoreButton,.init(),helpButton]))
 	public lazy var scoreButton:LL_Button = {
 		
+		$0.isUserInteractionEnabled = false
 		$0.subtitleFont = Fonts.Content.Button.Subtitle.withSize(Fonts.Content.Button.Subtitle.pointSize-4)
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
 		$0.configuration?.imagePadding = UI.Margins/2
@@ -123,28 +104,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		$0.image = UIImage(systemName: "trophy")?.applyingSymbolConfiguration(.init(pointSize: 12))
 		return $0
 		
-	}(LL_Button() { [weak self] _ in
-		
-		if self?.game?.score != 0 {
-			
-			self?.pause()
-			
-			let alertController:LL_Alert_ViewController = .init()
-			alertController.title = String(key: "game.words.alert.title")
-			
-			self?.game?.words.forEach {
-				
-				alertController.add($0.uppercased())
-			}
-			
-			alertController.addDismissButton(sticky: true)
-			alertController.dismissHandler = { [weak self] in
-				
-				self?.play()
-			}
-			alertController.present(as: .Sheet, withAnimation: false)
-		}
-	})
+	}(LL_Button())
 	public lazy var helpButton:LL_Button = {
 		
 		$0.image = UIImage(systemName: "star.fill")?.applyingSymbolConfiguration(.init(pointSize: 12))
@@ -269,7 +229,6 @@ public class LL_Game_ViewController: LL_ViewController {
 				cells.forEach {
 					
 					$0.isSelected = false
-					$0.isFirst = false
 					$0.resetTimers()
 				}
 			}
@@ -313,7 +272,6 @@ public class LL_Game_ViewController: LL_ViewController {
 						cells.forEach {
 							
 							$0.isSelected = false
-							$0.isFirst = self.showFirst && $0.letter == self.solutionWord?.first?.uppercased()
 							$0.startTimers()
 						}
 					}
@@ -322,7 +280,6 @@ public class LL_Game_ViewController: LL_ViewController {
 						cell.isSelected = false
 						(cell as? LL_Grid_Letter_CollectionViewCell)?.startTimers()
 					}
-					self.showFirst = self.showFirst
 					self.userPathLayer.path = nil
 					self.wordStackView.deselectAll()
 				}
@@ -488,8 +445,6 @@ public class LL_Game_ViewController: LL_ViewController {
 	public func newWord() {
 		
 		updateBestScore()
-		
-		showFirst = false
 		
 		let score = Double(game?.score ?? 0)
 		
@@ -888,8 +843,6 @@ public class LL_Game_ViewController: LL_ViewController {
 	
 	public func showSolution() {
 		
-		showFirst = true
-		
 		let solutionPath = UIBezierPath()
 		guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout,
 			  let positions = grid?.positions else { return }
@@ -1189,7 +1142,6 @@ extension LL_Game_ViewController : UICollectionViewDelegate, UICollectionViewDat
 				
 				let state = IndexPath(row: row, section: col) == self?.grid?.bonus
 				cell.letter = state ? "" : String(grid[row][col])
-				cell.isFirst = self?.showFirst ?? false && grid[row][col].uppercased() == self?.solutionWord?.first?.uppercased()
 				cell.isBonus = state
 			}
 		}

@@ -11,7 +11,7 @@ public class LL_Game_Classic_ViewController : LL_Game_ViewController {
 	
 	public override var game: LL_Game? {
 		
-		return LL_Classic_Game.current
+		return LL_Game_Classic.current
 	}
 	
 	public override func loadView() {
@@ -28,7 +28,7 @@ public class LL_Game_Classic_ViewController : LL_Game_ViewController {
 		if (UserDefaults.get(.classicBestScore) as? Int) ?? 0 < game?.score ?? 0 {
 			
 			UserDefaults.set(game?.score ?? 0, .classicBestScore)
-			LL_Classic_Game.current.saveBestScore()
+			LL_Game_Classic.current.saveBestScore()
 			LL_Rewards.shared.updateLastBestScoreDate()
 		}
 	}
