@@ -17,14 +17,12 @@ public class LL_Splashscreen_ViewController : LL_ViewController {
 		$0.alignment = .center
 		
 		let firstStackView:LL_Word_StackView = .init()
-		firstStackView.isPrimary = true
-		firstStackView.spacing = UI.Margins
+		firstStackView.spacing = UI.Margins/5
 		firstStackView.word = String(key: "splashscreen.0")
 		$0.addArrangedSubview(firstStackView)
 		
 		let lastStackView:LL_Word_StackView = .init()
-		lastStackView.isPrimary = true
-		lastStackView.spacing = UI.Margins
+		lastStackView.spacing = UI.Margins/5
 		lastStackView.word = String(key: "splashscreen.1")
 		$0.addArrangedSubview(lastStackView)
 		
@@ -50,7 +48,7 @@ public class LL_Splashscreen_ViewController : LL_ViewController {
 		
 		view.addSubview(stackView)
 		stackView.snp.makeConstraints { make in
-			make.left.right.equalToSuperview()
+			make.left.right.equalToSuperview().inset(2*UI.Margins)
 			make.centerY.equalToSuperview()
 		}
 	}

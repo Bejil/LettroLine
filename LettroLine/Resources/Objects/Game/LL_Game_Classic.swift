@@ -1,5 +1,5 @@
 //
-//  LL_Classic_Game.swift
+//  LL_Game_Classic.swift
 //  LettroLine
 //
 //  Created by BLIN Michael on 10/03/2025.
@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-public class LL_Classic_Game: LL_Game {
+public class LL_Game_Classic: LL_Game {
 	
 	public struct FirebaseObject : Codable {
 		

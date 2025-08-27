@@ -38,6 +38,7 @@
 "menu.classic.button.subtitle" = "Meilleur score: ";
 "menu.classic.new.alert.title" = "Attention";
 "menu.classic.new.alert.content" = "Si tu recommences une nouvelle partie du perdra tes progrès précédents.";
+"menu.story.button" = "Histoire";
 "menu.challenges.button" = "Challenges";
 "menu.challenges.button.subtitle" = "Meilleur score: ";
 "menu.challenges.alert.title" = "Challenges";
@@ -49,6 +50,9 @@
 "menu.challenges.alert.noLift.label" = "Trace sans jamais lever ton doigt, sinon c’est perdu !";
 "menu.ranks.button" = "Classements";
 "menu.ads.button" = "Marre des pubs ?";
+
+//MARK: - Story
+"story.continue.button" = "Chapitre suivant";
 
 //MARK: - Ranks
 "ranks.title" = "Classements";
@@ -104,7 +108,6 @@
 "game.timeTrial.tutorial.end.newBestScore.off" = "Tu n'as pas battu ton record cette fois-ci. La prochaine fois peut être ?";
 "game.timeTrial.tutorial.end.button" = "Terminer";
 "game.score.subtitle" = "Nouveau record";
-"game.words.alert.title" = "Historique";
 "game.help" = "Aide";
 "game.help.alert.title" = "Un peu d'aide ?";
 "game.help.alert.text" = "Veux-tu utiliser un bonus pour afficher la solution ?";

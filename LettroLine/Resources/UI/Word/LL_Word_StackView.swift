@@ -26,7 +26,7 @@ public class LL_Word_StackView : UIStackView {
 					letterLabel.isSelected = isPrimary
 					addArrangedSubview(letterLabel)
 					letterLabel.snp.makeConstraints { make in
-						make.width.equalTo(snp.height)
+						make.width.equalToSuperview().dividedBy(8).offset(-UI.Margins/5)
 					}
 				})
 				
@@ -56,7 +56,7 @@ public class LL_Word_StackView : UIStackView {
 		distribution = .equalSpacing
 		
 		snp.makeConstraints { make in
-			make.height.equalTo(UI.Margins * 3)
+			make.height.equalTo(UI.Margins * 2.75)
 		}
 	}
 	

@@ -148,13 +148,6 @@ public class LL_Game_Challenges_TimeTrial_ViewController : LL_Game_Challenges_Vi
 		timerButton.pulse(.clear)
 	}
 	
-	public override func newWord() {
-		
-		updateBestScore()
-		
-		solutionWord = game?.newWord(3)
-	}
-	
 	public override func success() {
 		
 		super.success()

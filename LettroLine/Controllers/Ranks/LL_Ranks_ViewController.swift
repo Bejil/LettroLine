@@ -38,7 +38,7 @@ public class LL_Ranks_ViewController : LL_ViewController {
 			
 			if segmentedControl.selectedSegmentIndex == 0 {
 				
-				LL_Classic_Game.getAll { [weak self] objects in
+				LL_Game_Classic.getAll { [weak self] objects in
 					
 					self?.objects = objects
 				}
