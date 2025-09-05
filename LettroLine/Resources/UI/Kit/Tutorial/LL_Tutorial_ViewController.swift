@@ -33,7 +33,7 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 		return $0
 		
 	}(LL_Label())
-	private lazy var subtitleLabel: LL_Label = {
+	public lazy var subtitleLabel: LL_Label = {
 		
 		$0.font = Fonts.Content.Text.Regular
 		$0.textColor = .white
@@ -203,13 +203,21 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 			titleLabel.layer.add(animation, forKey: CATransitionType.push.rawValue)
 		}
 		
-		if ((items?[currentIndex].subtitle) != nil) || ((items?[currentIndex].attributedSubtitle) != nil) {
+		if let attributedSubtitle = items?[currentIndex].attributedSubtitle {
 			
 			let animation: CATransition = CATransition()
 			animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
 			animation.type = .fade
-			subtitleLabel.text = items?[currentIndex].subtitle
-			subtitleLabel.attributedText = items?[currentIndex].attributedSubtitle
+			subtitleLabel.attributedText = attributedSubtitle
+			animation.duration = animationDuration
+			subtitleLabel.layer.add(animation, forKey: CATransitionType.push.rawValue)
+		}
+		else if let subtitle = items?[currentIndex].subtitle {
+			
+			let animation: CATransition = CATransition()
+			animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+			animation.type = .fade
+			subtitleLabel.text = subtitle
 			animation.duration = animationDuration
 			subtitleLabel.layer.add(animation, forKey: CATransitionType.push.rawValue)
 		}

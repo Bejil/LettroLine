@@ -67,4 +67,12 @@ extension UserDefaults {
 		
 		Keys.allCases.forEach({ delete($0) })
 	}
+	
+	public func resetAll() {
+		
+		let domain = Bundle.main.bundleIdentifier
+		let standardUserDefaults = UserDefaults.standard
+		standardUserDefaults.removePersistentDomain(forName: domain!)
+		standardUserDefaults.synchronize()
+	}
 }

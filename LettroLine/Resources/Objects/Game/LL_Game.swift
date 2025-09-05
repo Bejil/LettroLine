@@ -61,6 +61,12 @@ public class LL_Game: Codable {
 	
 	public func newWord(_ letters:Int = Int.random(in: 3...8)) -> String? {
 		
-		return String.randomWord(withLetters: letters, excludingWords: words)
+		return LL_Words.shared.get(letters, words.compactMap({
+			
+			let word:LL_Words.Word = .init()
+			word.word = $0
+			return word
+			
+		}))?.word
 	}
 }

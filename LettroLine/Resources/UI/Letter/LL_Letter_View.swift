@@ -87,14 +87,14 @@ public class LL_Letter_View : UIView {
 	private lazy var gradientBackgroundLayer:CAGradientLayer = {
 		
 		let pastelPalette: [(UIColor, UIColor)] = [
-			(UIColor(red: 1.0, green: 0.55, blue: 0.65, alpha: 1.0),
-			 UIColor(red: 1.0, green: 0.75, blue: 0.82, alpha: 1.0)),
-			(UIColor(red: 0.40, green: 0.70, blue: 1.0, alpha: 1.0),
-			 UIColor(red: 0.65, green: 0.85, blue: 1.0, alpha: 1.0)),
-			(UIColor(red: 0.45, green: 0.95, blue: 0.60, alpha: 1.0),
-			 UIColor(red: 0.70, green: 1.0, blue: 0.80, alpha: 1.0)),
-			(UIColor(red: 1.0, green: 0.85, blue: 0.35, alpha: 1.0),
-			 UIColor(red: 1.0, green: 0.95, blue: 0.60, alpha: 1.0))
+			(UIColor(red: 1.0, green: 0.45, blue: 0.55, alpha: 1.0),
+			 UIColor(red: 1.0, green: 0.70, blue: 0.77, alpha: 1.0)),
+			(UIColor(red: 0.30, green: 0.65, blue: 1.0, alpha: 1.0),
+			 UIColor(red: 0.55, green: 0.80, blue: 1.0, alpha: 1.0)),
+			(UIColor(red: 0.35, green: 0.90, blue: 0.50, alpha: 1.0),
+			 UIColor(red: 0.60, green: 0.95, blue: 0.70, alpha: 1.0)),
+			(UIColor(red: 1.0, green: 0.80, blue: 0.25, alpha: 1.0),
+			 UIColor(red: 1.0, green: 0.90, blue: 0.50, alpha: 1.0))
 		]
 		
 		let chosen = pastelPalette.randomElement()!

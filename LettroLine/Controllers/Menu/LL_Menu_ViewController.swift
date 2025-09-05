@@ -81,10 +81,6 @@ public class LL_Menu_ViewController: LL_ViewController {
 			
 			timeTrialButton.subtitle = String(key: "menu.challenges.button.subtitle") + "\(bestScore)"
 		}
-		else {
-			
-			timeTrialButton.subtitle = nil
-		}
 		
 		let moveLimitButton = alertController.addButton(title: String(key: "menu.challenges.alert.button.moveLimit")) { _ in
 			
@@ -100,10 +96,6 @@ public class LL_Menu_ViewController: LL_ViewController {
 		if let bestScore = UserDefaults.get(.challengesMoveLimitBestScore) as? Int, bestScore > 0 {
 			
 			moveLimitButton.subtitle = String(key: "menu.challenges.button.subtitle") + "\(bestScore)"
-		}
-		else {
-			
-			moveLimitButton.subtitle = nil
 		}
 		
 		let noLiftButton = alertController.addButton(title: String(key: "menu.challenges.alert.button.noLift")) { _ in
@@ -121,13 +113,21 @@ public class LL_Menu_ViewController: LL_ViewController {
 			
 			noLiftButton.subtitle = String(key: "menu.challenges.button.subtitle") + "\(bestScore)"
 		}
-		else {
-			
-			noLiftButton.subtitle = nil
-		}
 		
 		alertController.addCancelButton()
 		alertController.present()
+	})
+	private lazy var storyButton:LL_Button = {
+		
+		$0.type = .secondary
+		$0.image = UIImage(systemName: "text.book.closed.fill")
+		return $0
+		
+	}(LL_Button(String(key: "menu.story.button")) { [weak self] _ in
+		
+		let viewController = LL_Story_Selection_ViewController()
+		viewController.modalPresentationStyle = .pageSheet
+		UI.MainController.present(LL_NavigationController(rootViewController: viewController), animated: true)
 	})
 	private lazy var bannerView = LL_Ads.shared.presentBanner(Ads.Banner.Menu, self)
 	private lazy var stackView:UIStackView = {
@@ -152,38 +152,15 @@ public class LL_Menu_ViewController: LL_ViewController {
 		classicGameStackView.alignment = .fill
 		$0.addArrangedSubview(classicGameStackView)
 		
-		let storyButton:LL_Button = .init(String(key: "menu.story.button")) { [weak self] _ in
-			
-			let alertController:LL_Alert_ViewController = .init()
-			alertController.title = String(key: "Histoires")
-			
-			LL_Game_Story.stories?.forEach { story in
-				
-				if let title = story.title {
-					
-					alertController.addButton(title: title, subtitle: story.subtitle) { _ in
-						
-						let viewController:LL_Game_Story_ViewController = .init()
-						viewController.story = story.current ?? story
-						UI.MainController.present(LL_NavigationController(rootViewController: viewController), animated: true)
-					}
-				}
-			}
-			
-			alertController.addCancelButton()
-			alertController.present()
-		}
-		storyButton.type = .secondary
-		storyButton.image = UIImage(systemName: "trophy.fill")
 		$0.addArrangedSubview(storyButton)
-		
 		$0.addArrangedSubview(challengesGameStartButton)
+		$0.setCustomSpacing(UI.Margins*3, after: challengesGameStartButton)
 		
 		let ranksButton:LL_Button = .init(String(key: "menu.ranks.button")) { [weak self] _ in
 			
 			UI.MainController.present(LL_NavigationController(rootViewController: LL_Ranks_ViewController()), animated: true)
 		}
-		ranksButton.type = .secondary
+		ranksButton.style = .tinted
 		ranksButton.image = UIImage(systemName: "trophy.fill")
 		$0.addArrangedSubview(ranksButton)
 		
@@ -244,6 +221,16 @@ public class LL_Menu_ViewController: LL_ViewController {
 		else {
 			
 			classicGameStartButton.subtitle = nil
+		}
+		
+		storyButton.badge = nil
+		
+		LL_Game_Story.getAll { [weak self] stories in
+			
+			if let count = stories?.notStarted?.count, count > 0 {
+				
+				self?.storyButton.badge = "\(count)"
+			}
 		}
 		
 		stackView.animate()
