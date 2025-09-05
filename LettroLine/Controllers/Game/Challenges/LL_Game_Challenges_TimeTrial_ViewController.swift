@@ -18,11 +18,14 @@ public class LL_Game_Challenges_TimeTrial_ViewController : LL_Game_Challenges_Vi
 	private var remainingTime:TimeInterval = Game.TimeTrialDuration
 	private var timerButton:LL_Button = {
 		
-		$0.type = .tertiary
-		$0.style = .solid
-		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
-		$0.snp.removeConstraints()
+		$0.image = UIImage(systemName: "clock.fill")?.applyingSymbolConfiguration(.init(pointSize: 12))
+		$0.type = .secondary
 		$0.isUserInteractionEnabled = false
+		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
+		$0.configuration?.imagePadding = UI.Margins/2
+		$0.snp.remakeConstraints { make in
+			make.height.equalTo(3.5*UI.Margins)
+		}
 		return $0
 		
 	}(LL_Button())
@@ -37,6 +40,22 @@ public class LL_Game_Challenges_TimeTrial_ViewController : LL_Game_Challenges_Vi
 		super.loadView()
 		
 		title = String(key: "game.timeTrial.title")
+		
+		let separatorView1:UIView = .init()
+		separatorView1.backgroundColor = .red
+		separatorView1.snp.makeConstraints { make in
+			make.height.equalTo(3.5*UI.Margins)
+		}
+		separatorView1.setContentHuggingPriority(.defaultLow, for: .horizontal)
+		separatorView1.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+		
+		let separatorView2:UIView = .init()
+		separatorView2.backgroundColor = .blue
+		separatorView2.snp.makeConstraints { make in
+			make.height.equalTo(3.5*UI.Margins)
+		}
+		separatorView2.setContentHuggingPriority(.defaultLow, for: .horizontal)
+		separatorView2.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 		
 		scoreStackView.insertArrangedSubview(timerButton, at: 1)
 		
@@ -145,7 +164,6 @@ public class LL_Game_Challenges_TimeTrial_ViewController : LL_Game_Challenges_Vi
 		let seconds = Int(remainingTime) % 60
 		
 		timerButton.title = String(format: "%02d:%02d", minutes, seconds)
-		timerButton.pulse(.clear)
 	}
 	
 	public override func success() {

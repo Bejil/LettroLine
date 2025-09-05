@@ -38,7 +38,7 @@
 "menu.classic.button.subtitle" = "Meilleur score: ";
 "menu.classic.new.alert.title" = "Attention";
 "menu.classic.new.alert.content" = "Si tu recommences une nouvelle partie du perdra tes progrès précédents.";
-"menu.story.button" = "Histoire";
+"menu.story.button" = "Histoires";
 "menu.challenges.button" = "Challenges";
 "menu.challenges.button.subtitle" = "Meilleur score: ";
 "menu.challenges.alert.title" = "Challenges";
@@ -52,7 +52,21 @@
 "menu.ads.button" = "Marre des pubs ?";
 
 //MARK: - Story
+"story.title" = "Histoires";
+"story.chapters" = "chapitres";
+"story.finish.button" = "Terminer";
 "story.continue.button" = "Chapitre suivant";
+"story.continue.button.title" = "Continuer";
+"story.read.button.title" = "Lire";
+"story.continue.button.subtitle.chapter" = "Chapitre";
+"story.continue.button.subtitle.word" = "Mot";
+"story.start.button" = "Recommencer";
+"story.section.started" = "En cours";
+"story.section.notStarted" = "Nouvelles";
+"story.section.finished" = "Terminées";
+"story.read.chapter" = "Chapitre";
+"story.read.continue.button" = "Continuer";
+"story.read.finish.button" = "Terminer";
 
 //MARK: - Ranks
 "ranks.title" = "Classements";

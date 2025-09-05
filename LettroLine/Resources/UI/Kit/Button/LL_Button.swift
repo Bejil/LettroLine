@@ -20,6 +20,7 @@ public class LL_Button : UIButton {
 		case solid
 		case tinted
 		case transparent
+		case bordered
 	}
 	
 	// MARK: - Properties
@@ -257,9 +258,14 @@ public class LL_Button : UIButton {
 			configuration?.baseBackgroundColor = .clear // Fond transparent car on utilise le dégradé
 			configuration?.baseForegroundColor = colors.text
 			// Dégradé inversé pour le fond
-			gradientBackgroundLayer.colors = [colors.background.cgColor, colors.background.withAlphaComponent(0.6).cgColor]
+			gradientBackgroundLayer.colors = [colors.background.cgColor, colors.background.withAlphaComponent(0.1).cgColor]
 			gradientBackgroundLayer.isHidden = false
 		case .transparent:
+			configuration = .plain()
+			configuration?.baseBackgroundColor = .clear
+			configuration?.baseForegroundColor = colors.text
+			gradientBackgroundLayer.isHidden = true
+		case .bordered:
 			configuration = .plain()
 			configuration?.baseBackgroundColor = .clear
 			configuration?.baseForegroundColor = colors.text
@@ -270,7 +276,10 @@ public class LL_Button : UIButton {
 		configuration?.background.cornerRadius = (4*UI.Margins)/2.5
 		
 		// Configuration de la bordure avec dégradé
-		if style != .transparent {
+		if style == .bordered {
+			borderGradientLayer.colors = [colors.borderLight.cgColor, colors.borderDark.cgColor]
+			borderGradientLayer.isHidden = false
+		} else if style != .transparent {
 			borderGradientLayer.colors = [colors.borderLight.cgColor, colors.borderDark.cgColor]
 			borderGradientLayer.isHidden = false
 		} else {
@@ -341,6 +350,14 @@ public class LL_Button : UIButton {
 			)
 			
 		case .transparent:
+			return ButtonColors(
+				background: .clear,
+				text: baseColor,
+				borderLight: baseColor.withAlphaComponent(0.8),
+				borderDark: baseColor.withAlphaComponent(1.2)
+			)
+			
+		case .bordered:
 			return ButtonColors(
 				background: .clear,
 				text: baseColor,

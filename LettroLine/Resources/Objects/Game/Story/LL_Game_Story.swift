@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Firebase
 
 public class LL_Game_Story : LL_Game {
 
@@ -16,7 +17,6 @@ public class LL_Game_Story : LL_Game {
 			public var title: String?
 			public var words: [String]?
 			public var subtitle: [String]?
-			public var background: String?
 		}
 		
 		public var id: String?
@@ -37,6 +37,16 @@ public class LL_Game_Story : LL_Game {
 			}
 		}
 		
+		public func reset() {
+			
+			if let id {
+				
+				let standardUserDefaults = UserDefaults.standard
+				standardUserDefaults.removeObject(forKey: id)
+				standardUserDefaults.synchronize()
+			}
+		}
+		
 		public var current:Self? {
 			
 			if let id, let savedData = UserDefaults.standard.value(forKey: id) as? Data, let decodedGame = try? JSONDecoder().decode(Self.self, from: savedData) {
@@ -48,15 +58,11 @@ public class LL_Game_Story : LL_Game {
 		}
 	}
 	
-	public static var stories:[Story]? {
+	public static func getAll(_ completion: (([Story]?)->Void)?) {
 		
-		if let url = Bundle.main.url(forResource: "LL_Stories", withExtension: "json"),
-		   let data = try? Data(contentsOf: url),
-		   let storyData = try? JSONDecoder().decode([Story].self, from: data) {
+		Firestore.firestore().collection("stories").getDocuments { snapshot, error in
 			
-			return storyData
+			completion?(snapshot?.documents.compactMap({ try?$0.data(as: Story.self) }))
 		}
-		
-		return nil
 	}
 }

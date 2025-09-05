@@ -89,9 +89,11 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		$0.axis = .horizontal
 		$0.alignment = .center
+		$0.spacing = UI.Margins
+		$0.distribution = .fillEqually
 		return $0
 		
-	}(UIStackView(arrangedSubviews: [scoreButton,.init(),helpButton]))
+	}(UIStackView(arrangedSubviews: [scoreButton,helpButton]))
 	public lazy var scoreButton:LL_Button = {
 		
 		$0.isUserInteractionEnabled = false
@@ -101,7 +103,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		$0.snp.remakeConstraints { make in
 			make.height.equalTo(3.5*UI.Margins)
 		}
-		$0.image = UIImage(systemName: "trophy")?.applyingSymbolConfiguration(.init(pointSize: 12))
+		$0.image = UIImage(systemName: "trophy.fill")?.applyingSymbolConfiguration(.init(pointSize: 12))
 		return $0
 		
 	}(LL_Button())
@@ -448,11 +450,11 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		let score = Double(game?.score ?? 0)
 		
-		var wordLength = String.minLetters
+		var wordLength = LL_Words.shared.minLetters
 		
-		for n in (String.minLetters + 1)...String.maxLetters {
+		for n in (LL_Words.shared.minLetters + 1)...LL_Words.shared.maxLetters {
 			
-			let threshold = Game.firstPointsLevel * pow(Game.pointsLevelMultiplier, Double(n - (String.minLetters + 1)))
+			let threshold = Game.firstPointsLevel * pow(Game.pointsLevelMultiplier, Double(n - (LL_Words.shared.minLetters + 1)))
 			
 			if score >= threshold {
 				
@@ -533,8 +535,7 @@ public class LL_Game_ViewController: LL_ViewController {
 									}
 									else {
 										
-										self?.game?.reset()
-										self?.dismiss()
+										self?.fail()
 									}
 								}
 							}
@@ -549,9 +550,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		}
 		let button = alertController.addDismissButton { [weak self] _ in
 			
-			self?.game?.reset()
-			
-			self?.dismiss()
+			self?.fail()
 		}
 		button.style = .transparent
 		alertController.present()
@@ -560,6 +559,12 @@ public class LL_Game_ViewController: LL_ViewController {
 			
 			self?.userPathLayer.opacity = 0.0
 		}
+	}
+	
+	public func fail() {
+		
+		game?.reset()
+		dismiss()
 	}
 	
 	public override func dismiss(_ completion: (() -> Void)? = nil) {
