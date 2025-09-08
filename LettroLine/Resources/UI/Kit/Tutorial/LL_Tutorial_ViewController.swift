@@ -15,6 +15,7 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 		public var sourceView:UIView?
 		public var title:String?
 		public var subtitle:String?
+		public var attributedSubtitle:NSAttributedString?
 		public var button:String?
 		public var timeInterval:TimeInterval?
 		public var closure:(()->Void)?
@@ -32,7 +33,7 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 		return $0
 		
 	}(LL_Label())
-	private lazy var subtitleLabel: LL_Label = {
+	public lazy var subtitleLabel: LL_Label = {
 		
 		$0.font = Fonts.Content.Text.Regular
 		$0.textColor = .white
@@ -68,6 +69,12 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 	private var currentIndex: Int = -1
 	private var pulseTimer:Timer?
 	private lazy var maskLayer:CAShapeLayer = .init()
+	public lazy var dimBackgroundView:UIVisualEffectView = {
+		
+		$0.alpha = 0.75
+		return $0
+		
+	}(UIVisualEffectView(effect: UIBlurEffect.init(style: .dark)))
 	
 	public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
 		
@@ -97,8 +104,6 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 			$0.removeFromSuperlayer()
 		})
 		
-		let dimBackgroundView: UIVisualEffectView = .init(effect: UIBlurEffect.init(style: .dark))
-		dimBackgroundView.alpha = 0.75
 		view.addSubview(dimBackgroundView)
 		dimBackgroundView.snp.makeConstraints { make in
 			
@@ -117,7 +122,7 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 		view.layer.mask = maskLayer
 	}
 	
-	public func present() {
+	public func present(_ presentCompletion:(()->Void)? = nil) {
 		
 		let presentClosure:(()->Void) = { [weak self] in
 			
@@ -126,6 +131,7 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 				UI.MainController.present(self, animated: true) { [weak self] in
 					
 					self?.next()
+					presentCompletion?()
 				}
 			}
 		}
@@ -197,12 +203,21 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 			titleLabel.layer.add(animation, forKey: CATransitionType.push.rawValue)
 		}
 		
-		if let subtitle = items?[currentIndex].subtitle {
+		if let attributedSubtitle = items?[currentIndex].attributedSubtitle {
 			
 			let animation: CATransition = CATransition()
 			animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
 			animation.type = .fade
-			subtitleLabel.text = String(key: subtitle)
+			subtitleLabel.attributedText = attributedSubtitle
+			animation.duration = animationDuration
+			subtitleLabel.layer.add(animation, forKey: CATransitionType.push.rawValue)
+		}
+		else if let subtitle = items?[currentIndex].subtitle {
+			
+			let animation: CATransition = CATransition()
+			animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+			animation.type = .fade
+			subtitleLabel.text = subtitle
 			animation.duration = animationDuration
 			subtitleLabel.layer.add(animation, forKey: CATransitionType.push.rawValue)
 		}
@@ -214,12 +229,12 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 			if currentIndex == (items?.count ?? 0) - 1 {
 				
 				nextButton.style = .solid
-				nextButton.isText = false
+				nextButton.type = .primary
 			}
 			else {
 				
-				nextButton.style = .transparent
-				nextButton.isText = true
+				nextButton.style = .tinted
+				nextButton.type = .primary
 			}
 			
 			let animation: CATransition = CATransition()
@@ -239,7 +254,7 @@ public class LL_Tutorial_ViewController: LL_ViewController {
 			self.titleLabel.isHidden = self.items?[self.currentIndex].title == nil
 			self.titleLabel.superview?.layoutIfNeeded()
 			
-			self.subtitleLabel.isHidden = self.items?[self.currentIndex].subtitle == nil
+			self.subtitleLabel.isHidden = self.items?[self.currentIndex].subtitle == nil && self.items?[self.currentIndex].attributedSubtitle == nil
 			self.subtitleLabel.superview?.layoutIfNeeded()
 			
 			self.nextButton.isHidden = self.items?[self.currentIndex].button == nil

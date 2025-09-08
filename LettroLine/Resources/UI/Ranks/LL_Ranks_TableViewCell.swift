@@ -20,11 +20,11 @@ public class LL_Ranks_TableViewCell : LL_TableViewCell {
 			rankButton.title = "\(rank ?? 0)"
 		}
 	}
-	public var object:LL_TimeTrial_Game.FirebaseObject? {
+	public var object:LL_Challenges_TimeTrial_Game.FirebaseObject? {
 		
 		didSet {
 			
-			rankButton.isPrimary = !(object?.uuid == UserDefaults.get(.userId) as? String)
+			rankButton.type = !(object?.uuid == UserDefaults.get(.userId) as? String) ? .primary : .secondary
 			rankButton.style = !(object?.uuid == UserDefaults.get(.userId) as? String) ? .tinted : .solid
 			nameLabel.text = "\(object?.name ?? String(key: "ranks.anonymous"))"
 			scoreLabel.text = "\(object?.score ?? 0) " + String(key: "ranks.points")

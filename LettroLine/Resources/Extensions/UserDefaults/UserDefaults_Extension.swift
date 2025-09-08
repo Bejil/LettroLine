@@ -26,15 +26,18 @@ extension UserDefaults {
 		case soundsEnabled = "soundsEnabled"
 		case musicEnabled = "musicEnabled"
 		case vibrationsEnabled = "vibrationsEnabled"
-		case currentClassicGame = "currentClassicGame"
-		case currentTimeTrialGame = "currentTimeTrialGame"
-		case currentChallengeGame = "currentChallengeGame"
-		case classicBestScore = "classicBestScore"
 		
+		case currentClassicGame = "currentClassicGame"
+		case currentStoryGame = "currentStoryGame"
+		case currentChallengesNoLift = "currentChallengesNoLift"
+		case currentChallengesMoveLimit = "currentChallengesMoveLimit"
+		case currentChallengesTimeTrialGame = "currentChallengesTimeTrialGame"
+		
+		case classicBestScore = "classicBestScore"
 		case challengesMoveLimitBestScore = "challengesMoveLimitBestScore"
 		case challengesNoLiftBestScore = "challengesNoLiftBestScore"
+		case challengesTimeTrialBestScore = "challengesTimeTrialBestScore"
 		
-		case timeTrialBestScore = "timeTrialBestScore"
 		case tutorialClassicGame = "tutorialClassicGame"
 		case tutorialTimeTrialGame = "tutorialTimeTrialGame"
 		case notifications = "notifications"
@@ -63,5 +66,13 @@ extension UserDefaults {
 	public static func reset() {
 		
 		Keys.allCases.forEach({ delete($0) })
+	}
+	
+	public func resetAll() {
+		
+		let domain = Bundle.main.bundleIdentifier
+		let standardUserDefaults = UserDefaults.standard
+		standardUserDefaults.removePersistentDomain(forName: domain!)
+		standardUserDefaults.synchronize()
 	}
 }

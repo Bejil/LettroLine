@@ -22,15 +22,15 @@ public class LL_Word_StackView : UIStackView {
 				
 				word.forEach({ _ in
 					
-					let letterLabel: LL_Letter_Label = .init()
+					let letterLabel: LL_Letter_View = .init()
 					letterLabel.isSelected = isPrimary
 					addArrangedSubview(letterLabel)
 					letterLabel.snp.makeConstraints { make in
-						make.width.equalTo(snp.height)
+						make.width.equalToSuperview().dividedBy(8).offset(-UI.Margins/5)
 					}
 				})
 				
-				let labels = arrangedSubviews.compactMap({ $0 as? LL_Letter_Label })
+				let labels = arrangedSubviews.compactMap({ $0 as? LL_Letter_View })
 				
 				for i in 0..<labels.count {
 					
@@ -38,7 +38,7 @@ public class LL_Word_StackView : UIStackView {
 							
 						let label = labels[i]
 						let index = word.index(word.startIndex, offsetBy: i)
-						label.text = String(word[index])
+						label.letter = String(word[index])
 					}
 				}
 				
@@ -56,7 +56,7 @@ public class LL_Word_StackView : UIStackView {
 		distribution = .equalSpacing
 		
 		snp.makeConstraints { make in
-			make.height.equalTo(UI.Margins * 3)
+			make.height.equalTo(UI.Margins * 2.75)
 		}
 	}
 	
@@ -71,7 +71,10 @@ public class LL_Word_StackView : UIStackView {
 			
 			UIApplication.feedBack(.On)
 			
-			arrangedSubviews.compactMap({ $0 as? LL_Letter_Label }).first(where: { !($0.isSelected ?? false) && $0.text == String(character).uppercased() })?.isSelected = true
+			if let letterView = arrangedSubviews.compactMap({ $0 as? LL_Letter_View }).first(where: { !($0.isSelected ?? false)  && $0.letter?.uppercased() == String(character).uppercased() }) {
+				
+				letterView.isSelected = true
+			}
 		}
 	}
 	
@@ -79,7 +82,7 @@ public class LL_Word_StackView : UIStackView {
 		
 		UIApplication.feedBack(.Off)
 		
-		arrangedSubviews.compactMap({ $0 as? LL_Letter_Label }).forEach({
+		arrangedSubviews.compactMap({ $0 as? LL_Letter_View }).forEach({
 			
 			$0.isSelected = false
 		})

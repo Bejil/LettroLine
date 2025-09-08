@@ -1,5 +1,5 @@
 //
-//  LL_Game_TimeTrial_ViewController.swift
+//  LL_Game_Challenges_TimeTrial_ViewController.swift
 //  LettroLine
 //
 //  Created by BLIN Michael on 04/03/2025.
@@ -8,21 +8,24 @@
 import UIKit
 import GoogleMobileAds
 
-public class LL_Game_TimeTrial_ViewController : LL_Game_ViewController {
+public class LL_Game_Challenges_TimeTrial_ViewController : LL_Game_Challenges_ViewController {
 	
-	public override var game: LL_Game {
+	public override var game: LL_Game? {
 		
-		return LL_TimeTrial_Game.current
+		return LL_Challenges_TimeTrial_Game.current
 	}
 	private var timer: Timer?
 	private var remainingTime:TimeInterval = Game.TimeTrialDuration
 	private var timerButton:LL_Button = {
 		
-		$0.isTertiary = true
-		$0.style = .solid
-		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
-		$0.snp.removeConstraints()
+		$0.image = UIImage(systemName: "clock.fill")?.applyingSymbolConfiguration(.init(pointSize: 12))
+		$0.type = .secondary
 		$0.isUserInteractionEnabled = false
+		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
+		$0.configuration?.imagePadding = UI.Margins/2
+		$0.snp.remakeConstraints { make in
+			make.height.equalTo(3.5*UI.Margins)
+		}
 		return $0
 		
 	}(LL_Button())
@@ -37,6 +40,22 @@ public class LL_Game_TimeTrial_ViewController : LL_Game_ViewController {
 		super.loadView()
 		
 		title = String(key: "game.timeTrial.title")
+		
+		let separatorView1:UIView = .init()
+		separatorView1.backgroundColor = .red
+		separatorView1.snp.makeConstraints { make in
+			make.height.equalTo(3.5*UI.Margins)
+		}
+		separatorView1.setContentHuggingPriority(.defaultLow, for: .horizontal)
+		separatorView1.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+		
+		let separatorView2:UIView = .init()
+		separatorView2.backgroundColor = .blue
+		separatorView2.snp.makeConstraints { make in
+			make.height.equalTo(3.5*UI.Margins)
+		}
+		separatorView2.setContentHuggingPriority(.defaultLow, for: .horizontal)
+		separatorView2.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 		
 		scoreStackView.insertArrangedSubview(timerButton, at: 1)
 		
@@ -115,13 +134,13 @@ public class LL_Game_TimeTrial_ViewController : LL_Game_ViewController {
 				
 				self?.pause()
 				
-				let newBestScoreState = (UserDefaults.get(.timeTrialBestScore) as? Int) ?? 0 < LL_TimeTrial_Game.current.score
+				let newBestScoreState = (UserDefaults.get(.challengesTimeTrialBestScore) as? Int) ?? 0 < LL_Challenges_TimeTrial_Game.current.score
 				
 				let viewController:LL_Tutorial_ViewController = .init()
 				viewController.items = [
 					
 					LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.end.0"), timeInterval: 2.0),
-					LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.end.1"), subtitle: [String(format: String(key: "game.timeTrial.tutorial.end.2"),LL_TimeTrial_Game.current.score),String(key: "game.timeTrial.tutorial.end.newBestScore" + (newBestScoreState ? ".on" : ".off"))].joined(separator: "\n\n"), button: String(key: "game.timeTrial.tutorial.end.button"))
+					LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.end.1"), subtitle: [String(format: String(key: "game.timeTrial.tutorial.end.2"),LL_Challenges_TimeTrial_Game.current.score),String(key: "game.timeTrial.tutorial.end.newBestScore" + (newBestScoreState ? ".on" : ".off"))].joined(separator: "\n\n"), button: String(key: "game.timeTrial.tutorial.end.button"))
 				]
 				viewController.completion = { [weak self] in
 					
@@ -145,14 +164,6 @@ public class LL_Game_TimeTrial_ViewController : LL_Game_ViewController {
 		let seconds = Int(remainingTime) % 60
 		
 		timerButton.title = String(format: "%02d:%02d", minutes, seconds)
-		timerButton.pulse(.clear)
-	}
-	
-	public override func newWord() {
-		
-		updateBestScore()
-		
-		solutionWord = game.newWord(3)
 	}
 	
 	public override func success() {
@@ -163,33 +174,14 @@ public class LL_Game_TimeTrial_ViewController : LL_Game_ViewController {
 		updateText()
 	}
 	
-	public override func close() {
-		
-		pause()
-		
-		let alertController:LL_Alert_ViewController = .init()
-		alertController.title = String(key: "game.timeTrial.close.alert.title")
-		alertController.add(String(key: "game.timeTrial.close.alert.content"))
-		alertController.addDismissButton() { _ in
-			
-			super.close()
-		}
-		alertController.addCancelButton()
-		alertController.dismissHandler = { [weak self] in
-			
-			self?.play()
-		}
-		alertController.present()
-	}
-	
 	public override func updateBestScore() {
 		
 		super.updateBestScore()
 		
-		if (UserDefaults.get(.timeTrialBestScore) as? Int) ?? 0 < game.score {
+		if (UserDefaults.get(.challengesTimeTrialBestScore) as? Int) ?? 0 < game?.score ?? 0 {
 			
-			UserDefaults.set(game.score, .timeTrialBestScore)
-			LL_TimeTrial_Game.current.saveBestScore()
+			UserDefaults.set(game?.score ?? 0, .challengesTimeTrialBestScore)
+			LL_Challenges_TimeTrial_Game.current.saveBestScore()
 			LL_Rewards.shared.updateLastBestScoreDate()
 		}
 	}
@@ -198,6 +190,6 @@ public class LL_Game_TimeTrial_ViewController : LL_Game_ViewController {
 		
 		super.updateScore()
 		
-		isBestScore = (UserDefaults.get(.timeTrialBestScore) as? Int) ?? 0 < game.score
+		isBestScore = (UserDefaults.get(.challengesTimeTrialBestScore) as? Int) ?? 0 < game?.score ?? 0
 	}
 }

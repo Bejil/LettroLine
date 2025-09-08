@@ -9,9 +9,9 @@ import Foundation
 
 public class LL_Game_Classic_ViewController : LL_Game_ViewController {
 	
-	public override var game: LL_Game {
+	public override var game: LL_Game? {
 		
-		return LL_Classic_Game.current
+		return LL_Game_Classic.current
 	}
 	
 	public override func loadView() {
@@ -25,10 +25,10 @@ public class LL_Game_Classic_ViewController : LL_Game_ViewController {
 		
 		super.updateBestScore()
 		
-		if (UserDefaults.get(.classicBestScore) as? Int) ?? 0 < game.score {
+		if (UserDefaults.get(.classicBestScore) as? Int) ?? 0 < game?.score ?? 0 {
 			
-			UserDefaults.set(game.score, .classicBestScore)
-			LL_Classic_Game.current.saveBestScore()
+			UserDefaults.set(game?.score ?? 0, .classicBestScore)
+			LL_Game_Classic.current.saveBestScore()
 			LL_Rewards.shared.updateLastBestScoreDate()
 		}
 	}
@@ -37,6 +37,6 @@ public class LL_Game_Classic_ViewController : LL_Game_ViewController {
 		
 		super.updateScore()
 		
-		isBestScore = (UserDefaults.get(.classicBestScore) as? Int) ?? 0 < game.score
+		isBestScore = (UserDefaults.get(.classicBestScore) as? Int) ?? 0 < game?.score ?? 0
 	}
 }

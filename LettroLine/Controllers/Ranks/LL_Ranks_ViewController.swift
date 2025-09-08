@@ -18,7 +18,7 @@ public class LL_Ranks_ViewController : LL_ViewController {
 		return $0
 		
 	}(LL_TableView())
-	private var objects:[LL_TimeTrial_Game.FirebaseObject]? {
+	private var objects:[LL_Game.FirebaseObject]? {
 		
 		didSet {
 			
@@ -33,19 +33,33 @@ public class LL_Ranks_ViewController : LL_ViewController {
 		
 		title = String(key: "ranks.title")
 		
-		let segmentedControl:LL_SegmentedControl = .init(items: [String(key: "ranks.classic"), String(key: "ranks.timetrial")])
+		let segmentedControl:LL_SegmentedControl = .init(items: [String(key: "ranks.classic"), String(key: "ranks.challenges.timetrial"), String(key: "ranks.challenges.moveLimit"), String(key: "ranks.challenges.noLift")])
 		segmentedControl.addAction(.init(handler: { [weak self] _ in
 			
 			if segmentedControl.selectedSegmentIndex == 0 {
 				
-				LL_Classic_Game.getAll { [weak self] objects in
+				LL_Game_Classic.getAll { [weak self] objects in
 					
 					self?.objects = objects
 				}
 			}
 			else if segmentedControl.selectedSegmentIndex == 1 {
 				
-				LL_TimeTrial_Game.getAll { [weak self] objects in
+				LL_Challenges_TimeTrial_Game.getAll { [weak self] objects in
+					
+					self?.objects = objects
+				}
+			}
+			else if segmentedControl.selectedSegmentIndex == 2 {
+				
+				LL_Challenges_MoveLimit_Game.getAll { [weak self] objects in
+					
+					self?.objects = objects
+				}
+			}
+			else if segmentedControl.selectedSegmentIndex == 2 {
+				
+				LL_Challenges_NoLift_Game.getAll { [weak self] objects in
 					
 					self?.objects = objects
 				}

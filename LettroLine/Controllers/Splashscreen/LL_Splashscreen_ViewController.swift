@@ -17,15 +17,19 @@ public class LL_Splashscreen_ViewController : LL_ViewController {
 		$0.alignment = .center
 		
 		let firstStackView:LL_Word_StackView = .init()
-		firstStackView.isPrimary = true
-		firstStackView.spacing = UI.Margins
+		firstStackView.spacing = UI.Margins/5
 		firstStackView.word = String(key: "splashscreen.0")
+		firstStackView.snp.remakeConstraints { make in
+			make.height.equalTo(UI.Margins * 3)
+		}
 		$0.addArrangedSubview(firstStackView)
 		
 		let lastStackView:LL_Word_StackView = .init()
-		lastStackView.isPrimary = true
-		lastStackView.spacing = UI.Margins
+		lastStackView.spacing = UI.Margins/5
 		lastStackView.word = String(key: "splashscreen.1")
+		lastStackView.snp.remakeConstraints { make in
+			make.height.equalTo(UI.Margins * 3)
+		}
 		$0.addArrangedSubview(lastStackView)
 		
 		return $0
@@ -50,7 +54,7 @@ public class LL_Splashscreen_ViewController : LL_ViewController {
 		
 		view.addSubview(stackView)
 		stackView.snp.makeConstraints { make in
-			make.left.right.equalToSuperview()
+			make.left.right.equalToSuperview().inset(2*UI.Margins)
 			make.centerY.equalToSuperview()
 		}
 	}
@@ -61,9 +65,18 @@ public class LL_Splashscreen_ViewController : LL_ViewController {
 		
 		stackView.animate()
 		
-		UIApplication.wait(3.0) { [weak self] in
+		UIApplication.wait(2.5) { [weak self] in
 			
-			self?.dismiss(self?.completion)
+			LL_Alert_ViewController.presentLoading { [weak self] alertController in
+				
+				LL_Words.shared.getAll {
+					
+					alertController?.close {
+						
+						self?.dismiss(self?.completion)
+					}
+				}
+			}
 		}
 	}
 }

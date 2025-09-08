@@ -16,7 +16,7 @@ public class LL_User_ImageView : UIImageView {
 		contentMode = .scaleAspectFill
 		clipsToBounds = true
 		layer.masksToBounds = true
-		layer.borderWidth = UI.Margins/3
+		layer.borderWidth = 3
 		layer.borderColor = UIColor.white.cgColor
 		
 		let height = 4*UI.Margins

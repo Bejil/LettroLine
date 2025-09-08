@@ -12,9 +12,9 @@ import GoogleMobileAds
 public class LL_Game_ViewController: LL_ViewController {
 	
 	public var canAddMorePoint:Bool = true
-	public var game:LL_Game {
+	public var game:LL_Game? {
 		
-		return LL_Game()
+		return nil
 	}
 	public var isBestScore:Bool = false {
 		
@@ -42,25 +42,6 @@ public class LL_Game_ViewController: LL_ViewController {
 	public var allowFingerLift: Bool {
 		
 		return true
-	}
-	private lazy var showFirst:Bool = false {
-		
-		didSet {
-			
-			collectionView.indexPathsForVisibleItems.forEach({
-				
-				if let cell = collectionView.cellForItem(at: $0) as? LL_Grid_Letter_CollectionViewCell {
-					
-					let row = $0.item / columns
-					let col = $0.item % columns
-					
-					if let grid = grid?.grid, row < grid.count, col < grid[row].count {
-						
-						cell.isFirst = showFirst && grid[row][col].uppercased() == solutionWord?.first?.uppercased()
-					}
-				}
-			})
-		}
 	}
 	private lazy var isGameOver = false
 	public var grid: (grid: [[Character]], positions: [CGPoint], bonus: IndexPath?)? {
@@ -104,84 +85,38 @@ public class LL_Game_ViewController: LL_ViewController {
 		return $0
 		
 	}(CAShapeLayer())
-	private lazy var settingsButton:UIBarButtonItem = .init(image: UIImage(systemName: "slider.vertical.3"), menu: settingsMenu)
-	private var settingsMenu:UIMenu {
-		
-		return .init(children: [
-			
-			UIAction(title: String(key: "game.settings.sounds"), subtitle: String(key: "game.settings.sounds." + (LL_Audio.shared.isSoundsEnabled ? "on" : "off")), image: UIImage(systemName: LL_Audio.shared.isSoundsEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill"), handler: { [weak self] _ in
-				
-				LL_Audio.shared.play(.button)
-				
-				UserDefaults.set(!LL_Audio.shared.isSoundsEnabled, .soundsEnabled)
-				
-				self?.settingsButton.menu = self?.settingsMenu
-			}),
-			UIAction(title: String(key: "game.settings.music"), subtitle: String(key: "game.settings.music." + (LL_Audio.shared.isMusicEnabled ? "on" : "off")), image: UIImage(systemName: LL_Audio.shared.isMusicEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill"), handler: { [weak self] _ in
-				
-				LL_Audio.shared.play(.button)
-				
-				UserDefaults.set(!LL_Audio.shared.isMusicEnabled, .musicEnabled)
-				
-				LL_Audio.shared.isMusicEnabled ? LL_Audio.shared.playMusic() : LL_Audio.shared.stopMusic()
-				
-				self?.settingsButton.menu = self?.settingsMenu
-			}),
-			UIAction(title: String(key: "game.settings.vibrations"), subtitle: String(key: "game.settings.vibrations." + (UIApplication.isVibrationsEnabled ? "on" : "off")), image: UIImage(systemName: UIApplication.isVibrationsEnabled ? "water.waves" : "water.waves.slash"), handler: { [weak self] _ in
-				
-				UserDefaults.set(!UIApplication.isVibrationsEnabled, .vibrationsEnabled)
-				
-				self?.settingsButton.menu = self?.settingsMenu
-			})
-		])
-	}
 	public lazy var scoreStackView:UIStackView = {
 		
 		$0.axis = .horizontal
-		$0.alignment = .fill
-		$0.distribution = .equalCentering
+		$0.alignment = .center
+		$0.spacing = UI.Margins
+		$0.distribution = .fillEqually
 		return $0
 		
 	}(UIStackView(arrangedSubviews: [scoreButton,helpButton]))
 	public lazy var scoreButton:LL_Button = {
 		
+		$0.isUserInteractionEnabled = false
 		$0.subtitleFont = Fonts.Content.Button.Subtitle.withSize(Fonts.Content.Button.Subtitle.pointSize-4)
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
 		$0.configuration?.imagePadding = UI.Margins/2
-		$0.snp.removeConstraints()
-		$0.image = UIImage(systemName: "trophy")?.applyingSymbolConfiguration(.init(pointSize: 12))
+		$0.snp.remakeConstraints { make in
+			make.height.equalTo(3.5*UI.Margins)
+		}
+		$0.image = UIImage(systemName: "trophy.fill")?.applyingSymbolConfiguration(.init(pointSize: 12))
 		return $0
 		
-	}(LL_Button() { [weak self] _ in
-		
-		if self?.game.score != 0 {
-			
-			self?.pause()
-			
-			let alertController:LL_Alert_ViewController = .init()
-			alertController.title = String(key: "game.words.alert.title")
-			
-			self?.game.words.forEach {
-				
-				alertController.add($0.uppercased())
-			}
-			
-			alertController.addDismissButton(sticky: true)
-			alertController.dismissHandler = { [weak self] in
-				
-				self?.play()
-			}
-			alertController.present(as: .Sheet, withAnimation: false)
-		}
-	})
+	}(LL_Button())
 	public lazy var helpButton:LL_Button = {
 		
-		$0.image = UIImage(systemName: "star.fill")?.withTintColor(Colors.Button.Delete.Background, renderingMode: .alwaysOriginal).applyingSymbolConfiguration(.init(pointSize: 12))
+		$0.image = UIImage(systemName: "star.fill")?.applyingSymbolConfiguration(.init(pointSize: 12))
 		$0.title = String(key: "game.help")
-		$0.style = .tinted
+		$0.type = .tertiary
 		$0.configuration?.contentInsets = .init(horizontal: UI.Margins, vertical: UI.Margins/2)
 		$0.configuration?.imagePadding = UI.Margins/2
-		$0.snp.removeConstraints()
+		$0.snp.remakeConstraints { make in
+			make.height.equalTo(3.5*UI.Margins)
+		}
 		return $0
 		
 	}(LL_Button() { [weak self] _ in
@@ -270,13 +205,13 @@ public class LL_Game_ViewController: LL_ViewController {
 	private lazy var collectionViewFlowLayout: UICollectionViewFlowLayout = {
 		
 		$0.scrollDirection = .vertical
-		$0.sectionInset = .init(horizontal: UI.Margins)
 		$0.minimumInteritemSpacing = UI.Margins
 		$0.minimumLineSpacing = UI.Margins
 		return $0
 		
 	}(UICollectionViewFlowLayout())
 	private lazy var panGestureRecognizer:UIPanGestureRecognizer = .init { [weak self] gestureRecognizer in
+		
 		guard let self = self, let gesture = gestureRecognizer as? UIPanGestureRecognizer else { return }
 		
 		let location = gesture.location(in: self.collectionView)
@@ -296,7 +231,6 @@ public class LL_Game_ViewController: LL_ViewController {
 				cells.forEach {
 					
 					$0.isSelected = false
-					$0.isFirst = false
 					$0.resetTimers()
 				}
 			}
@@ -340,7 +274,6 @@ public class LL_Game_ViewController: LL_ViewController {
 						cells.forEach {
 							
 							$0.isSelected = false
-							$0.isFirst = self.showFirst && $0.letter == self.solutionWord?.first?.uppercased()
 							$0.startTimers()
 						}
 					}
@@ -349,7 +282,6 @@ public class LL_Game_ViewController: LL_ViewController {
 						cell.isSelected = false
 						(cell as? LL_Grid_Letter_CollectionViewCell)?.startTimers()
 					}
-					self.showFirst = self.showFirst
 					self.userPathLayer.path = nil
 					self.wordStackView.deselectAll()
 				}
@@ -388,6 +320,38 @@ public class LL_Game_ViewController: LL_ViewController {
 		return $0
 		
 	}(LL_CollectionView(frame: .zero, collectionViewLayout: collectionViewFlowLayout))
+	public lazy var gridView:UIView = {
+		
+		$0.addSubview(collectionView)
+		collectionView.snp.makeConstraints { make in
+			make.edges.equalToSuperview()
+		}
+		return $0
+		
+	}(UIView())
+	public lazy var contentStackView:UIStackView = {
+		
+		$0.axis = .vertical
+		$0.spacing = 3*UI.Margins
+		$0.addArrangedSubview(scoreStackView)
+		
+		let wordView:UIView = .init()
+		wordView.backgroundColor = Colors.Background.View.Secondary
+		wordView.layer.cornerRadius = (4*UI.Margins)/2.5
+		wordView.addSubview(wordStackView)
+		wordStackView.snp.makeConstraints { make in
+			make.edges.equalToSuperview().inset(UI.Margins)
+		}
+		
+		$0.addArrangedSubview(wordView)
+		
+		$0.addArrangedSubview(gridView)
+		$0.addArrangedSubview(.init())
+		$0.addArrangedSubview(bannerView)
+		
+		return $0
+		
+	}(UIStackView())
 	private lazy var bannerView = LL_Ads.shared.presentBanner(Ads.Banner.Game, self)
 	
 	public override func loadView() {
@@ -396,25 +360,12 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		isModal = true
 		
-		navigationItem.rightBarButtonItem = settingsButton
+		navigationItem.rightBarButtonItem = LL_Settings_BarButtonItem()
 		
-		let gridBackgroundView:UIView = .init()
-		gridBackgroundView.backgroundColor = Colors.Background.Grid
-		gridBackgroundView.layer.cornerRadius = UI.CornerRadius
-		gridBackgroundView.addSubview(collectionView)
-		collectionView.snp.makeConstraints { make in
-			make.left.right.equalToSuperview().inset(UI.Margins/2)
-			make.top.bottom.equalToSuperview().inset(1.25*UI.Margins)
-		}
-		
-		let contentStackView:UIStackView = .init(arrangedSubviews: [scoreStackView,wordStackView,gridBackgroundView,.init(),bannerView])
-		contentStackView.axis = .vertical
-		contentStackView.spacing = 2*UI.Margins
 		view.addSubview(contentStackView)
 		contentStackView.snp.makeConstraints { make in
 			make.edges.equalTo(view.safeAreaLayoutGuide).inset(2*UI.Margins)
 		}
-		contentStackView.setCustomSpacing(3*UI.Margins, after: scoreStackView)
 		
 		newWord()
 		
@@ -497,15 +448,13 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		updateBestScore()
 		
-		showFirst = false
+		let score = Double(game?.score ?? 0)
 		
-		let score = Double(game.score)
+		var wordLength = LL_Words.shared.minLetters
 		
-		var wordLength = String.minLetters
-		
-		for n in (String.minLetters + 1)...String.maxLetters {
+		for n in (LL_Words.shared.minLetters + 1)...LL_Words.shared.maxLetters {
 			
-			let threshold = Game.firstPointsLevel * pow(Game.pointsLevelMultiplier, Double(n - (String.minLetters + 1)))
+			let threshold = Game.firstPointsLevel * pow(Game.pointsLevelMultiplier, Double(n - (LL_Words.shared.minLetters + 1)))
 			
 			if score >= threshold {
 				
@@ -517,7 +466,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			}
 		}
 		
-		solutionWord = game.newWord(wordLength)
+		solutionWord = game?.newWord(wordLength)
 		
 		bannerView.refresh()
 	}
@@ -586,8 +535,7 @@ public class LL_Game_ViewController: LL_ViewController {
 									}
 									else {
 										
-										self?.game.reset()
-										self?.dismiss()
+										self?.fail()
 									}
 								}
 							}
@@ -600,18 +548,23 @@ public class LL_Game_ViewController: LL_ViewController {
 				LL_Alert_ViewController.present(LL_Error(String(key: "ads.network.error")))
 			}
 		}
-		alertController.addDismissButton { [weak self] _ in
+		let button = alertController.addDismissButton { [weak self] _ in
 			
-			self?.game.reset()
-			
-			self?.dismiss()
+			self?.fail()
 		}
+		button.style = .transparent
 		alertController.present()
 		
 		UIView.animation { [weak self] in
 			
 			self?.userPathLayer.opacity = 0.0
 		}
+	}
+	
+	public func fail() {
+		
+		game?.reset()
+		dismiss()
 	}
 	
 	public override func dismiss(_ completion: (() -> Void)? = nil) {
@@ -895,8 +848,6 @@ public class LL_Game_ViewController: LL_ViewController {
 	
 	public func showSolution() {
 		
-		showFirst = true
-		
 		let solutionPath = UIBezierPath()
 		guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout,
 			  let positions = grid?.positions else { return }
@@ -1030,7 +981,7 @@ public class LL_Game_ViewController: LL_ViewController {
 	
 	public func updateScore() {
 		
-		scoreButton.title = "\(game.score)"
+		scoreButton.title = "\(game?.score ?? 0)"
 		scoreButton.pulse()
 		
 		let bonus = UserDefaults.get(.userBonus) as? Int ?? 0
@@ -1140,7 +1091,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		if let solutionWord {
 			
-			game.words.append(solutionWord)
+			game?.words.append(solutionWord)
 			
 			if let bonus = grid?.bonus, usedIndexPaths.compactMap({
 				
@@ -1196,7 +1147,6 @@ extension LL_Game_ViewController : UICollectionViewDelegate, UICollectionViewDat
 				
 				let state = IndexPath(row: row, section: col) == self?.grid?.bonus
 				cell.letter = state ? "" : String(grid[row][col])
-				cell.isFirst = self?.showFirst ?? false && grid[row][col].uppercased() == self?.solutionWord?.first?.uppercased()
 				cell.isBonus = state
 			}
 		}

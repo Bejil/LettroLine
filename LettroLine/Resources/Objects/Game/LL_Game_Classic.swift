@@ -1,5 +1,5 @@
 //
-//  LL_Classic_Game.swift
+//  LL_Game_Classic.swift
 //  LettroLine
 //
 //  Created by BLIN Michael on 10/03/2025.
@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-public class LL_Classic_Game: LL_Game {
+public class LL_Game_Classic: LL_Game {
 	
 	public struct FirebaseObject : Codable {
 		
@@ -60,7 +60,7 @@ public class LL_Classic_Game: LL_Game {
 		}
 	}
 	
-	public static func getAll(_ completion: (([LL_TimeTrial_Game.FirebaseObject]?) -> Void)?) {
+	public static func getAll(_ completion: (([LL_Challenges_TimeTrial_Game.FirebaseObject]?) -> Void)?) {
 		
 		let collectionRef = Firestore.firestore().collection("classicScores")
 		
@@ -68,7 +68,7 @@ public class LL_Classic_Game: LL_Game {
 			
 			let objects = snapshot?.documents.compactMap({ document in
 				
-				return try? document.data(as: LL_TimeTrial_Game.FirebaseObject.self)
+				return try? document.data(as: LL_Challenges_TimeTrial_Game.FirebaseObject.self)
 				
 			}).sorted(by: {
 				

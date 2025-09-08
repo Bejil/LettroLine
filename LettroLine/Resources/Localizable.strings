@@ -38,37 +38,42 @@
 "menu.classic.button.subtitle" = "Meilleur score: ";
 "menu.classic.new.alert.title" = "Attention";
 "menu.classic.new.alert.content" = "Si tu recommences une nouvelle partie du perdra tes progrès précédents.";
-"menu.timeTrial.button.title" = "Contre la montre";
-"menu.timeTrial.button.subtitle" = "Meilleur score: ";
+"menu.story.button" = "Histoires";
 "menu.challenges.button" = "Challenges";
 "menu.challenges.button.subtitle" = "Meilleur score: ";
 "menu.challenges.alert.title" = "Challenges";
-"menu.challenges.alert.content" = "Un mode de jeux avec des contraintes pour plus de défis";
-"menu.challenges.alert.button.moveLimit" = "Mouvements limités";
-"menu.challenges.alert.button.noLift" = "Tracé continu";
+"menu.challenges.alert.button.timeTrial" = "Chrono";
+"menu.challenges.alert.timeTrial.label" = "Finis le niveau avant la fin du temps imparti !";
+"menu.challenges.alert.button.moveLimit" = "Coups";
+"menu.challenges.alert.moveLimit.label" = "Garde un œil sur tes coups : ils sont comptés !";
+"menu.challenges.alert.button.noLift" = "Continu";
+"menu.challenges.alert.noLift.label" = "Trace sans jamais lever ton doigt, sinon c’est perdu !";
 "menu.ranks.button" = "Classements";
+"menu.ads.button" = "Marre des pubs ?";
 
-//MARK: - Settings
-"settings.button" = "Réglages";
-"settings.alert.title" = "Réglages";
-"settings.alert.main.title" = "Général";
-"settings.alert.name.button.title" = "Votre pseudo";
-"settings.alert.audio.music.button.title" = "Musique";
-"settings.alert.audio.music.button.subtitle.on" = "Activée";
-"settings.alert.audio.music.button.subtitle.off" = "Désactivée";
-"settings.alert.audio.sounds.button.title" = "Sons";
-"settings.alert.audio.sounds.button.subtitle.on" = "Activés";
-"settings.alert.audio.sounds.button.subtitle.off" = "Désactivés";
-"settings.alert.vibrations.button.title" = "Vibrations";
-"settings.alert.vibrations.button.subtitle.on" = "Activées";
-"settings.alert.vibrations.button.subtitle.off" = "Désactivées";
-"settings.alert.ads.title" = "Publicités";
-"settings.alert.ads.button" = "Marre des pubs ?";
+//MARK: - Story
+"story.title" = "Histoires";
+"story.chapters" = "chapitres";
+"story.finish.button" = "Terminer";
+"story.continue.button" = "Chapitre suivant";
+"story.continue.button.title" = "Continuer";
+"story.read.button.title" = "Lire";
+"story.continue.button.subtitle.chapter" = "Chapitre";
+"story.continue.button.subtitle.word" = "Mot";
+"story.start.button" = "Recommencer";
+"story.section.started" = "En cours";
+"story.section.notStarted" = "Nouvelles";
+"story.section.finished" = "Terminées";
+"story.read.chapter" = "Chapitre";
+"story.read.continue.button" = "Continuer";
+"story.read.finish.button" = "Terminer";
 
 //MARK: - Ranks
 "ranks.title" = "Classements";
 "ranks.classic" = "Classique";
-"ranks.timetrial" = "Contre la montre";
+"ranks.challenges.timetrial" = "Chrono";
+"ranks.challenges.moveLimit" = "Coups";
+"ranks.challenges.noLift" = "Continu";
 "ranks.anonymous" = "Anonyme";
 "ranks.points" = "points";
 
@@ -116,10 +121,7 @@
 "game.timeTrial.tutorial.end.newBestScore.on" = "Tu as battu ton record ! Continue sur cette lancée, le meilleur reste à venir...";
 "game.timeTrial.tutorial.end.newBestScore.off" = "Tu n'as pas battu ton record cette fois-ci. La prochaine fois peut être ?";
 "game.timeTrial.tutorial.end.button" = "Terminer";
-"game.timeTrial.close.alert.title" = "Attention";
-"game.timeTrial.close.alert.content" = "Si tu quittes le jeu maintenant, tu perdras ta progression";
 "game.score.subtitle" = "Nouveau record";
-"game.words.alert.title" = "Historique";
 "game.help" = "Aide";
 "game.help.alert.title" = "Un peu d'aide ?";
 "game.help.alert.text" = "Veux-tu utiliser un bonus pour afficher la solution ?";
@@ -177,7 +179,7 @@
 "rewards.alert.title" = "Récompense";
 "rewards.alert.success.label" = "Félicitations ! Tu as rempli tes 3 objectifs quotidiens.";
 "rewards.alert.success.button" = "Récupérer 3 bonus";
-"rewards.alert.already.label" = "Tu as déjà récupérer tes bonus aujourd'hui. Reviens demain !";
+"rewards.alert.already.label" = "Tu as déjà récupéré tes bonus aujourd'hui. Reviens demain !";
 "rewards.alert.default.label" = "Pour récupérer 3 bonus quotidiennement tu dois remplir ces 3 objectifs";
 "rewards.alert.default.button.0" = "Te connecter au jeu";
 "rewards.alert.default.button.1" = "Compléter un mot";

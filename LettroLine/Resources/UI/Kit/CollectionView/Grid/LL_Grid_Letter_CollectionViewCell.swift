@@ -18,10 +18,10 @@ public class LL_Grid_Letter_CollectionViewCell : LL_CollectionViewCell {
 		
 		didSet {
 			
-			label.text = letter
+			label.letter = letter
 		}
 	}
-	private lazy var label:LL_Letter_Label = .init()
+	private lazy var label:LL_Letter_View = .init()
 	public override var isSelected: Bool {
 		
 		didSet {
@@ -33,15 +33,6 @@ public class LL_Grid_Letter_CollectionViewCell : LL_CollectionViewCell {
 			}
 			
 			label.isSelected = isSelected
-		}
-	}
-	public var isFirst:Bool = false {
-		
-		didSet {
-			
-			label.isFirst = isFirst
-			
-			startTimers()
 		}
 	}
 	public var isBonus:Bool = false {
@@ -94,14 +85,6 @@ public class LL_Grid_Letter_CollectionViewCell : LL_CollectionViewCell {
 	public func startTimers() {
 		
 		resetTimers()
-		
-		if isFirst {
-			
-			firstTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true, block: { [weak self] _ in
-				
-				self?.pulse(Colors.Tertiary)
-			})
-		}
 		
 		if isBonus {
 			
