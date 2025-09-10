@@ -14,6 +14,7 @@ public class LL_Button : UIButton {
 		case primary
 		case secondary
 		case tertiary
+		case navigation
 	}
 	
 	public enum LLButtonStyle {
@@ -25,7 +26,17 @@ public class LL_Button : UIButton {
 	
 	// MARK: - Properties
 	public var type: LLButtonType = .primary {
-		didSet { updateAppearance() }
+		didSet {
+			
+			if type == .navigation {
+				
+				style = .transparent
+			}
+			else {
+				
+				updateAppearance()
+			}
+		}
 	}
 	
 	public var style: LLButtonStyle = .solid {
@@ -289,6 +300,11 @@ public class LL_Button : UIButton {
 		// Configuration de l'ombre
 		layer.shadowColor = colors.background.cgColor
 		
+		if type == .navigation {
+			
+			titleFont = Fonts.Navigation.Button
+		}
+		
 		updateContent()
 	}
 	
@@ -319,6 +335,13 @@ public class LL_Button : UIButton {
 		configuration?.contentInsets = .init(UI.Margins)
 		configuration?.titleAlignment = .center
 		contentHorizontalAlignment = .center
+		
+		if type == .navigation {
+			
+			snp.removeConstraints()
+			configuration?.contentInsets = .zero
+			configuration?.imagePadding = UI.Margins/3
+		}
 	}
 	
 	// MARK: - Color Management
@@ -330,13 +353,15 @@ public class LL_Button : UIButton {
 	}
 	
 	private func getColorsForTypeAndStyle() -> ButtonColors {
+		
 		let baseColor = getBaseColorForType()
+		let textColor = getTextColorForType()
 		
 		switch style {
 		case .solid:
 			return ButtonColors(
 				background: baseColor,
-				text: getTextColorForType(),
+				text: textColor,
 				borderLight: baseColor.withAlphaComponent(0.8),
 				borderDark: baseColor.withAlphaComponent(1.2)
 			)
@@ -344,7 +369,7 @@ public class LL_Button : UIButton {
 		case .tinted:
 			return ButtonColors(
 				background: baseColor.withAlphaComponent(0.75),
-				text: .white,
+				text: textColor,
 				borderLight: baseColor.withAlphaComponent(0.25),
 				borderDark: baseColor.withAlphaComponent(0.25)
 			)
@@ -352,7 +377,7 @@ public class LL_Button : UIButton {
 		case .transparent:
 			return ButtonColors(
 				background: .clear,
-				text: baseColor,
+				text: textColor,
 				borderLight: baseColor.withAlphaComponent(0.8),
 				borderDark: baseColor.withAlphaComponent(1.2)
 			)
@@ -360,7 +385,7 @@ public class LL_Button : UIButton {
 		case .bordered:
 			return ButtonColors(
 				background: .clear,
-				text: baseColor,
+				text: textColor,
 				borderLight: baseColor.withAlphaComponent(0.8),
 				borderDark: baseColor.withAlphaComponent(1.2)
 			)
@@ -375,6 +400,8 @@ public class LL_Button : UIButton {
 			return Colors.Button.Secondary.Background
 		case .tertiary:
 			return Colors.Button.Tertiary.Background
+		case .navigation:
+			return Colors.Button.Navigation.Background
 		}
 	}
 	
@@ -386,6 +413,8 @@ public class LL_Button : UIButton {
 			return Colors.Button.Secondary.Content
 		case .tertiary:
 			return Colors.Button.Tertiary.Content
+		case .navigation:
+			return Colors.Button.Navigation.Content
 		}
 	}
 }

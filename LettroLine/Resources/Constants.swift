@@ -83,10 +83,10 @@ public struct Colors {
 			public static let Content:UIColor = UIColor(named: "ButtonDeleteContent")!
 		}
 		
-		public struct Text {
+		public struct Navigation {
 			
 			public static let Background:UIColor = UIColor(named: "ButtonTextBackground")!
-			public static let Content:UIColor = Colors.Button.Primary.Background
+			public static let Content:UIColor = UIColor(named: "ButtonTextContent")!
 		}
 	}
 	
@@ -118,7 +118,7 @@ public struct Fonts {
 			public static let Small:UIFont = UIFont(name: Name.Black, size: Fonts.Size+12)!
 		}
 		
-		public static let Button:UIFont = UIFont(name: Name.Bold, size: Fonts.Size)!
+		public static let Button:UIFont = UIFont(name: Name.Black, size: Fonts.Size)!
 	}
 	
 	public struct Content {

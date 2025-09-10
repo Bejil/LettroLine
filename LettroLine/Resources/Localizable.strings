@@ -49,7 +49,7 @@
 "menu.challenges.alert.button.noLift" = "Continu";
 "menu.challenges.alert.noLift.label" = "Trace sans jamais lever ton doigt, sinon c’est perdu !";
 "menu.ranks.button" = "Classements";
-"menu.ads.button" = "Marre des pubs ?";
+"menu.ads.button" = "Marre des publicités 🤯 ?";
 
 //MARK: - Story
 "story.title" = "Histoires";
@@ -129,15 +129,6 @@
 "game.help.alert.content.1" = "Mais tu peux regarder une publicité pour en obtenir un et la voir";
 "game.help.alert.button.title" = "Voir une publicité";
 "game.help.alert.button.subtitle" = "et afficher la solution";
-"game.settings.sounds" = "Sons";
-"game.settings.sounds.on" = "Activés";
-"game.settings.sounds.off" = "Désactivés";
-"game.settings.music" = "Musique";
-"game.settings.music.on" = "Activée";
-"game.settings.music.off" = "Désactivée";
-"game.settings.vibrations" = "Vibrations";
-"game.settings.vibrations.on" = "Activées";
-"game.settings.vibrations.off" = "Désactivées";
 "game.fail.alert.title" = "Raté !";
 "game.fail.alert.content" = "Tu peux continuer à jouer après une publicité !";
 "game.fail.alert.button" = "Regarder";
@@ -150,6 +141,18 @@
 "game.challenges.noLift.title" = "Tracé continu";
 "game.challenges.close.alert.title" = "Attention";
 "game.challenges.close.alert.content" = "Si tu quittes le jeu maintenant, tu perdras ta progression";
+
+//MARK: - Settings
+"settings.button" = "Réglages";
+"settings.sounds" = "Sons";
+"settings.sounds.on" = "Activés";
+"settings.sounds.off" = "Désactivés";
+"settings.music" = "Musique";
+"settings.music.on" = "Activée";
+"settings.music.off" = "Désactivée";
+"settings.vibrations" = "Vibrations";
+"settings.vibrations.on" = "Activées";
+"settings.vibrations.off" = "Désactivées";
 
 //MARK: - InAppPurchase
 "inAppPurchase.purchase.alert.buy.button" = "Premium";
