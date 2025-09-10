@@ -332,7 +332,7 @@ public class LL_Game_ViewController: LL_ViewController {
 	public lazy var contentStackView:UIStackView = {
 		
 		$0.axis = .vertical
-		$0.spacing = 3*UI.Margins
+		$0.spacing = 2*UI.Margins
 		$0.addArrangedSubview(scoreStackView)
 		
 		let wordView:UIView = .init()
@@ -342,11 +342,15 @@ public class LL_Game_ViewController: LL_ViewController {
 		wordStackView.snp.makeConstraints { make in
 			make.edges.equalToSuperview().inset(UI.Margins)
 		}
-		
 		$0.addArrangedSubview(wordView)
 		
 		$0.addArrangedSubview(gridView)
-		$0.addArrangedSubview(.init())
+		
+		let separatorView:UIView = .init()
+		separatorView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+		separatorView.setContentHuggingPriority(.defaultLow, for: .vertical)
+		$0.addArrangedSubview(separatorView)
+		
 		$0.addArrangedSubview(bannerView)
 		
 		return $0
@@ -360,7 +364,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		isModal = true
 		
-		navigationItem.rightBarButtonItem = LL_Settings_BarButtonItem()
+		navigationItem.rightBarButtonItem = .init(customView: LL_Settings_Button())
 		
 		view.addSubview(contentStackView)
 		contentStackView.snp.makeConstraints { make in

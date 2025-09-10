@@ -154,26 +154,6 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		$0.addArrangedSubview(storyButton)
 		$0.addArrangedSubview(challengesGameStartButton)
-		$0.setCustomSpacing(UI.Margins*3, after: challengesGameStartButton)
-		
-		let ranksButton:LL_Button = .init(String(key: "menu.ranks.button")) { [weak self] _ in
-			
-			UI.MainController.present(LL_NavigationController(rootViewController: LL_Ranks_ViewController()), animated: true)
-		}
-		ranksButton.style = .tinted
-		ranksButton.image = UIImage(systemName: "trophy.fill")
-		$0.addArrangedSubview(ranksButton)
-		
-		if LL_Ads.shared.shouldDisplayAd {
-			
-			let adsButton:LL_Button = .init(String(key: "menu.ads.button")) { [weak self] _ in
-				
-				LL_InAppPurchase.shared.promptInAppPurchaseAlert(withCapping: false)
-			}
-			adsButton.type = .primary
-			adsButton.image = UIImage(systemName: "rectangle.stack.badge.minus")
-			$0.addArrangedSubview(adsButton)
-		}
 		
 		return $0
 		
@@ -183,17 +163,42 @@ public class LL_Menu_ViewController: LL_ViewController {
 		
 		super.loadView()
 		
-		navigationItem.rightBarButtonItem = LL_Settings_BarButtonItem()
+		let ranksButton:LL_Button = .init(String(key: "menu.ranks.button")) { _ in
+			
+			UI.MainController.present(LL_NavigationController(rootViewController: LL_Ranks_ViewController()), animated: true)
+		}
+		ranksButton.image = UIImage(systemName: "trophy.fill")?.applyingSymbolConfiguration(.init(scale: .medium))
+		ranksButton.type = .navigation
+		navigationItem.leftBarButtonItem = .init(customView: ranksButton)
 		
-		let menuStackView:UIStackView = .init(arrangedSubviews: [stackView])
-		menuStackView.axis = .horizontal
-		menuStackView.alignment = .center
+		navigationItem.rightBarButtonItem = .init(customView: LL_Settings_Button())
 		
-		let contentStackView:UIStackView = .init(arrangedSubviews: [menuStackView,bannerView])
-		contentStackView.spacing = 2*UI.Margins
+		let scrollView:LL_ScrollView = .init()
+		scrollView.showsVerticalScrollIndicator = false
+		scrollView.isCentered = true
+		scrollView.addSubview(stackView)
+		stackView.snp.makeConstraints { make in
+			make.top.bottom.left.equalToSuperview()
+			make.right.width.equalToSuperview().inset(UI.Margins/5)
+		}
+		
+		let contentStackView:UIStackView = .init(arrangedSubviews: [scrollView])
+		contentStackView.spacing = UI.Margins
 		contentStackView.axis = .vertical
 		contentStackView.isLayoutMarginsRelativeArrangement = true
 		contentStackView.layoutMargins = .init(horizontal: 3*UI.Margins)
+		
+		if LL_Ads.shared.shouldDisplayAd {
+			
+			let adsButton:LL_Button = .init(String(key: "menu.ads.button")) { _ in
+				
+				LL_InAppPurchase.shared.promptInAppPurchaseAlert(withCapping: false)
+			}
+			adsButton.type = .navigation
+			contentStackView.addArrangedSubview(adsButton)
+		}
+		
+		contentStackView.addArrangedSubview(bannerView)
 		
 		let stackView:UIStackView = .init(arrangedSubviews: [contentStackView,LL_User_StackView()])
 		stackView.spacing = 2*UI.Margins

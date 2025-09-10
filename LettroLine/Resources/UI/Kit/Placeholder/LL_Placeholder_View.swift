@@ -10,54 +10,6 @@ import SnapKit
 
 public class LL_Placeholder_View: UIView {
 	
-	private class ScrollView: UIScrollView {
-		
-		public var isCentered:Bool = true {
-			
-			didSet {
-				
-				updateContentInset()
-			}
-		}
-		
-		public override var bounds: CGRect {
-			
-			didSet {
-				
-				updateContentInset()
-			}
-		}
-		
-		public override var contentSize: CGSize {
-			
-			didSet {
-				
-				updateContentInset()
-			}
-		}
-		
-		private func updateContentInset() {
-			
-			if isCentered {
-				
-				var top = CGFloat(0)
-				var left = CGFloat(0)
-				
-				if contentSize.width < bounds.width {
-					
-					left = (bounds.width - contentSize.width) / 2
-				}
-				
-				if contentSize.height < bounds.height {
-					
-					top = (bounds.height - contentSize.height) / 2
-				}
-				
-				contentInset = UIEdgeInsets(top: top, left: left, bottom: top, right: left)
-			}
-		}
-	}
-	
 	public var isCentered:Bool = true {
 		
 		didSet {
@@ -73,7 +25,7 @@ public class LL_Placeholder_View: UIView {
 		case Error
 	}
 	public var style:Style?
-	private lazy var scrollView:ScrollView = {
+	private lazy var scrollView:LL_ScrollView = {
 		
 		$0.clipsToBounds = false
 		$0.addSubview(contentStackView)
@@ -82,7 +34,7 @@ public class LL_Placeholder_View: UIView {
 		}
 		return $0
 		
-	}(ScrollView())
+	}(LL_ScrollView())
 	public var title:String? {
 		
 		didSet {
