@@ -752,7 +752,7 @@ public class LL_Game_ViewController: LL_ViewController {
 	
 	private func lineSegmentsIntersect(_ p1: CGPoint, _ p2: CGPoint, _ q1: CGPoint, _ q2: CGPoint) -> Bool {
 		
-		let epsilon: CGFloat = 0.001
+		let epsilon: CGFloat = 0.01 // Epsilon augmenté pour plus de tolérance
 		let r = CGPoint(x: p2.x - p1.x, y: p2.y - p1.y)
 		let s = CGPoint(x: q2.x - q1.x, y: q2.y - q1.y)
 		
@@ -774,7 +774,8 @@ public class LL_Game_ViewController: LL_ViewController {
 				let tmin = min(t0, t1)
 				let tmax = max(t0, t1)
 				
-				if tmax < 0 || tmin > 1 {
+				// Tolérance augmentée pour les segments colinéaires
+				if tmax < -epsilon || tmin > 1 + epsilon {
 					
 					return false
 				}
@@ -790,6 +791,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			let t = (qp.x * s.y - qp.y * s.x) / rxs
 			let u = (qp.x * r.y - qp.y * r.x) / rxs
 			
+			// Tolérance augmentée pour les intersections
 			return (t >= -epsilon && t <= 1 + epsilon) && (u >= -epsilon && u <= 1 + epsilon)
 		}
 	}
@@ -798,9 +800,10 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		var pts = path.flattenedPoints
 		
-		guard pts.count > 1 else { return false }
+		guard pts.count > 3 else { return false } // Besoin d'au moins 4 points pour une intersection
 		
-		let minDistance: CGFloat = 5.0
+		// Simplification plus agressive pour réduire les faux positifs
+		let minDistance: CGFloat = 8.0 // Distance minimale augmentée
 		var simplified = [CGPoint]()
 		simplified.append(pts.first ?? .zero)
 		
@@ -816,33 +819,39 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		pts = simplified
 		
-		guard pts.count >= 2 else { return false }
+		guard pts.count >= 4 else { return false } // Au moins 4 points pour une intersection
 		
 		let segmentCount = pts.count - 1
 		
+		// Vérifier seulement les segments non adjacents avec une marge de sécurité
 		for i in 0..<segmentCount {
 			
 			let p1 = pts[i]
 			let p2 = pts[i + 1]
 			
-			for j in i + 1..<segmentCount {
+			// Ignorer les segments trop proches (évite les faux positifs sur les mouvements obliques)
+			let startJ = i + 3
+			if startJ < segmentCount {
+				for j in startJ..<segmentCount { // Sauter au moins 2 segments
 				
 				let q1 = pts[j]
 				let q2 = pts[j + 1]
 				
-				if j == i + 1 {
-					
-					if abs(p1.x - q2.x) < 0.001 && abs(p1.y - q2.y) < 0.001 && abs(p2.x - q1.x) < 0.001 && abs(p2.y - q1.y) < 0.001 {
-						
-						return true
-					}
-					
+				// Vérifier si les segments sont suffisamment éloignés
+				let minDistBetweenSegments = min(
+					min(hypot(p1.x - q1.x, p1.y - q1.y), hypot(p1.x - q2.x, p1.y - q2.y)),
+					min(hypot(p2.x - q1.x, p2.y - q1.y), hypot(p2.x - q2.x, p2.y - q2.y))
+				)
+				
+				// Si les segments sont trop proches, ignorer cette vérification
+				if minDistBetweenSegments < 15.0 {
 					continue
 				}
 				
-				if lineSegmentsIntersect(p1, p2, q1, q2) {
-					
-					return true
+					if lineSegmentsIntersect(p1, p2, q1, q2) {
+						
+						return true
+					}
 				}
 			}
 		}
