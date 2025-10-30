@@ -25,7 +25,7 @@ public class LL_Ads : NSObject {
 	
 	public var shouldDisplayAd:Bool {
 		
-		return (UserDefaults.get(.shouldDisplayAds) as? Bool ?? true) && UMPConsentInformation.sharedInstance.consentStatus == .obtained
+		return (UserDefaults.get(.shouldDisplayAds) as? Bool ?? true) && UMPConsentInformation.sharedInstance.consentStatus == .obtained && !UIApplication.isDebug
 	}
 	
 	public func start() {

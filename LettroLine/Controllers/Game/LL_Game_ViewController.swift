@@ -1032,7 +1032,14 @@ public class LL_Game_ViewController: LL_ViewController {
 					userPath.addLine(to: center)
 				}
 				
+				let pathAnimation = CABasicAnimation(keyPath: "path")
+				pathAnimation.fromValue = userPathLayer.path
+				pathAnimation.toValue = userPath.cgPath
+				pathAnimation.duration = 0.1
+				pathAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+				
 				userPathLayer.path = userPath.cgPath
+				userPathLayer.add(pathAnimation, forKey: "pathUpdate")
 				
 				let row = indexPath.item / columns
 				let col = indexPath.item % columns

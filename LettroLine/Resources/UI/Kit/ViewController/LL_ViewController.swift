@@ -92,7 +92,7 @@ public class LL_ViewController : UIViewController {
 					make.centerY.equalTo(touchLocation.y)
 					make.size.equalTo(2*UI.Margins)
 				}
-				view.pulse(Colors.Primary) {
+				view.pulse(.white) {
 					
 					view.removeFromSuperview()
 				}
