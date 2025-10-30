@@ -498,7 +498,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		isGameOver = true
 		
-		LL_Audio.shared.play(.error)
+		LL_Audio.shared.playSound(.Error)
 		UIApplication.feedBack(.Error)
 		
 		pause()
@@ -1015,7 +1015,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			
 			if !cell.isSelected && cell.letter?.lowercased() != String(expectedLetter) && usedIndexPaths.last != indexPath {
 				
-				LL_Audio.shared.play(.button)
+				LL_Audio.shared.playSound(.Button)
 				UIApplication.feedBack(.Off)
 			}
 			
@@ -1048,7 +1048,7 @@ public class LL_Game_ViewController: LL_ViewController {
 					
 				}).contains(bonus) && canAddMorePoint {
 					
-					LL_Audio.shared.play(.bonus)
+					LL_Audio.shared.playSound(.Bonus)
 					UIApplication.feedBack(.Success)
 				}
 				
@@ -1097,7 +1097,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		panGestureRecognizer.isEnabled = false
 		
-		LL_Audio.shared.play(.success)
+		LL_Audio.shared.playSound(.Success)
 		UIApplication.feedBack(.Success)
 		
 		LL_Confettis.start()

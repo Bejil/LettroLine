@@ -1,73 +1,87 @@
 //
 //  LL_Audio.swift
-//  LettroLine
+//  LetttroLine
 //
-//  Created by BLIN Michael on 23/06/2022.
+//  Created by BLIN Michael on 09/10/2025.
 //
 
-import Foundation
-import SwiftySound
+import AVFoundation
 
 public class LL_Audio : NSObject {
 	
-	public enum Keys : String, CaseIterable {
+	public enum Sounds : String {
 		
-		case success = "Success"
-		case error = "Error"
-		case button = "Button"
-		case tap = "Tap"
-		case bonus = "Bonus"
+		case Success = "Success"
+		case Error = "Error"
+		case Button = "Button"
+		case Tap = "Tap"
+		case Bonus = "Bonus"
 	}
 	
-	private var currentMusic:Sound?
-	public static let shared:LL_Audio = .init()
-	
-	public override init() {
-		
-		super.init()
-		
-		Sound.category = .playback
-	}
-	
+	public static var shared:LL_Audio = .init()
+	private var soundPlayer:AVAudioPlayer?
+	private var musicPlayer:AVAudioPlayer?
 	public var isSoundsEnabled:Bool {
 		
 		return (UserDefaults.get(.soundsEnabled) as? Bool) ?? true
 	}
-	
 	public var isMusicEnabled:Bool {
 		
 		return (UserDefaults.get(.musicEnabled) as? Bool) ?? true
 	}
 	
-	public func stopMusic() {
+	public func playSound(_ sound:Sounds) {
 		
-		currentMusic?.stop()
+		stopSound()
+		
+		if isSoundsEnabled, let path = Bundle.main.path(forResource: sound.rawValue, ofType: "mp3") {
+			
+			let url = URL(fileURLWithPath: path)
+			
+			try?AVAudioSession.sharedInstance().setCategory(.playback)
+			try?AVAudioSession.sharedInstance().setActive(true)
+			
+			try?soundPlayer = AVAudioPlayer(contentsOf: url)
+			soundPlayer?.prepareToPlay()
+			soundPlayer?.play()
+		}
+	}
+	
+	private func stopSound() {
+		
+		soundPlayer?.stop()
+		soundPlayer = nil
 	}
 	
 	public func playMusic() {
 		
-		if isMusicEnabled {
+		stopMusic()
+		
+		if isMusicEnabled, let index = (0...2).randomElement(), let path = Bundle.main.path(forResource: "music_\(index)", ofType: "mp3") {
 			
-			DispatchQueue.global(qos: .background).async {
-				
-				if let url = Bundle.main.url(forResource: "\(Int.random(in: 0...2))", withExtension: "mp3") {
-					
-					let music = Sound(url: url)
-					self.currentMusic = music
-					music?.play(numberOfLoops: -1)
-				}
-			}
+			let url = URL(fileURLWithPath: path)
+			
+			try?AVAudioSession.sharedInstance().setCategory(.playback)
+			try?AVAudioSession.sharedInstance().setActive(true)
+			
+			try?musicPlayer = AVAudioPlayer(contentsOf: url)
+			musicPlayer?.delegate = self
+			musicPlayer?.prepareToPlay()
+			musicPlayer?.play()
 		}
 	}
 	
-	public func play(_ sound: Keys) {
+	public func stopMusic() {
 		
-		if isSoundsEnabled {
-			
-			DispatchQueue.global(qos: .background).async {
-				
-				Sound.play(file: "\(sound.rawValue).mp3")
-			}
-		}
+		musicPlayer?.stop()
+		musicPlayer = nil
+	}
+}
+
+extension LL_Audio : AVAudioPlayerDelegate {
+	
+	public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+		
+		playMusic()
 	}
 }

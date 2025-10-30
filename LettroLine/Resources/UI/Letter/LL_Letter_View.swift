@@ -27,7 +27,7 @@ public class LL_Letter_View : UIView {
 		$0.textColor = .white
 		$0.font = Fonts.Letter
 		$0.adjustsFontSizeToFitWidth = true
-		$0.minimumScaleFactor = 0.4
+		$0.minimumScaleFactor = 0.25
 		$0.textAlignment = .center
 		$0.layer.shadowOffset = .zero
 		$0.layer.shadowRadius = 1.5*UI.Margins
@@ -150,12 +150,16 @@ public class LL_Letter_View : UIView {
 		
 		addSubview(label)
 		label.snp.makeConstraints { make in
-			make.edges.equalToSuperview().inset(UI.Margins)
+			make.edges.equalToSuperview().inset(UI.Margins/2)
 		}
 		
 		addSubview(bonusImageView)
 		bonusImageView.snp.makeConstraints { make in
 			make.edges.equalToSuperview().inset(UI.Margins)
+		}
+		
+		snp.makeConstraints { make in
+			make.width.equalTo(snp.height)
 		}
 		
 		defer {

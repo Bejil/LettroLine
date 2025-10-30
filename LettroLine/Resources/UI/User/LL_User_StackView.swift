@@ -72,7 +72,7 @@ public class LL_User_StackView : UIStackView {
 		$0.addGestureRecognizer(UITapGestureRecognizer(block: { _ in
 			
 			UIApplication.feedBack(.On)
-			LL_Audio.shared.play(.button)
+			LL_Audio.shared.playSound(.Button)
 			
 			let alertController:LL_Alert_ViewController = .init()
 			alertController.title = String(key: "rewards.alert.title")
@@ -176,7 +176,7 @@ public class LL_User_StackView : UIStackView {
 		button.addAction(.init(handler: { _ in
 			
 			UIApplication.feedBack(.On)
-			LL_Audio.shared.play(.button)
+			LL_Audio.shared.playSound(.Button)
 			
 			LL_User_Name_Alert_ViewController().present()
 			
