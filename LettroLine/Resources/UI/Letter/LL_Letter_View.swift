@@ -11,6 +11,7 @@ public class LL_Letter_View : UIView {
 	
 	public var isBonus:Bool = false {
 		didSet {
+			updateColor()
 			bonusImageView.isHidden = !isBonus
 		}
 	}
@@ -180,11 +181,11 @@ public class LL_Letter_View : UIView {
 		
 		UIView.animation() {
 			
-			let state = self.isSelected ?? false
+			let state = self.isSelected ?? false || self.isBonus
 			self.gradientBackgroundLayer.isHidden = state
 			self.gradientBorderLayer.isHidden = state
 			
-			self.backgroundColor = self.isSelected ?? false ? Colors.Letter.Selected : .clear
+			self.backgroundColor = self.isSelected ?? false ? Colors.Letter.Selected : self.isBonus ? Colors.Tertiary : .clear
 		}
 	}
 }

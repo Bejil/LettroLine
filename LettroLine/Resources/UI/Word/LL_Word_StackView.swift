@@ -17,25 +17,39 @@ public class LL_Word_StackView : UIStackView {
 			arrangedSubviews.forEach { $0.removeFromSuperview() }
 			
 			if let word {
+
+//				// Ajouter un spacer invisible au début pour centrer
+//				let leadingSpacer = UIView()
+//				leadingSpacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+//				leadingSpacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+//				addArrangedSubview(leadingSpacer)
+//				setCustomSpacing(0, after: leadingSpacer)
 				
-				word.forEach({ _ in
+				for i in 0..<word.count {
 					
 					let letterLabel: LL_Letter_View = .init()
 					letterLabel.isSelected = isPrimary
+//					letterLabel.setContentHuggingPriority(.required, for: .horizontal)
+//					letterLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
 					addArrangedSubview(letterLabel)
-				})
-				
-				let labels = arrangedSubviews.compactMap({ $0 as? LL_Letter_View })
-				
-				for i in 0..<labels.count {
 					
 					UIApplication.wait(0.3*Double(i)) {
-							
-						let label = labels[i]
+						
 						let index = word.index(word.startIndex, offsetBy: i)
-						label.letter = String(word[index])
+						letterLabel.letter = String(word[index])
+					}
+					
+					if i == word.count - 1 {
+						
+						setCustomSpacing(0, after: letterLabel)
 					}
 				}
+
+//				// Ajouter un spacer invisible à la fin pour centrer
+//				let trailingSpacer = UIView()
+//				trailingSpacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+//				trailingSpacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+//				addArrangedSubview(trailingSpacer)
 			}
 		}
 	}
@@ -47,7 +61,9 @@ public class LL_Word_StackView : UIStackView {
 		
 		axis = .horizontal
 		alignment = .center
+		distribution = .fill
 		spacing = UI.Margins/4
+		setContentHuggingPriority(.required, for: .horizontal)
 	}
 	
 	required init(coder: NSCoder) {
@@ -59,17 +75,21 @@ public class LL_Word_StackView : UIStackView {
 		
 		super.layoutSubviews()
 		
-		let ratio = CGFloat(adjustLetterSize ? word?.count ?? LL_Words.shared.maxLetters : LL_Words.shared.maxLetters)
+		let maxLetters = CGFloat(LL_Words.shared.maxLetters)
+		let numberOfSpacings = maxLetters - 1.0
 		
-		var size = (frame.size.width - ((ratio - 1.0) * spacing))/ratio
-		size = max(2.25 * UI.Margins, size)
+		var letterWidth = ((superview?.frame.size.width ?? 0) - (2*UI.Margins) - (numberOfSpacings * spacing)) / maxLetters
+//		letterWidth = max(2.25 * UI.Margins, letterWidth)
 		
-		if superview != nil && size > 0 {
+		if frame.size.width > 0 && letterWidth > 0 {
 			
-			arrangedSubviews.forEach {
+			let labels = arrangedSubviews.compactMap({ $0 as? LL_Letter_View })
+			
+			labels.forEach {
 				
 				$0.snp.remakeConstraints { make in
-					make.size.equalTo(size)
+					
+					make.size.equalTo(letterWidth)
 				}
 			}
 		}

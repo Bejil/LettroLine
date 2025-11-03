@@ -334,14 +334,21 @@ public class LL_Game_ViewController: LL_ViewController {
 		$0.spacing = 2*UI.Margins
 		$0.addArrangedSubview(scoreStackView)
 		
-		let wordView:UIView = .init()
-		wordView.backgroundColor = Colors.Background.View.Secondary
-		wordView.layer.cornerRadius = (4*UI.Margins)/2.5
-		wordView.addSubview(wordStackView)
-		wordStackView.snp.makeConstraints { make in
-			make.edges.equalToSuperview().inset(UI.Margins)
+		let testView:UIView = .init()
+		testView.backgroundColor = Colors.Background.View.Secondary
+		testView.layer.cornerRadius = (4*UI.Margins)/2.5
+		$0.addArrangedSubview(testView)
+		
+		testView.snp.makeConstraints { make in
+			make.width.equalToSuperview()
 		}
-		$0.addArrangedSubview(wordView)
+		
+		testView.addSubview(wordStackView)
+		wordStackView.snp.makeConstraints { make in
+			make.top.bottom.equalToSuperview().inset(UI.Margins)
+			make.centerX.equalToSuperview()
+			make.width.lessThanOrEqualToSuperview().inset(-2*UI.Margins)
+		}
 		
 		$0.addArrangedSubview(gridView)
 		
@@ -469,7 +476,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			}
 		}
 		
-		solutionWord = game?.newWord(8)
+		solutionWord = game?.newWord(wordLength)
 		
 		bannerView.refresh()
 	}
