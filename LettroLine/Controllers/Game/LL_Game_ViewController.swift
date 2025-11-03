@@ -220,7 +220,6 @@ public class LL_Game_ViewController: LL_ViewController {
 		case .began:
 			
 			self.hideSolution()
-				// Réinitialisation du tracé et des index utilisés
 			self.userPath.removeAllPoints()
 			self.usedIndexPaths.removeAll()
 			self.currentSolutionIndex = 0
@@ -335,14 +334,21 @@ public class LL_Game_ViewController: LL_ViewController {
 		$0.spacing = 2*UI.Margins
 		$0.addArrangedSubview(scoreStackView)
 		
-		let wordView:UIView = .init()
-		wordView.backgroundColor = Colors.Background.View.Secondary
-		wordView.layer.cornerRadius = (4*UI.Margins)/2.5
-		wordView.addSubview(wordStackView)
-		wordStackView.snp.makeConstraints { make in
-			make.edges.equalToSuperview().inset(UI.Margins)
+		let testView:UIView = .init()
+		testView.backgroundColor = Colors.Background.View.Secondary
+		testView.layer.cornerRadius = (4*UI.Margins)/2.5
+		$0.addArrangedSubview(testView)
+		
+		testView.snp.makeConstraints { make in
+			make.width.equalToSuperview()
 		}
-		$0.addArrangedSubview(wordView)
+		
+		testView.addSubview(wordStackView)
+		wordStackView.snp.makeConstraints { make in
+			make.top.bottom.equalToSuperview().inset(UI.Margins)
+			make.centerX.equalToSuperview()
+			make.width.lessThanOrEqualToSuperview().inset(-2*UI.Margins)
+		}
 		
 		$0.addArrangedSubview(gridView)
 		
@@ -498,7 +504,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		isGameOver = true
 		
-		LL_Audio.shared.play(.error)
+		LL_Audio.shared.playSound(.Error)
 		UIApplication.feedBack(.Error)
 		
 		pause()
@@ -752,7 +758,7 @@ public class LL_Game_ViewController: LL_ViewController {
 	
 	private func lineSegmentsIntersect(_ p1: CGPoint, _ p2: CGPoint, _ q1: CGPoint, _ q2: CGPoint) -> Bool {
 		
-		let epsilon: CGFloat = 0.001
+		let epsilon: CGFloat = 0.01 // Epsilon augmenté pour plus de tolérance
 		let r = CGPoint(x: p2.x - p1.x, y: p2.y - p1.y)
 		let s = CGPoint(x: q2.x - q1.x, y: q2.y - q1.y)
 		
@@ -774,7 +780,8 @@ public class LL_Game_ViewController: LL_ViewController {
 				let tmin = min(t0, t1)
 				let tmax = max(t0, t1)
 				
-				if tmax < 0 || tmin > 1 {
+				// Tolérance augmentée pour les segments colinéaires
+				if tmax < -epsilon || tmin > 1 + epsilon {
 					
 					return false
 				}
@@ -790,6 +797,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			let t = (qp.x * s.y - qp.y * s.x) / rxs
 			let u = (qp.x * r.y - qp.y * r.x) / rxs
 			
+			// Tolérance augmentée pour les intersections
 			return (t >= -epsilon && t <= 1 + epsilon) && (u >= -epsilon && u <= 1 + epsilon)
 		}
 	}
@@ -798,9 +806,10 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		var pts = path.flattenedPoints
 		
-		guard pts.count > 1 else { return false }
+		guard pts.count > 3 else { return false } // Besoin d'au moins 4 points pour une intersection
 		
-		let minDistance: CGFloat = 5.0
+		// Simplification plus agressive pour réduire les faux positifs
+		let minDistance: CGFloat = 8.0 // Distance minimale augmentée
 		var simplified = [CGPoint]()
 		simplified.append(pts.first ?? .zero)
 		
@@ -816,33 +825,39 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		pts = simplified
 		
-		guard pts.count >= 2 else { return false }
+		guard pts.count >= 4 else { return false } // Au moins 4 points pour une intersection
 		
 		let segmentCount = pts.count - 1
 		
+		// Vérifier seulement les segments non adjacents avec une marge de sécurité
 		for i in 0..<segmentCount {
 			
 			let p1 = pts[i]
 			let p2 = pts[i + 1]
 			
-			for j in i + 1..<segmentCount {
+			// Ignorer les segments trop proches (évite les faux positifs sur les mouvements obliques)
+			let startJ = i + 3
+			if startJ < segmentCount {
+				for j in startJ..<segmentCount { // Sauter au moins 2 segments
 				
 				let q1 = pts[j]
 				let q2 = pts[j + 1]
 				
-				if j == i + 1 {
-					
-					if abs(p1.x - q2.x) < 0.001 && abs(p1.y - q2.y) < 0.001 && abs(p2.x - q1.x) < 0.001 && abs(p2.y - q1.y) < 0.001 {
-						
-						return true
-					}
-					
+				// Vérifier si les segments sont suffisamment éloignés
+				let minDistBetweenSegments = min(
+					min(hypot(p1.x - q1.x, p1.y - q1.y), hypot(p1.x - q2.x, p1.y - q2.y)),
+					min(hypot(p2.x - q1.x, p2.y - q1.y), hypot(p2.x - q2.x, p2.y - q2.y))
+				)
+				
+				// Si les segments sont trop proches, ignorer cette vérification
+				if minDistBetweenSegments < 15.0 {
 					continue
 				}
 				
-				if lineSegmentsIntersect(p1, p2, q1, q2) {
-					
-					return true
+					if lineSegmentsIntersect(p1, p2, q1, q2) {
+						
+						return true
+					}
 				}
 			}
 		}
@@ -1006,7 +1021,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			
 			if !cell.isSelected && cell.letter?.lowercased() != String(expectedLetter) && usedIndexPaths.last != indexPath {
 				
-				LL_Audio.shared.play(.button)
+				LL_Audio.shared.playSound(.Button)
 				UIApplication.feedBack(.Off)
 			}
 			
@@ -1023,7 +1038,14 @@ public class LL_Game_ViewController: LL_ViewController {
 					userPath.addLine(to: center)
 				}
 				
+				let pathAnimation = CABasicAnimation(keyPath: "path")
+				pathAnimation.fromValue = userPathLayer.path
+				pathAnimation.toValue = userPath.cgPath
+				pathAnimation.duration = 0.1
+				pathAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+				
 				userPathLayer.path = userPath.cgPath
+				userPathLayer.add(pathAnimation, forKey: "pathUpdate")
 				
 				let row = indexPath.item / columns
 				let col = indexPath.item % columns
@@ -1039,7 +1061,7 @@ public class LL_Game_ViewController: LL_ViewController {
 					
 				}).contains(bonus) && canAddMorePoint {
 					
-					LL_Audio.shared.play(.bonus)
+					LL_Audio.shared.playSound(.Bonus)
 					UIApplication.feedBack(.Success)
 				}
 				
@@ -1088,7 +1110,7 @@ public class LL_Game_ViewController: LL_ViewController {
 		
 		panGestureRecognizer.isEnabled = false
 		
-		LL_Audio.shared.play(.success)
+		LL_Audio.shared.playSound(.Success)
 		UIApplication.feedBack(.Success)
 		
 		LL_Confettis.start()

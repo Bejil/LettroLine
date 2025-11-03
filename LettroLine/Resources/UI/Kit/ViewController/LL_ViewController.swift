@@ -19,7 +19,7 @@ public class LL_ViewController : UIViewController {
 				navigationItem.leftBarButtonItem = .init(image: UIImage(systemName: "xmark"), primaryAction: .init(handler: { [weak self] _ in
 					
 					UIApplication.feedBack(.Off)
-					LL_Audio.shared.play(.button)
+					LL_Audio.shared.playSound(.Button)
 					
 					self?.close()
 				}))
@@ -92,7 +92,7 @@ public class LL_ViewController : UIViewController {
 					make.centerY.equalTo(touchLocation.y)
 					make.size.equalTo(2*UI.Margins)
 				}
-				view.pulse(Colors.Primary) {
+				view.pulse(.white) {
 					
 					view.removeFromSuperview()
 				}

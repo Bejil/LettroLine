@@ -206,7 +206,7 @@ extension LL_Story_Selection_ViewController: UICollectionViewDelegate {
 	public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 		
 		UIApplication.feedBack(.On)
-		LL_Audio.shared.play(.button)
+		LL_Audio.shared.playSound(.Button)
 		
 		var story: LL_Game_Story.Story?
 		var currentSection = 0

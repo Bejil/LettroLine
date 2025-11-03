@@ -11,6 +11,7 @@ public class LL_Letter_View : UIView {
 	
 	public var isBonus:Bool = false {
 		didSet {
+			updateColor()
 			bonusImageView.isHidden = !isBonus
 		}
 	}
@@ -27,7 +28,7 @@ public class LL_Letter_View : UIView {
 		$0.textColor = .white
 		$0.font = Fonts.Letter
 		$0.adjustsFontSizeToFitWidth = true
-		$0.minimumScaleFactor = 0.4
+		$0.minimumScaleFactor = 0.25
 		$0.textAlignment = .center
 		$0.layer.shadowOffset = .zero
 		$0.layer.shadowRadius = 1.5*UI.Margins
@@ -86,18 +87,7 @@ public class LL_Letter_View : UIView {
 	}(UIImageView(image: UIImage(systemName: "star.fill")))
 	private lazy var gradientBackgroundLayer:CAGradientLayer = {
 		
-		let pastelPalette: [(UIColor, UIColor)] = [
-			(UIColor(red: 1.0, green: 0.45, blue: 0.55, alpha: 1.0),
-			 UIColor(red: 1.0, green: 0.70, blue: 0.77, alpha: 1.0)),
-			(UIColor(red: 0.30, green: 0.65, blue: 1.0, alpha: 1.0),
-			 UIColor(red: 0.55, green: 0.80, blue: 1.0, alpha: 1.0)),
-			(UIColor(red: 0.35, green: 0.90, blue: 0.50, alpha: 1.0),
-			 UIColor(red: 0.60, green: 0.95, blue: 0.70, alpha: 1.0)),
-			(UIColor(red: 1.0, green: 0.80, blue: 0.25, alpha: 1.0),
-			 UIColor(red: 1.0, green: 0.90, blue: 0.50, alpha: 1.0))
-		]
-		
-		let chosen = pastelPalette.randomElement()!
+		let chosen = Colors.Letter.Colors.randomElement()!
 		
 		$0.colors = [chosen.0.cgColor, chosen.1.cgColor]
 		$0.startPoint = CGPoint(x: 0, y: 0)
@@ -150,12 +140,16 @@ public class LL_Letter_View : UIView {
 		
 		addSubview(label)
 		label.snp.makeConstraints { make in
-			make.edges.equalToSuperview().inset(UI.Margins)
+			make.edges.equalToSuperview().inset(UI.Margins/2)
 		}
 		
 		addSubview(bonusImageView)
 		bonusImageView.snp.makeConstraints { make in
 			make.edges.equalToSuperview().inset(UI.Margins)
+		}
+		
+		snp.makeConstraints { make in
+			make.width.equalTo(snp.height)
 		}
 		
 		defer {
@@ -187,11 +181,11 @@ public class LL_Letter_View : UIView {
 		
 		UIView.animation() {
 			
-			let state = self.isSelected ?? false
+			let state = self.isSelected ?? false || self.isBonus
 			self.gradientBackgroundLayer.isHidden = state
 			self.gradientBorderLayer.isHidden = state
 			
-			self.backgroundColor = self.isSelected ?? false ? Colors.Letter.Selected : .clear
+			self.backgroundColor = self.isSelected ?? false ? Colors.Letter.Selected : self.isBonus ? Colors.Tertiary : .clear
 		}
 	}
 }

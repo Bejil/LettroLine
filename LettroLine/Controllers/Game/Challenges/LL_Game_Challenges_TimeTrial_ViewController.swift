@@ -79,22 +79,22 @@ public class LL_Game_Challenges_TimeTrial_ViewController : LL_Game_Challenges_Vi
 				LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.start.0"), timeInterval: 2.0, closure: {
 					
 					UIApplication.feedBack(.On)
-					LL_Audio.shared.play(.button)
+					LL_Audio.shared.playSound(.Button)
 				}),
 				LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.start.1"), timeInterval: 1.0, closure: {
 					
 					UIApplication.feedBack(.On)
-					LL_Audio.shared.play(.button)
+					LL_Audio.shared.playSound(.Button)
 				}),
 				LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.start.2"), timeInterval: 1.0, closure: {
 					
 					UIApplication.feedBack(.On)
-					LL_Audio.shared.play(.button)
+					LL_Audio.shared.playSound(.Button)
 				}),
 				LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.start.3"), timeInterval: 1.0, closure: {
 					
 					UIApplication.feedBack(.Success)
-					LL_Audio.shared.play(.tap)
+					LL_Audio.shared.playSound(.Tap)
 				}),
 				LL_Tutorial_ViewController.Item(title: String(key: "game.timeTrial.tutorial.start.4"), timeInterval: 2.0)
 			]

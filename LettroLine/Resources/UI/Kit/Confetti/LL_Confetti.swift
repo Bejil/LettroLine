@@ -12,7 +12,11 @@ public class LL_Confettis {
 	public static func start() {
 		
 		SPConfettiConfiguration.particlesConfig.birthRate = 50
-		SPConfettiConfiguration.particlesConfig.colors = [Colors.Primary,Colors.Secondary,Colors.Tertiary]
+		
+		var colors = [Colors.Primary,Colors.Secondary,Colors.Tertiary]
+		colors.append(contentsOf: Colors.Letter.Colors.flatMap { [$0.0, $0.1] })
+		
+		SPConfettiConfiguration.particlesConfig.colors = colors
 		SPConfetti.startAnimating(.fullWidthToDown, particles: [.arc])
 	}
 	

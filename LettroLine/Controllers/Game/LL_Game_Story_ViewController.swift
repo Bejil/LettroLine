@@ -119,19 +119,35 @@ public class LL_Game_Story_ViewController : LL_Game_ViewController {
 			
 			let fullText = descriptions.joined(separator: "\n\n")
 			let attributedString = NSMutableAttributedString(string: fullText)
-			let baseAttributes: [NSAttributedString.Key: Any] = [.font: Fonts.Content.Text.Regular]
+			let baseAttributes: [NSAttributedString.Key: Any] = [.font: Fonts.Content.Text.Regular.withSize(Fonts.Size+1)]
 			attributedString.addAttributes(baseAttributes, range: NSRange(location: 0, length: fullText.count))
 			
-			words.forEach({
+			// Utiliser NSString pour la recherche avec options diacritiques insensibles
+			let nsFullText = fullText as NSString
+			
+			words.forEach { word in
 				
-				let wordRange = (fullText as NSString).range(of: $0, options: .caseInsensitive)
+				// Rechercher toutes les occurrences du mot en ignorant les accents et la casse
+				var searchRange = NSRange(location: 0, length: nsFullText.length)
 				
-				if wordRange.location != NSNotFound {
+				while searchRange.location < nsFullText.length {
 					
-					let highlightAttributes: [NSAttributedString.Key: Any] = [.font: Fonts.Letter.withSize(Fonts.Content.Title.H2.pointSize)]
-					attributedString.addAttributes(highlightAttributes, range: wordRange)
+					let wordRange = nsFullText.range(of: word, options: [.caseInsensitive, .diacriticInsensitive], range: searchRange, locale: .current)
+					
+					if wordRange.location != NSNotFound {
+						
+						// Appliquer les attributs de mise en valeur
+						let highlightAttributes: [NSAttributedString.Key: Any] = [.font: Fonts.Letter.withSize(Fonts.Content.Title.H2.pointSize)]
+						attributedString.addAttributes(highlightAttributes, range: wordRange)
+						
+						// Continuer la recherche après cette occurrence
+						searchRange = NSRange(location: wordRange.location + wordRange.length, length: nsFullText.length - (wordRange.location + wordRange.length))
+					} else {
+						
+						break
+					}
 				}
-			})
+			}
 			
 			return attributedString
 		}
