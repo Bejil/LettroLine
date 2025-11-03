@@ -181,7 +181,7 @@ public class LL_Button : UIButton {
 		// Action du bouton
 		addAction(.init(handler: { [weak self] _ in
 			UIApplication.feedBack(.On)
-			LL_Audio.shared.play(.button)
+			LL_Audio.shared.playSound(.Button)
 			self?.action?(self)
 		}), for: .touchUpInside)
 		

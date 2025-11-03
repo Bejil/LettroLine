@@ -93,6 +93,37 @@ public struct Colors {
 	public struct Letter {
 			
 		public static let Selected:UIColor = UIColor(named: "LetterSelected")!
+		
+		public struct Rose {
+			
+			public static let Default:UIColor = UIColor(named: "LetterPastelRose")!
+			public static let Light:UIColor = UIColor(named: "LetterPastelRoseLight")!
+		}
+		
+		public struct Blue {
+			
+			public static let Default:UIColor = UIColor(named: "LetterPastelBlue")!
+			public static let Light:UIColor = UIColor(named: "LetterPastelBlueLight")!
+		}
+		
+		public struct Green {
+			
+			public static let Default:UIColor = UIColor(named: "LetterPastelGreen")!
+			public static let Light:UIColor = UIColor(named: "LetterPastelGreenLight")!
+		}
+		
+		public struct Yellow {
+			
+			public static let Default:UIColor = UIColor(named: "LetterPastelYellow")!
+			public static let Light:UIColor = UIColor(named: "LetterPastelYellowLight")!
+		}
+		
+		public static let Colors:[(UIColor,UIColor)] = [
+			(Rose.Default,Rose.Light),
+			(Blue.Default,Blue.Light),
+			(Green.Default,Green.Light),
+			(Yellow.Default,Yellow.Light)
+		]
 	}
 }
 

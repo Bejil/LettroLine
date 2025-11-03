@@ -111,9 +111,9 @@
 "game.timeTrial.tutorial.1.content" = "Chaque mot recréé te fera gagner 3 secondes supplémentaires !";
 "game.timeTrial.tutorial.1.button" = "J'ai compris";
 "game.timeTrial.tutorial.start.0" = "Tu es prêt ?!";
-"game.timeTrial.tutorial.start.1" = "1";
+"game.timeTrial.tutorial.start.1" = "3";
 "game.timeTrial.tutorial.start.2" = "2";
-"game.timeTrial.tutorial.start.3" = "3";
+"game.timeTrial.tutorial.start.3" = "1";
 "game.timeTrial.tutorial.start.4" = "C'est parti !!";
 "game.timeTrial.tutorial.end.0" = "Terminé !!";
 "game.timeTrial.tutorial.end.1" = "Félicitations !";

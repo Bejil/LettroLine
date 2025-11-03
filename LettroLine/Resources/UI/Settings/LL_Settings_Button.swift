@@ -15,17 +15,17 @@ public class LL_Settings_Button : LL_Button {
 			
 			UIAction(title: String(key: "settings.sounds"), subtitle: String(key: "settings.sounds." + (LL_Audio.shared.isSoundsEnabled ? "on" : "off")), image: UIImage(systemName: LL_Audio.shared.isSoundsEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill"), handler: { [weak self] _ in
 				
-				LL_Audio.shared.play(.button)
-				
 				UserDefaults.set(!LL_Audio.shared.isSoundsEnabled, .soundsEnabled)
+				
+				LL_Audio.shared.playSound(.Button)
 				
 				self?.menu = self?.settingsMenu
 			}),
 			UIAction(title: String(key: "settings.music"), subtitle: String(key: "settings.music." + (LL_Audio.shared.isMusicEnabled ? "on" : "off")), image: UIImage(systemName: LL_Audio.shared.isMusicEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill"), handler: { [weak self] _ in
 				
-				LL_Audio.shared.play(.button)
-				
 				UserDefaults.set(!LL_Audio.shared.isMusicEnabled, .musicEnabled)
+				
+				LL_Audio.shared.playSound(.Button)
 				
 				LL_Audio.shared.isMusicEnabled ? LL_Audio.shared.playMusic() : LL_Audio.shared.stopMusic()
 				

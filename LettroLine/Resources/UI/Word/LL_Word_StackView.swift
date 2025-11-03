@@ -17,35 +17,43 @@ public class LL_Word_StackView : UIStackView {
 			arrangedSubviews.forEach { $0.removeFromSuperview() }
 			
 			if let word {
+
+//				// Ajouter un spacer invisible au début pour centrer
+//				let leadingSpacer = UIView()
+//				leadingSpacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+//				leadingSpacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+//				addArrangedSubview(leadingSpacer)
+//				setCustomSpacing(0, after: leadingSpacer)
 				
-				addArrangedSubview(.init())
-				
-				word.forEach({ _ in
+				for i in 0..<word.count {
 					
 					let letterLabel: LL_Letter_View = .init()
 					letterLabel.isSelected = isPrimary
+//					letterLabel.setContentHuggingPriority(.required, for: .horizontal)
+//					letterLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
 					addArrangedSubview(letterLabel)
-					letterLabel.snp.makeConstraints { make in
-						make.width.equalToSuperview().dividedBy(8).offset(-UI.Margins/5)
-					}
-				})
-				
-				let labels = arrangedSubviews.compactMap({ $0 as? LL_Letter_View })
-				
-				for i in 0..<labels.count {
 					
 					UIApplication.wait(0.3*Double(i)) {
-							
-						let label = labels[i]
+						
 						let index = word.index(word.startIndex, offsetBy: i)
-						label.letter = String(word[index])
+						letterLabel.letter = String(word[index])
+					}
+					
+					if i == word.count - 1 {
+						
+						setCustomSpacing(0, after: letterLabel)
 					}
 				}
-				
-				addArrangedSubview(.init())
+
+//				// Ajouter un spacer invisible à la fin pour centrer
+//				let trailingSpacer = UIView()
+//				trailingSpacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+//				trailingSpacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+//				addArrangedSubview(trailingSpacer)
 			}
 		}
 	}
+	public var adjustLetterSize:Bool = false
 	
 	public override init(frame: CGRect) {
 		
@@ -53,16 +61,38 @@ public class LL_Word_StackView : UIStackView {
 		
 		axis = .horizontal
 		alignment = .center
-		distribution = .equalSpacing
-		
-		snp.makeConstraints { make in
-			make.height.equalTo(UI.Margins * 2.75)
-		}
+		distribution = .fill
+		spacing = UI.Margins/4
+		setContentHuggingPriority(.required, for: .horizontal)
 	}
 	
 	required init(coder: NSCoder) {
 		
 		fatalError("init(coder:) has not been implemented")
+	}
+	
+	public override func layoutSubviews() {
+		
+		super.layoutSubviews()
+		
+		let maxLetters = CGFloat(LL_Words.shared.maxLetters)
+		let numberOfSpacings = maxLetters - 1.0
+		
+		var letterWidth = ((superview?.frame.size.width ?? 0) - (2*UI.Margins) - (numberOfSpacings * spacing)) / maxLetters
+//		letterWidth = max(2.25 * UI.Margins, letterWidth)
+		
+		if frame.size.width > 0 && letterWidth > 0 {
+			
+			let labels = arrangedSubviews.compactMap({ $0 as? LL_Letter_View })
+			
+			labels.forEach {
+				
+				$0.snp.remakeConstraints { make in
+					
+					make.size.equalTo(letterWidth)
+				}
+			}
+		}
 	}
 	
 	public func select(_ character:Character?) {
