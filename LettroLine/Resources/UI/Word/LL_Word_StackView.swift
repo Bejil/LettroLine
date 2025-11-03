@@ -18,16 +18,11 @@ public class LL_Word_StackView : UIStackView {
 			
 			if let word {
 				
-				addArrangedSubview(.init())
-				
 				word.forEach({ _ in
 					
 					let letterLabel: LL_Letter_View = .init()
 					letterLabel.isSelected = isPrimary
 					addArrangedSubview(letterLabel)
-					letterLabel.snp.makeConstraints { make in
-						make.width.equalToSuperview().dividedBy(8).offset(-UI.Margins/5)
-					}
 				})
 				
 				let labels = arrangedSubviews.compactMap({ $0 as? LL_Letter_View })
@@ -41,11 +36,10 @@ public class LL_Word_StackView : UIStackView {
 						label.letter = String(word[index])
 					}
 				}
-				
-				addArrangedSubview(.init())
 			}
 		}
 	}
+	public var adjustLetterSize:Bool = false
 	
 	public override init(frame: CGRect) {
 		
@@ -53,16 +47,32 @@ public class LL_Word_StackView : UIStackView {
 		
 		axis = .horizontal
 		alignment = .center
-		distribution = .equalSpacing
-		
-		snp.makeConstraints { make in
-			make.height.equalTo(UI.Margins * 2.75)
-		}
+		spacing = UI.Margins/4
 	}
 	
 	required init(coder: NSCoder) {
 		
 		fatalError("init(coder:) has not been implemented")
+	}
+	
+	public override func layoutSubviews() {
+		
+		super.layoutSubviews()
+		
+		let ratio = CGFloat(adjustLetterSize ? word?.count ?? LL_Words.shared.maxLetters : LL_Words.shared.maxLetters)
+		
+		var size = (frame.size.width - ((ratio - 1.0) * spacing))/ratio
+		size = max(2.25 * UI.Margins, size)
+		
+		if superview != nil && size > 0 {
+			
+			arrangedSubviews.forEach {
+				
+				$0.snp.remakeConstraints { make in
+					make.size.equalTo(size)
+				}
+			}
+		}
 	}
 	
 	public func select(_ character:Character?) {

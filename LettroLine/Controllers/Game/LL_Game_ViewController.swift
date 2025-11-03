@@ -220,7 +220,6 @@ public class LL_Game_ViewController: LL_ViewController {
 		case .began:
 			
 			self.hideSolution()
-				// Réinitialisation du tracé et des index utilisés
 			self.userPath.removeAllPoints()
 			self.usedIndexPaths.removeAll()
 			self.currentSolutionIndex = 0
@@ -470,7 +469,7 @@ public class LL_Game_ViewController: LL_ViewController {
 			}
 		}
 		
-		solutionWord = game?.newWord(wordLength)
+		solutionWord = game?.newWord(8)
 		
 		bannerView.refresh()
 	}

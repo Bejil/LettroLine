@@ -22,7 +22,7 @@ public class LL_Words : Codable {
 	}
 	public var maxLetters: Int {
 		
-		return words?.compactMap({ $0.word?.count ?? 0 }).max() ?? 0
+		return words?.compactMap({ $0.word?.count ?? 0 }).max() ?? 8
 	}
 	
 	public func getAll(_ completion: (()->Void)?) {

@@ -86,18 +86,7 @@ public class LL_Letter_View : UIView {
 	}(UIImageView(image: UIImage(systemName: "star.fill")))
 	private lazy var gradientBackgroundLayer:CAGradientLayer = {
 		
-		let pastelPalette: [(UIColor, UIColor)] = [
-			(UIColor(red: 1.0, green: 0.45, blue: 0.55, alpha: 1.0),
-			 UIColor(red: 1.0, green: 0.70, blue: 0.77, alpha: 1.0)),
-			(UIColor(red: 0.30, green: 0.65, blue: 1.0, alpha: 1.0),
-			 UIColor(red: 0.55, green: 0.80, blue: 1.0, alpha: 1.0)),
-			(UIColor(red: 0.35, green: 0.90, blue: 0.50, alpha: 1.0),
-			 UIColor(red: 0.60, green: 0.95, blue: 0.70, alpha: 1.0)),
-			(UIColor(red: 1.0, green: 0.80, blue: 0.25, alpha: 1.0),
-			 UIColor(red: 1.0, green: 0.90, blue: 0.50, alpha: 1.0))
-		]
-		
-		let chosen = pastelPalette.randomElement()!
+		let chosen = Colors.Letter.Colors.randomElement()!
 		
 		$0.colors = [chosen.0.cgColor, chosen.1.cgColor]
 		$0.startPoint = CGPoint(x: 0, y: 0)
